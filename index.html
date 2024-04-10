@@ -31,7 +31,7 @@
 // Set the date we're counting down to
 var countDownDate = new Date("May 23, 2024 00:00:00").getTime();
 
-// Update the countdown every 1 millisecond
+// Update the countdown every 1 second
 var x = setInterval(function() {
 
   // Get the current date and time
@@ -40,24 +40,24 @@ var x = setInterval(function() {
   // Find the distance between now and the countdown date
   var distance = countDownDate - now;
   
-  // Calculate weeks, days, hours, minutes, seconds, and milliseconds remaining
-  var weeks = Math.floor(distance / (1000 * 60 * 60 * 24 * 7));
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24)) % 7;
+  // Calculate days, hours, minutes, and seconds remaining
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
   
   // Display the countdown in the element with id="countdown"
-  document.getElementById("countdown").innerHTML = weeks + "w " + days + "d " + hours + "h "
-  + minutes + "m " + seconds + "s";
+  document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
   
   // If the countdown is over, display a message
   if (distance < 0) {
     clearInterval(x);
     document.getElementById("countdown").innerHTML = "School Is Out!";
   }
-}, 1); // Update every 1 millisecond
+}, 1000);
 </script>
 
 </body>
 </html>
+
