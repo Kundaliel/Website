@@ -5,10 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Countdown to May 10th</title>
 <style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0; /* Background color */
+  }
+
   #countdown {
-    font-size: 24px;
+    font-size: 5vw; /* Responsive font size */
     text-align: center;
-    margin-top: 50px;
+    color: green; /* Text color */
+    font-weight: bold; /* Bold */
   }
 </style>
 </head>
@@ -36,13 +47,13 @@ var x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
   
   // Display the countdown in the element with id="countdown"
-  document.getElementById("countdown").innerHTML = "Countdown to May 10th: " + days + "d " + hours + "h "
+  document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
   + minutes + "m " + seconds + "s ";
   
   // If the countdown is over, display a message
   if (distance < 0) {
     clearInterval(x);
-    document.getElementById("countdown").innerHTML = "EXPIRED";
+    document.getElementById("countdown").innerHTML = "School Is Out!";
   }
 }, 1000);
 </script>
