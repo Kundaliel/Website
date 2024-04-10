@@ -13,13 +13,52 @@
     align-items: center;
     height: 100vh;
     background-color: #f0f0f0; /* Background color */
+    position: relative; /* Relative positioning */
   }
 
   #countdown {
     font-size: 5vw; /* Responsive font size */
     text-align: center;
-    color: green; /* Text color */
     font-weight: bold; /* Bold */
+  }
+
+  .colorSelectors {
+    position: absolute; /* Absolute positioning */
+    bottom: 10px; /* 10px from the bottom */
+    right: 10px; /* 10px from the right */
+    display: flex;
+    flex-direction: row; /* Arrange buttons side by side */
+  }
+
+  .colorSelectorWrapper {
+    position: relative;
+    margin-right: 10px; /* Add some space between buttons */
+  }
+
+  .colorSelector {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .colorLabels {
+    position: absolute; /* Absolute positioning */
+    bottom: 70px; /* Adjusted for label width and button height */
+    right: 10px; /* 10px from the right */
+    color: #777; /* Label color */
+    font-size: 14px; /* Label font size */
+    display: flex;
+    flex-direction: row; /* Arrange labels side by side */
+  }
+
+  .colorLabels label {
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px; /* Add some space between labels */
   }
 </style>
 </head>
@@ -27,7 +66,39 @@
 
 <div id="countdown"></div>
 
+<div class="colorSelectors">
+  <div class="colorSelectorWrapper">
+    <label for="textColor" class="colorLabels" id="textLabel">TXT</label>
+    <input type="color" class="colorSelector" id="textColor" value="#00ff00">
+  </div>
+  <div class="colorSelectorWrapper">
+    <label for="bgColor" class="colorLabels" id="bgLabel">BG</label>
+    <input type="color" class="colorSelector" id="bgColor" value="#f0f0f0">
+  </div>
+</div>
+
 <script>
+// Function to set the countdown text color and background color
+function setColors(textColor, bgColor) {
+  document.getElementById("countdown").style.color = textColor;
+  document.body.style.backgroundColor = bgColor;
+  document.getElementById("textLabel").style.color = textColor; // Set label color
+  document.getElementById("bgLabel").style.color = textColor; // Set label color
+  localStorage.setItem("textColor", textColor);
+  localStorage.setItem("bgColor", bgColor);
+}
+
+// Function to update colors when the page loads
+function updateColors() {
+  var savedTextColor = localStorage.getItem("textColor");
+  var savedBgColor = localStorage.getItem("bgColor");
+  if (savedTextColor && savedBgColor) {
+    document.getElementById("textColor").value = savedTextColor;
+    document.getElementById("bgColor").value = savedBgColor;
+    setColors(savedTextColor, savedBgColor);
+  }
+}
+
 // Set the date we're counting down to
 var countDownDate = new Date("May 23, 2024 00:00:00").getTime();
 
@@ -56,8 +127,24 @@ var x = setInterval(function() {
     document.getElementById("countdown").innerHTML = "School Is Out!";
   }
 }, 1000);
+
+// Event listeners to update colors when the input changes
+document.getElementById("textColor").addEventListener("input", function() {
+  var textColor = this.value;
+  var bgColor = document.getElementById("bgColor").value;
+  setColors(textColor, bgColor);
+});
+
+document.getElementById("bgColor").addEventListener("input", function() {
+  var textColor = document.getElementById("textColor").value;
+  var bgColor = this.value;
+  setColors(textColor, bgColor);
+});
+
+// Update colors when the page loads
+updateColors();
+
 </script>
 
 </body>
 </html>
-
