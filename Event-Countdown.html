@@ -18,38 +18,60 @@
             display: flex;
             flex-direction: column;
             justify-content: space-around; /* Adjusted to evenly distribute content */
+            position: relative;
+            overflow: hidden; /* Hide overflow content */
         }
         h1 {
             font-size: 6vw; /* Adjusted font size based on viewport width */
         }
         #event-details {
             font-size: 4vw; /* Adjusted font size based on viewport width */
+            position: relative;
+            animation-duration: 0.5s; /* Animation duration */
         }
         #countdown {
             font-size: 3vw; /* Adjusted font size based on viewport width */
         }
         .events {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    display: inline-block;
-    transition-duration: 500ms;
-  }
-
-  .events-icon {
-    width: 35px;
-    height: 35px;
-    background-color: whitesmoke;
-    text-align: center;
-    font-size: 12px;
-    border-radius: 5px;
-    transition-duration: 500ms;
-  }
-        
-  .events:hover .events-icon {
-    transform: scale(1.2);
-    background-color: lightgray;
-  }
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: inline-block;
+            transition: transform 0.5s; /* Smooth transition for sliding effect */
+        }
+        .events-icon {
+            width: 35px;
+            height: 35px;
+            background-color: whitesmoke;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 5px;
+            transition-duration: 500ms;
+        }
+        .events:hover .events-icon {
+            transform: scale(1.2);
+            background-color: lightgray;
+        }
+        .event-switch {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            z-index: 1;
+        }
+        .event-switch:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        .event-switch.prev {
+            left: 5px;
+        }
+        .event-switch.next {
+            right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -57,13 +79,15 @@
   <img src="./Images/Cropped_Image.png" width="35px" class="events-icon">
 </a>
     <div class="container">
+        <button class="event-switch prev" onclick="prevEvent()">◄</button>
         <h1>Upcoming Event Countdown</h1>
-        <div id="event-details">
+        <div id="event-details" class="events">
             <!-- Event details will be dynamically updated here -->
         </div>
         <div id="countdown">
             <!-- Countdown timer will be dynamically updated here -->
         </div>
+        <button class="event-switch next" onclick="nextEventFunction()">►</button>
     </div>
 
     <script>
@@ -93,12 +117,12 @@
         // Find the next upcoming event
         var now = new Date();
         var nextEventIndex = eventDates.findIndex(event => event.date > now);
-        var nextEvent = nextEventIndex !== -1 ? eventDates[nextEventIndex] : null;
+        var currentEvent = nextEventIndex !== -1 ? eventDates[nextEventIndex] : null;
 
         // Function to update countdown timer
         function updateCountdown() {
             var now = new Date();
-            var timeLeft = nextEvent.date - now;
+            var timeLeft = currentEvent.date - now;
 
             if (timeLeft > 0) {
                 var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -111,7 +135,7 @@
                 document.getElementById("countdown").textContent = "Event has already started!";
                 // Find the next upcoming event after this one
                 nextEventIndex++;
-                nextEvent = nextEventIndex < eventDates.length ? eventDates[nextEventIndex] : null;
+                currentEvent = nextEventIndex < eventDates.length ? eventDates[nextEventIndex] : null;
             }
         }
 
@@ -122,11 +146,39 @@
         setInterval(updateCountdown, 1000);
 
         // Display the event details
-        if (nextEvent) {
-            document.getElementById("event-details").textContent = nextEvent.name;
+        if (currentEvent) {
+            document.getElementById("event-details").textContent = currentEvent.name;
         } else {
             document.getElementById("event-details").textContent = "No upcoming events";
             document.getElementById("countdown").style.display = "none";
+        }
+
+        // Function to move to the previous event
+        function prevEvent() {
+            while (nextEventIndex > 0 && currentEvent.date < new Date()) {
+                nextEventIndex--;
+                currentEvent = eventDates[nextEventIndex];
+            }
+            if (nextEventIndex > 0) {
+                nextEventIndex--;
+                currentEvent = eventDates[nextEventIndex];
+                updateCountdown();
+                document.getElementById("event-details").textContent = currentEvent.name;
+            }
+        }
+
+        // Function to move to the next event
+        function nextEventFunction() {
+            while (nextEventIndex < eventDates.length - 1 && currentEvent.date < new Date()) {
+                nextEventIndex++;
+                currentEvent = eventDates[nextEventIndex];
+            }
+            if (nextEventIndex < eventDates.length - 1) {
+                nextEventIndex++;
+                currentEvent = eventDates[nextEventIndex];
+                updateCountdown();
+                document.getElementById("event-details").textContent = currentEvent.name;
+            }
         }
     </script>
 </body>
