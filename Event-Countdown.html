@@ -1,193 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Event Countdown</title>
-<style>
-/* CSS styles */
-body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0; /* Background color */
-    position: relative; /* Relative positioning */
-}
-
-.container {
-    text-align: center;
-    margin-top: 50px;
-}
-
-h1 {
-    font-size: 24px;
-}
-
-#event-details {
-    margin-top: 20px;
-}
-
-#countdown {
-    margin-top: 20px;
-    font-size: 18px;
-}
-
-.colorSelectors {
-    position: absolute; /* Absolute positioning */
-    bottom: 10px; /* 10px from the bottom */
-    right: 10px; /* 10px from the right */
-    display: flex;
-    flex-direction: row; /* Arrange buttons side by side */
-}
-
-.colorSelectorWrapper {
-    position: relative;
-    margin-right: 10px; /* Add some space between buttons */
-}
-
-.colorSelector {
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    outline: none;
-    background: transparent;
-}
-
-.colorLabels {
-    position: absolute; /* Absolute positioning */
-    bottom: 70px; /* Adjusted for label width and button height */
-    right: 10px; /* 10px from the right */
-    color: #777; /* Label color */
-    font-size: 14px; /* Label font size */
-    display: flex;
-    flex-direction: row; /* Arrange labels side by side */
-}
-
-.colorLabels label {
-    cursor: pointer;
-    position: relative;
-    margin-right: 10px; /* Add some space between labels */
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Countdown</title>
+    <style>
+        /* CSS styles */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            margin-top: 20vh; /* Adjusted margin for vertical centering */
+            height: 60vh; /* Set height to 60% of viewport height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around; /* Adjusted to evenly distribute content */
+        }
+        h1 {
+            font-size: 6vw; /* Adjusted font size based on viewport width */
+        }
+        #event-details {
+            font-size: 4vw; /* Adjusted font size based on viewport width */
+        }
+        #countdown {
+            font-size: 3vw; /* Adjusted font size based on viewport width */
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Upcoming Event Countdown</h1>
-    <div id="event-details">
-        <!-- Event details will be dynamically updated here -->
+    <div class="container">
+        <h1>Upcoming Event Countdown</h1>
+        <div id="event-details">
+            <!-- Event details will be dynamically updated here -->
+        </div>
+        <div id="countdown">
+            <!-- Countdown timer will be dynamically updated here -->
+        </div>
     </div>
-    <div id="countdown">
-        <!-- Countdown timer will be dynamically updated here -->
-    </div>
-</div>
 
-<div class="colorSelectors">
-    <div class="colorSelectorWrapper">
-        <label for="textColor" class="colorLabels" id="textLabel">TXT</label>
-        <input type="color" class="colorSelector" id="textColor" value="#000000">
-    </div>
-    <div class="colorSelectorWrapper">
-        <label for="bgColor" class="colorLabels" id="bgLabel">BG</label>
-        <input type="color" class="colorSelector" id="bgColor" value="#f0f0f0">
-    </div>
-</div>
+    <script>
+        // JavaScript code
+        // Array of event dates
+        var eventDates = [
+            { date: new Date("2024-04-13"), name: "Jr/Sr Prom" },
+            { date: new Date("2024-04-17"), name: "Collaborative Planning Day - Students Dismissed at 12:40" },
+            { date: new Date("2024-04-19"), name: "Spring Pep Rally" },
+            { date: new Date("2024-04-25"), name: "Theatre 4 Production - A Midsummer Night's Dream 7:00 @ LOPAC" },
+            { date: new Date("2024-04-30"), name: "Chorus Spring Concert 7:00 @ LOPAC" },
+            { date: new Date("2024-05-01"), name: "The College Center Graduation" },
+            { date: new Date("2024-05-02"), name: "Theatre 3 Showcase 7:00 @ The Little Theater" },
+            { date: new Date("2024-05-02"), name: "Percussion Ensemble Concert 7:00 @ LOPAC" },
+            { date: new Date("2024-05-06"), name: "Spring Band Concert 7:00 @ LOPAC" },
+            { date: new Date("2024-05-07"), name: "Orchestra Spring Performance 7:00 @ LOPAC" },
+            { date: new Date("2024-05-09"), name: "Spring Dance Concert 7:00 @ LOPAC" },
+            { date: new Date("2024-05-09"), name: "LHS Spring Art Show @ LOPAC 5:30 - 7:00" },
+            { date: new Date("2024-05-10"), name: "Last Day for Seniors" },
+            { date: new Date("2024-05-10"), name: "Senior Picnic" },
+            { date: new Date("2024-05-10"), name: "Senior Decision Day" },
+            { date: new Date("2024-05-22"), name: "Half day for Students; Dismissal at 12:45" },
+            { date: new Date("2024-05-22"), name: "Class of 2024 Graduation 4:00 - Colonial Life Arena" },
+            { date: new Date("2024-05-23"), name: "Last Day for Students - Half Day; Students Dismissed at 12:45" }
+        ];
 
-<script>
-// JavaScript code
-// Array of event dates
-var eventDates = [
-    { date: new Date("2024-04-13"), name: "Jr/Sr Prom" },
-    { date: new Date("2024-04-17"), name: "Collaborative Planning Day - Students Dismissed at 12:40" },
-    { date: new Date("2024-04-19"), name: "Spring Pep Rally" },
-    { date: new Date("2024-04-25"), name: "Theatre 4 Production - A Midsummer Night's Dream 7:00 @ LOPAC" },
-    { date: new Date("2024-04-30"), name: "Chorus Spring Concert 7:00 @ LOPAC" },
-    { date: new Date("2024-05-01"), name: "The College Center Graduation" },
-    { date: new Date("2024-05-02"), name: "Theatre 3 Showcase 7:00 @ The Little Theater" },
-    { date: new Date("2024-05-02"), name: "Percussion Ensemble Concert 7:00 @ LOPAC" },
-    { date: new Date("2024-05-06"), name: "Spring Band Concert 7:00 @ LOPAC" },
-    { date: new Date("2024-05-07"), name: "Orchestra Spring Performance 7:00 @ LOPAC" },
-    { date: new Date("2024-05-09"), name: "Spring Dance Concert 7:00 @ LOPAC" },
-    { date: new Date("2024-05-09"), name: "LHS Spring Art Show @ LOPAC 5:30 - 7:00" },
-    { date: new Date("2024-05-10"), name: "Last Day for Seniors" },
-    { date: new Date("2024-05-10"), name: "Senior Picnic" },
-    { date: new Date("2024-05-10"), name: "Senior Decision Day" },
-    { date: new Date("2024-05-22"), name: "Half day for Students; Dismissal at 12:45" },
-    { date: new Date("2024-05-22"), name: "Class of 2024 Graduation 4:00 - Colonial Life Arena" },
-    { date: new Date("2024-05-23"), name: "Last Day for Students - Half Day; Students Dismissed at 12:45" }
-];
+        // Find the next upcoming event
+        var now = new Date();
+        var nextEventIndex = eventDates.findIndex(event => event.date > now);
+        var nextEvent = nextEventIndex !== -1 ? eventDates[nextEventIndex] : null;
 
-// Find the next upcoming event
-var now = new Date();
-var nextEvent = eventDates.find(event => event.date > now);
+        // Function to update countdown timer
+        function updateCountdown() {
+            var now = new Date();
+            var timeLeft = nextEvent.date - now;
 
-// Display the event details and countdown timer
-if (nextEvent) {
-    document.getElementById("event-details").textContent = nextEvent.name;
-    var countdownElement = document.getElementById("countdown");
+            if (timeLeft > 0) {
+                var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-    function updateCountdown() {
-        var timeLeft = nextEvent.date - now;
-        if (timeLeft > 0) {
-            var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-            countdownElement.textContent = "Time left: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
-        } else {
-            countdownElement.textContent = "Event has already started!";
+                document.getElementById("countdown").textContent = "Time left: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+            } else {
+                document.getElementById("countdown").textContent = "Event has already started!";
+                // Find the next upcoming event after this one
+                nextEventIndex++;
+                nextEvent = nextEventIndex < eventDates.length ? eventDates[nextEventIndex] : null;
+            }
         }
-    }
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-} else {
-    document.getElementById("event-details").textContent = "No upcoming events";
-    document.getElementById("countdown").style.display = "none";
-}
+        // Initial call to update countdown
+        updateCountdown();
 
-// Function to set the countdown text color and background color
-function setColors(textColor, bgColor) {
-    document.getElementById("countdown").style.color = textColor;
-    document.body.style.backgroundColor = bgColor;
-    document.getElementById("textLabel").style.color = textColor; // Set label color
-    document.getElementById("bgLabel").style.color = textColor; // Set label color
-    localStorage.setItem("textColor", textColor);
-    localStorage.setItem("bgColor", bgColor);
-}
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
 
-// Function to update colors when the page loads
-function updateColors() {
-    var savedTextColor = localStorage.getItem("textColor");
-    var savedBgColor = localStorage.getItem("bgColor");
-    if (savedTextColor && savedBgColor) {
-        document.getElementById("textColor").value = savedTextColor;
-        document.getElementById("bgColor").value = savedBgColor;
-        setColors(savedTextColor, savedBgColor);
-    }
-}
-
-// Event listeners to update colors when the input changes
-document.getElementById("textColor").addEventListener("input", function() {
-    var textColor = this.value;
-    var bgColor = document.getElementById("bgColor").value;
-    setColors(textColor, bgColor);
-});
-
-document.getElementById("bgColor").addEventListener("input", function() {
-    var textColor = document.getElementById("textColor").value;
-    var bgColor = this.value;
-    setColors(textColor, bgColor);
-});
-
-// Update colors when the page loads
-updateColors();
-</script>
+        // Display the event details
+        if (nextEvent) {
+            document.getElementById("event-details").textContent = nextEvent.name;
+        } else {
+            document.getElementById("event-details").textContent = "No upcoming events";
+            document.getElementById("countdown").style.display = "none";
+        }
+    </script>
 </body>
 </html>
