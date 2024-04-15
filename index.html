@@ -61,9 +61,45 @@
     position: relative;
     margin-right: 10px; /* Add some space between labels */
   }
+  .events {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: inline-block;
+    transition-duration: 500ms;
+  }
+
+  .events-icon {
+    width: 35px;
+    height: 35px;
+    background-color: whitesmoke;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 5px;
+    transition-duration: 500ms;
+  }
+
+  .events:hover .events-icon::after {
+    content: "Events Page";
+    position: absolute;
+    top: -20px; /* Adjust this value to position the text */
+    left: -5px; /* Adjust this value to position the text */
+    background-color: red;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .events:hover .events-icon {
+    transform: scale(1.2);
+    background-color: lightgray;
+  }
+
 </style>
 </head>
 <body>
+<a href="./Event-Countdown.html" class="events">
+  <img src="https://github.com/FreezaF/Website/blob/main/Images/android-chrome-192x192.png?raw=true" width="35px" class="events-icon">
+</a>
 
 <div id="countdown"></div>
 
