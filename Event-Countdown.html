@@ -67,6 +67,10 @@
     </div>
 
     <script>
+        const savedColor = localStorage.getItem("bgColor");
+        if (savedColor) {
+            document.getElementById("content").style.backgroundColor = savedColor;
+        }
         // JavaScript code
         // Array of event dates
         var eventDates = [
