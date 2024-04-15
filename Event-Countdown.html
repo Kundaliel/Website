@@ -28,6 +28,38 @@
         #countdown {
             font-size: 3vw; /* Adjusted font size based on viewport width */
         }
+        .events {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    display: inline-block;
+    transition-duration: 500ms;
+  }
+
+  .events-icon {
+    width: 35px;
+    height: 35px;
+    background-color: whitesmoke;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 5px;
+    transition-duration: 500ms;
+  }
+
+  .events:hover .events-icon::after {
+    content: "Events Page";
+    position: absolute;
+    top: -20px; /* Adjust this value to position the text */
+    left: -5px; /* Adjust this value to position the text */
+    background-color: red;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .events:hover .events-icon {
+    transform: scale(1.2);
+    background-color: lightgray;
+  }
     </style>
 </head>
 <body>
