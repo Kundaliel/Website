@@ -92,94 +92,63 @@
 
     <script>
         // JavaScript code
-        // Array of event dates
-        var eventDates = [
-            { date: new Date("2024-04-13"), name: "Jr/Sr Prom" },
-            { date: new Date("2024-04-17"), name: "Collaborative Planning Day - Students Dismissed at 12:40" },
-            { date: new Date("2024-04-19"), name: "Spring Pep Rally" },
-            { date: new Date("2024-04-25"), name: "Theatre 4 Production - A Midsummer Night's Dream 7:00 @ LOPAC" },
-            { date: new Date("2024-04-30"), name: "Chorus Spring Concert 7:00 @ LOPAC" },
-            { date: new Date("2024-05-01"), name: "The College Center Graduation" },
-            { date: new Date("2024-05-02"), name: "Theatre 3 Showcase 7:00 @ The Little Theater" },
-            { date: new Date("2024-05-02"), name: "Percussion Ensemble Concert 7:00 @ LOPAC" },
-            { date: new Date("2024-05-06"), name: "Spring Band Concert 7:00 @ LOPAC" },
-            { date: new Date("2024-05-07"), name: "Orchestra Spring Performance 7:00 @ LOPAC" },
-            { date: new Date("2024-05-09"), name: "Spring Dance Concert 7:00 @ LOPAC" },
-            { date: new Date("2024-05-09"), name: "LHS Spring Art Show @ LOPAC 5:30 - 7:00" },
-            { date: new Date("2024-05-10"), name: "Last Day for Seniors" },
-            { date: new Date("2024-05-10"), name: "Senior Picnic" },
-            { date: new Date("2024-05-10"), name: "Senior Decision Day" },
-            { date: new Date("2024-05-22"), name: "Half day for Students; Dismissal at 12:45" },
-            { date: new Date("2024-05-22"), name: "Class of 2024 Graduation 4:00 - Colonial Life Arena" },
-            { date: new Date("2024-05-23"), name: "Last Day for Students - Half Day; Students Dismissed at 12:45" }
-        ];
 
-        // Find the next upcoming event
-        var now = new Date();
-        var nextEventIndex = eventDates.findIndex(event => event.date > now);
-        var currentEvent = nextEventIndex !== -1 ? eventDates[nextEventIndex] : null;
+// Function to read events from a file
+function readEventsFromFile() {
+    // Read the file asynchronously
+    fetch('./events.txt')
+        .then(response => response.text()) // Get text content of the file
+        .then(data => parseEvents(data)); // Parse events from the text content
+}
 
-        // Function to update countdown timer
-        function updateCountdown() {
-            var now = new Date();
-            var timeLeft = currentEvent.date - now;
+// Function to parse event details from the text content
+function parseEvents(data) {
+    // Split the text content into lines
+    const lines = data.split('\n');
 
-            if (timeLeft > 0) {
-                var days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-                var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    // Array to store parsed events
+    const events = [];
 
-                document.getElementById("countdown").textContent = "Time left: " + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
-            } else {
-                document.getElementById("countdown").textContent = "Event has already started!";
-                // Find the next upcoming event after this one
-                nextEventIndex++;
-                currentEvent = nextEventIndex < eventDates.length ? eventDates[nextEventIndex] : null;
-            }
+    // Regular expression to match date pattern (Month Day)
+    const dateRegex = /([a-zA-Z]+) (\d+) - (.+)/;
+
+    // Iterate over each line
+    lines.forEach(line => {
+        // Match date pattern in the line
+        const match = line.match(dateRegex);
+
+        // If date pattern is found
+        if (match) {
+            // Extract month, day, and event name
+            const month = match[1];
+            const day = match[2];
+            const eventName = match[3];
+
+            // Convert month abbreviation to full month name (assuming English)
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthIndex = monthNames.findIndex(name => name.startsWith(month));
+            const monthName = monthNames[monthIndex];
+
+            // Create date string in the format "YYYY-MM-DD"
+            const dateString = new Date().getFullYear() + '-' + (monthIndex + 1).toString().padStart(2, '0') + '-' + day.padStart(2, '0');
+
+            // Create Date object from the date string
+            const date = new Date(dateString);
+
+            // Push parsed event to the events array
+            events.push({ date, name: eventName });
         }
+    });
 
-        // Initial call to update countdown
-        updateCountdown();
+    // Output parsed events
+    console.log(events);
 
-        // Update countdown every second
-        setInterval(updateCountdown, 1000);
+    // Once events are parsed, you can integrate them into your existing code
+    // For example, you can update the eventDates array with the parsed events
+}
 
-        // Display the event details
-        if (currentEvent) {
-            document.getElementById("event-details").textContent = currentEvent.name;
-        } else {
-            document.getElementById("event-details").textContent = "No upcoming events";
-            document.getElementById("countdown").style.display = "none";
-        }
-
-        // Function to move to the previous event
-        function prevEvent() {
-            while (nextEventIndex > 0 && currentEvent.date < new Date()) {
-                nextEventIndex--;
-                currentEvent = eventDates[nextEventIndex];
-            }
-            if (nextEventIndex > 0) {
-                nextEventIndex--;
-                currentEvent = eventDates[nextEventIndex];
-                updateCountdown();
-                document.getElementById("event-details").textContent = currentEvent.name;
-            }
-        }
-
-        // Function to move to the next event
-        function nextEventFunction() {
-            while (nextEventIndex < eventDates.length - 1 && currentEvent.date < new Date()) {
-                nextEventIndex++;
-                currentEvent = eventDates[nextEventIndex];
-            }
-            if (nextEventIndex < eventDates.length - 1) {
-                nextEventIndex++;
-                currentEvent = eventDates[nextEventIndex];
-                updateCountdown();
-                document.getElementById("event-details").textContent = currentEvent.name;
-            }
-        }
+// Call function to read events from file
+readEventsFromFile();
     </script>
 </body>
 </html>
