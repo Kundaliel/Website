@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LHS Info Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .button {
+            background-color: lightgray;
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 0;
+            transition: background-color 0.3s;
+            box-shadow: 2.5px 3px black;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: darkgray;
+        }
+        .button:active {
+            transform: translate(2.5px, 3px);
+            box-shadow: 0px 0px;
+            background-color: dimgray;
+        }
+        footer {
+          bottom: 5px;
+          position: fixed;
+          margin: auto;
+          width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the LHS Info Page</h1>
+        <p>Stay updated with important events and deadlines!</p>
+    </header>
+
+    <main>
+        <section class="countdown-section">
+            <h2>School Countdown</h2>
+            <p>Counting down the days until the end of the school year!</p>
+            <div class="tooltip">
+                <span class="tooltiptext">Go to School Countdown</span>
+                <button class="button" onclick="location.href='./School-Countdown.html'">Go</button>
+            </div>
+        </section>
+
+        <section class="countdown-section">
+            <h2>Event Countdown</h2>
+            <p>Exciting events coming up! Don't miss out!</p>
+            <div class="tooltip">
+                <span class="tooltiptext">Go to Event Countdown</span>
+                <button class="button" onclick="location.href='./Event-Countdown.html'">Go</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 LHS Info Page. All rights reserved.</p>
+    </footer>
+</body>
+</html>
