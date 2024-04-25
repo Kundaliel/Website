@@ -5,34 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LHS Information Page</title>
     <style>
+        /* Color Variables */
+        :root {
+            --blue-haze: rgba(201, 201, 227, 1);
+            --navy-blue: rgba(4, 5, 116, 1);
+            --scampi: rgba(96, 96, 169, 1);
+            --wild-blue-yonder: rgba(132, 132, 189, 1);
+            --minsk: rgba(49, 49, 144, 1);
+            --chambray: rgba(60, 68, 156, 1);
+            --gigas: rgba(60, 60, 156, 1);
+        }
+
         /* CSS Styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f2f2f2;
+            background-color: var(--blue-haze);
         }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+      .container-2 {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 5px;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
         .header h1 {
-            color: #333;
+            color: var(--navy-blue);
         }
 
         .section {
             margin-bottom: 20px;
-            background-color: #fff;
+            background-color: var(--wild-blue-yonder);
             padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .button {
-            background-color: #007bff;
+            background-color: var(--minsk);
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -41,7 +61,7 @@
         }
 
         .button:hover {
-            background-color: #0056b3;
+            background-color: var(--chambray);
         }
 
         .tooltip {
@@ -52,7 +72,7 @@
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 120px;
-            background-color: #333;
+            background-color: var(--gigas);
             color: #fff;
             text-align: center;
             border-radius: 6px;
@@ -77,9 +97,9 @@
             left: 0;
             width: 100%;
             text-align: center;
-            padding: 10px;
-            background-color: #333;
-            color: #fff;
+            padding: 5px;
+            background-color: var(--navy-blue);
+            color: white;
         }
     </style>
 </head>
@@ -110,7 +130,7 @@
     </div>
 
     <footer class="footer">
-        <div class="container">
+        <div class="container-2">
             <p>&copy; 2024 LHS Information Page. All rights reserved.</p>
         </div>
     </footer>
