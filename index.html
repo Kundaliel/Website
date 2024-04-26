@@ -86,7 +86,7 @@
         }
 
         .footer {
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
@@ -95,7 +95,7 @@
             background-color: var(--navy-blue);
             color: white;
         }
-        
+
         .container-2 {
             width: 95%;
             max-width: 800px;
@@ -103,6 +103,13 @@
             padding: 5px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media screen and (max-height: 600px) {
+            .footer {
+                position: relative;
+                margin-top: 20px; /* Adjust as needed */
+            }
         }
     </style>
 </head>
