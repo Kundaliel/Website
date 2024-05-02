@@ -1,0 +1,66 @@
+.index {
+  background: #9c9c9c;
+}
+
+.cindex {
+  background: #8613a4;
+  background: linear-gradient(135deg, #8613a4, #6e0f8e);
+  color: orange;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.hindex {
+  background: #9A1622;
+  background: linear-gradient(135deg, #9A1622, #7d101b);
+  color: gold;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.sindex {
+  background: #980a0a;
+  background: linear-gradient(135deg, #980a0a, #7b0707);
+  color: white;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.chindex {
+  background: #944444;
+  background: linear-gradient(135deg, #944444, #7c3030);
+  color: rgb(0, 0, 0);
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+
+
+p {
+  color: black;
+}
+
+h1 {
+  font-weight: bold;
+  text-align: center;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  transition-duration: 0.5s;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin-bottom: 2px;
+  padding: 2px;
+  background-color: lightgray;
+}
+
+
+
+a:hover {
+  font-size: 17px;
+  color: white;
+  background-color: darkgray;
+}
