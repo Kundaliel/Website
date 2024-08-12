@@ -50,7 +50,7 @@
         const updateOutput = () => {
             const convertedText = convertText(inputText.value);
             const colorHex = colorPicker.value;
-            outputText.value = `&8[${colorHex}${convertedText}&8]`;
+            outputText.value = `&8[&${colorHex}${convertedText}&8]`;
         };
 
         inputText.addEventListener('input', updateOutput);
