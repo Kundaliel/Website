@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        input, textarea {
+            margin: 10px 0;
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+        }
+        textarea {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <input type="text" id="inputText" placeholder="Enter your text">
+    <input type="color" id="colorPicker" value="#000000">
+    <textarea id="outputText" readonly placeholder="Output will appear here"></textarea>
+
+    <script>
+        const inputText = document.getElementById('inputText');
+        const colorPicker = document.getElementById('colorPicker');
+        const outputText = document.getElementById('outputText');
+
+        const convertText = (text) => {
+            const map = {
+                'A': 'ᴀ', 'B': 'ʙ', 'C': 'ᴄ', 'D': 'ᴅ', 'E': 'ᴇ', 'F': 'ғ', 
+                'G': 'ɢ', 'H': 'ʜ', 'I': 'ɪ', 'J': 'ᴊ', 'K': 'ᴋ', 'L': 'ʟ', 
+                'M': 'ᴍ', 'N': 'ɴ', 'O': 'ᴏ', 'P': 'ᴘ', 'Q': 'ᴏ̨', 'R': 'ʀ', 
+                'S': 's', 'T': 'ᴛ', 'U': 'ᴜ', 'V': 'ᴠ', 'W': 'ᴡ', 'X': 'x', 
+                'Y': 'ʏ', 'Z': 'ᴢ'
+            };
+
+            return text.toUpperCase().split('').map(char => map[char] || char).join('');
+        };
+
+        const updateOutput = () => {
+            const convertedText = convertText(inputText.value);
+            const colorHex = colorPicker.value;
+            outputText.value = `&8[${colorHex}${convertedText}&8]`;
+        };
+
+        inputText.addEventListener('input', updateOutput);
+        colorPicker.addEventListener('input', updateOutput);
+    </script>
+
+</body>
+</html>
