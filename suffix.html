@@ -11,16 +11,23 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #2e2e2e; /* Dark gray background */
+            color: #e0e0e0; /* Light gray text */
         }
         input, textarea {
             margin: 10px 0;
             padding: 10px;
             width: 300px;
             font-size: 16px;
+            background-color: #3e3e3e; /* Medium gray for input fields */
+            color: #ffffff; /* White text inside input fields */
+            border: 1px solid #5e5e5e; /* Slightly darker gray border */
         }
         textarea {
             height: 100px;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #a0a0a0; /* Light gray for placeholders */
         }
     </style>
 </head>
