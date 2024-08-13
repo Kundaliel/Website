@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text List Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        body.dark-mode {
+            background-color: #343a40;
+            color: #e9ecef;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #input-container, #export-import-buttons {
+            margin-bottom: 20px;
+        }
+        #list {
+            margin-bottom: 20px;
+        }
+        .list-item {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #212529;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .list-item.dark-mode {
+            background-color: #495057;
+            border: 1px solid #6c757d;
+            color: #e9ecef;
+        }
+        .list-item span {
+            flex: 1;
+        }
+        .button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .button-edit {
+            background-color: #007bff;
+        }
+        .button-delete {
+            background-color: #dc3545;
+        }
+        .button-copy {
+            background-color: #28a745;
+        }
+        .button-dark-mode {
+            background-color: #6c757d;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        #dark-mode-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border: none;
+            color: #fff;
+            background-color: #6c757d;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        input, button {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="input-container">
+            <input type="text" id="display-text-input" placeholder="Enter display text" />
+            <input type="text" id="copy-text-input" placeholder="Enter copy text" />
+            <button class="button button-edit" onclick="addItem()">Add</button>
+        </div>
+
+        <div id="list"></div>
+
+        <div id="export-import-buttons" class="button-container">
+            <button class="button button-copy" onclick="exportItems()">Export JSON</button>
+            <input type="file" id="import-input" accept=".json" onchange="importItems(event)" />
+            <button class="button button-edit" onclick="document.getElementById('import-input').click()">Import JSON</button>
+        </div>
+    </div>
+
+    <button id="dark-mode-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme();
+            loadItems();
+        });
+
+        function addItem() {
+            const displayTextInput = document.getElementById('display-text-input');
+            const copyTextInput = document.getElementById('copy-text-input');
+            const displayText = displayTextInput.value.trim();
+            const copyText = copyTextInput.value.trim();
+
+            if (displayText && copyText) {
+                let items = JSON.parse(localStorage.getItem('items')) || [];
+                items.push({ displayText, copyText });
+                localStorage.setItem('items', JSON.stringify(items));
+                displayTextInput.value = '';
+                copyTextInput.value = '';
+                loadItems();
+            }
+        }
+
+        function loadItems() {
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            let items = JSON.parse(localStorage.getItem('items')) || [];
+            items.forEach((item, index) => {
+                const listItem = document.createElement('div');
+                listItem.className = 'list-item';
+                if (document.body.classList.contains('dark-mode')) {
+                    listItem.classList.add('dark-mode');
+                }
+                listItem.innerHTML = `
+                    <span>${item.displayText}</span>
+                    <button class="button button-copy" onclick="copyToClipboard('${item.copyText}')">Copy</button>
+                    <button class="button button-edit" onclick="editItem(${index}, '${item.displayText}', '${item.copyText}')">Edit</button>
+                    <button class="button button-delete" onclick="confirmDelete(${index})">Delete</button>
+                `;
+                list.appendChild(listItem);
+            });
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Text copied to clipboard!');
+            }, (err) => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        function editItem(index, currentDisplayText, currentCopyText) {
+            const newDisplayText = prompt('Edit display text:', currentDisplayText);
+            const newCopyText = prompt('Edit copy text:', currentCopyText);
+            if (newDisplayText !== null && newDisplayText.trim() !== '' && newCopyText !== null && newCopyText.trim() !== '') {
+                let items = JSON.parse(localStorage.getItem('items')) || [];
+                items[index] = { displayText: newDisplayText.trim(), copyText: newCopyText.trim() };
+                localStorage.setItem('items', JSON.stringify(items));
+                loadItems();
+            }
+        }
+
+        function confirmDelete(index) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                deleteItem(index);
+            }
+        }
+
+        function deleteItem(index) {
+            let items = JSON.parse(localStorage.getItem('items')) || [];
+            items.splice(index, 1);
+            localStorage.setItem('items', JSON.stringify(items));
+            loadItems();
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            loadItems();
+        }
+
+        function applyTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function exportItems() {
+            const items = localStorage.getItem('items');
+            if (items) {
+                const blob = new Blob([items], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'items.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                alert('No items to export.');
+            }
+        }
+
+        function importItems(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    try {
+                        const importedItems = JSON.parse(reader.result);
+                        if (Array.isArray(importedItems)) {
+                            localStorage.setItem('items', JSON.stringify(importedItems));
+                            loadItems();
+                        } else {
+                            alert('Invalid JSON format: Must be an array.');
+                        }
+                    } catch (e) {
+                        alert('Failed to parse JSON. The file might be corrupted or in an invalid format.');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+    </script>
+
+</body>
+</html>
