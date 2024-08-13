@@ -7,13 +7,13 @@
     <style>
         /* Color Variables */
         :root {
-            --blue-haze: rgba(201, 201, 227, 1);
-            --navy-blue: rgba(4, 5, 116, 1);
-            --scampi: rgba(96, 96, 169, 1);
-            --wild-blue-yonder: rgba(132, 132, 189, 1);
-            --minsk: rgba(49, 49, 144, 1);
-            --chambray: rgba(60, 68, 156, 1);
-            --gigas: rgba(60, 60, 156, 1);
+            --blue-haze: #c9c9e3;
+            --navy-blue: #040574;
+            --scampi: #6060a9;
+            --wild-blue-yonder: #8484bd;
+            --minsk: #313192;
+            --chambray: #3c448d;
+            --gigas: #3c3c9c;
         }
 
         /* CSS Styles */
@@ -22,27 +22,39 @@
             margin: 0;
             padding: 0;
             background-color: var(--blue-haze);
+            color: #333;
         }
 
         .container {
             width: 95%;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
 
         .header h1 {
             color: var(--navy-blue);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--scampi);
         }
 
         .section {
             margin-bottom: 20px;
             background-color: var(--wild-blue-yonder);
             padding: 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: var(--navy-blue);
         }
 
         .button {
@@ -52,6 +64,10 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1em;
+            text-align: center;
+            display: inline-block;
+            transition: background-color 0.3s;
         }
 
         .button:hover {
@@ -65,7 +81,7 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 120px;
+            width: 160px;
             background-color: var(--gigas);
             color: #fff;
             text-align: center;
@@ -73,9 +89,9 @@
             padding: 5px;
             position: absolute;
             z-index: 1;
-            top: 50%;
-            left: 225%;
-            transform: translate(-50%, -50%);
+            bottom: 125%; /* Position above the tooltip element */
+            left: 50%;
+            margin-left: -80px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -86,23 +102,14 @@
         }
 
         .footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
             text-align: center;
-            padding: 5px;
+            padding: 20px;
             background-color: var(--navy-blue);
-            color: white;
-        }
-
-        .container-2 {
-            width: 95%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 5px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
         }
 
         @media screen and (max-height: 600px) {
@@ -140,9 +147,7 @@
     </div>
 
     <footer class="footer">
-        <div class="container-2">
-            <p>&copy; 2024 LHS Information Page. All rights reserved.</p>
-        </div>
+        <p>&copy; 2024 LHS Information Page. All rights reserved.</p>
     </footer>
 </body>
 </html>
