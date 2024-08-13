@@ -3,151 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LHS Information Page</title>
     <style>
-        /* Color Variables */
-        :root {
-            --blue-haze: #c9c9e3;
-            --navy-blue: #040574;
-            --scampi: #6060a9;
-            --wild-blue-yonder: #8484bd;
-            --minsk: #313192;
-            --chambray: #3c448d;
-            --gigas: #3c3c9c;
-        }
-
-        /* CSS Styles */
-        body {
-            font-family: Arial, sans-serif;
+        /* Basic reset */
+        body, h1, ul, li {
             margin: 0;
             padding: 0;
-            background-color: var(--blue-haze);
+            box-sizing: border-box;
+        }
+
+        /* Global styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e0e5e8);
             color: #333;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            width: 95%;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-        }
-
-        .header h1 {
-            color: var(--navy-blue);
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1em;
-            color: var(--scampi);
-        }
-
-        .section {
-            margin-bottom: 20px;
-            background-color: var(--wild-blue-yonder);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .section h2 {
-            color: var(--navy-blue);
-        }
-
-        .button {
-            background-color: var(--minsk);
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            text-align: center;
-            display: inline-block;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: var(--chambray);
-        }
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 160px;
-            background-color: var(--gigas);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%; /* Position above the tooltip element */
-            left: 50%;
-            margin-left: -80px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background-color: var(--navy-blue);
-            color: #fff;
-            position: relative;
-            bottom: 0;
             width: 100%;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
         }
 
-        @media screen and (max-height: 600px) {
-            .footer {
-                position: relative;
-                margin-top: 20px; /* Adjust as needed */
-            }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-item {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item a {
+            display: block;
+            padding: 15px;
+            color: #333;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .menu-item a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .menu-item a::before {
+            content: '➤';
+            margin-right: 10px;
+            color: #007bff;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1>Welcome to the LHS Information Page</h1>
-            <p>Stay updated with important events and deadlines!</p>
-        </header>
-
-        <section class="section">
-            <h2>School Countdown</h2>
-            <p>Counting down the days until the end of the school year!</p>
-            <div class="tooltip">
-                <span class="tooltiptext">Go to School Countdown</span>
-                <button class="button" onclick="location.href='./School-Countdown.html'">Go</button>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2>Event Countdown</h2>
-            <p>Exciting events coming up! Don't miss out!</p>
-            <div class="tooltip">
-                <span class="tooltiptext">Go to Event Countdown</span>
-                <button class="button" onclick="location.href='./Event-Countdown.html'">Go</button>
-            </div>
-        </section>
+        <h1>Menu</h1>
+        <ul class="menu">
+            <li class="menu-item"><a href="./suffix.html">Suffix</a></li>
+            <li class="menu-item"><a href="./School-Countdown.html">School Countdown</a></li>
+            <li class="menu-item"><a href="./Event-Countdown.html">Event Countdown</a></li>
+            <li class="menu-item"><a href="./Dismos.html">Dismos</a></li>
+            <li class="menu-item"><a href="./Saves.html">Saves</a></li>
+        </ul>
     </div>
-
-    <footer class="footer">
-        <p>&copy; 2024 LHS Information Page. All rights reserved.</p>
-    </footer>
 </body>
 </html>
