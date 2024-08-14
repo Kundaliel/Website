@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            position: relative; /* Required for positioning the fullscreen button */
+        }
+        .block-info {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .details {
+            font-size: 20px;
+            color: #34495e;
+            margin-top: 10px;
+        }
+        .details span {
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            background: url('https://cdn-icons-png.flaticon.com/128/1549/1549457.png') no-repeat center center;
+            background-size: cover;
+            border: none;
+            cursor: pointer;
+            z-index: 1000; /* Ensure the button is on top of other elements */
+        }
+    </style>
+</head>
+<body>
+	<button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"></button>
+    <div class="container">
+        <div class="block-info" id="currentBlock">Loading...</div>
+        <div class="details" id="timeDetails"></div>
+        <div class="footer">
+            Block schedule updated dynamically based on current time.
+        </div>
+    </div>
+
+    <script>
+        function getCurrentBlock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            // Convert current time to minutes since midnight
+            const currentTime = hours * 60 + minutes;
+            
+            // Define block times in minutes since midnight
+            const blockTimes = [
+                {name: "1st Block", start: 8 * 60 + 40, end: 10 * 60 + 7},
+                {name: "2nd Block", start: 10 * 60 + 14, end: 11 * 60 + 41},
+                {name: "3rd Block & Lunch", start: 11 * 60 + 48, end: 14 * 60 + 8},
+                {name: "4th Block", start: 14 * 60 + 15, end: 15 * 60 + 45}
+            ];
+            
+            // Determine which block we're in and calculate times
+            for (const block of blockTimes) {
+                if (currentTime >= block.start && currentTime <= block.end) {
+                    const timeInBlock = currentTime - block.start;
+                    const timeRemaining = block.end - currentTime;
+                    return {
+                        name: block.name,
+                        timeInBlock,
+                        timeRemaining
+                    };
+                }
+            }
+            
+            // If not in any block
+            return {
+                name: "Outside of Block Schedule",
+                timeInBlock: null,
+                timeRemaining: null
+            };
+        }
+
+        function formatTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${hours}h ${mins}m`;
+        }
+
+        function updateBlockInfo() {
+            const blockInfo = getCurrentBlock();
+            const blockElement = document.getElementById('currentBlock');
+            const detailsElement = document.getElementById('timeDetails');
+
+            if (blockInfo.name === "Outside of Block Schedule") {
+                blockElement.textContent = blockInfo.name;
+                detailsElement.textContent = "";
+            } else {
+                blockElement.textContent = `Current Block: ${blockInfo.name}`;
+                detailsElement.innerHTML = `Time Elapsed: <span>${formatTime(blockInfo.timeInBlock)}</span> | Time Remaining: <span>${formatTime(blockInfo.timeRemaining)}</span>`;
+            }
+        }
+
+        // Update the block information on page load and every minute
+        updateBlockInfo();
+        setInterval(updateBlockInfo, 1000); // Update every 60 seconds
+
+        // Fullscreen button functionality
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
