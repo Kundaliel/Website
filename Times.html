@@ -53,10 +53,27 @@
             cursor: pointer;
             z-index: 1000; /* Ensure the button is on top of other elements */
         }
+        .peprally-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #2980b9;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            z-index: 1000;
+        }
+        .peprally-btn:hover {
+            background-color: #3498db;
+        }
     </style>
 </head>
 <body>
-	<button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"></button>
+    <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"></button>
     <div class="container">
         <div class="block-info" id="currentBlock">Loading...</div>
         <div class="details" id="timeDetails"></div>
@@ -64,6 +81,8 @@
             Block schedule updated dynamically based on current time.
         </div>
     </div>
+    
+    <a href="./peprallytimes.html" class="peprally-btn">Pep Rally Times</a>
 
     <script>
         function getCurrentBlock() {
