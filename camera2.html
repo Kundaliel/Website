@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Sorted Camera Feed</title>
+</head>
+<body>
+    <h1>Real-Time Sorted Camera Feed</h1>
+    <input type="number" id="numQuadrants" value="10" min="1" max="200">
+    <canvas id="imageCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const numQuadrantsInput = document.getElementById('numQuadrants');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                video.onloadedmetadata = function() {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    requestAnimationFrame(() => processFrame(video));
+                };
+            })
+            .catch(err => {
+                console.error("Error accessing camera: ", err);
+            });
+
+        function processFrame(video) {
+            const numQuadrants = parseInt(numQuadrantsInput.value, 10);
+            ctx.drawImage(video, 0, 0);
+
+            sortQuadrants(numQuadrants);
+
+            requestAnimationFrame(() => processFrame(video)); 
+        }
+
+        function sortQuadrants(numQuadrants) {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            const quadrantCount = numQuadrants;
+            const quadrantWidth = canvas.width / quadrantCount;
+            const quadrantHeight = canvas.height / quadrantCount;
+
+            for (let row = 0; row < quadrantCount; row++) {
+                for (let col = 0; col < quadrantCount; col++) {
+
+                    const startX = col * quadrantWidth;
+                    const startY = row * quadrantHeight;
+
+                    const quadrantImageData = ctx.getImageData(startX, startY, quadrantWidth, quadrantHeight);
+                    const quadrantPixels = quadrantImageData.data;
+
+                    let pixelArray = [];
+                    for (let i = 0; i < quadrantPixels.length; i += 4) {
+                        const r = quadrantPixels[i];
+                        const g = quadrantPixels[i + 1];
+                        const b = quadrantPixels[i + 2];
+                        const brightness = 0.2126 * r + 0.7152 * g + 0.0722 * b; 
+                        pixelArray.push({ r, g, b, brightness });
+                    }
+
+                    pixelArray.sort((a, b) => a.brightness - b.brightness);
+
+                    for (let i = 0; i < pixelArray.length; i++) {
+                        const index = i * 4;
+                        quadrantPixels[index] = pixelArray[i].r;
+                        quadrantPixels[index + 1] = pixelArray[i].g;
+                        quadrantPixels[index + 2] = pixelArray[i].b;
+                        quadrantPixels[index + 3] = 255; 
+                    }
+
+                    ctx.putImageData(quadrantImageData, startX, startY);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
