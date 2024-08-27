@@ -27,7 +27,7 @@
             padding: 0 10px;
         }
 
-        .top button {
+        .top input, .top button {
             height: 30px;
             margin: 0 5px;
             padding: 0 15px;
@@ -40,11 +40,51 @@
             display: flex;
             align-items: center;
             justify-content: center;
-	    transition-duration: 0.5s
+            transition-duration: 0.5s;
         }
 
         .top button:hover {
             border: 1px solid orange;
+        }
+
+        #saveList {
+            position: fixed;
+            top: 45px;
+            left: 0;
+            width: 100%;
+            background-color: #444;
+            overflow-y: auto;
+            max-height: calc(100vh - 45px);
+        }
+
+        .save-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #555;
+            align-items: center;
+            color: #fff;
+        }
+
+        .save-item input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .save-item button {
+            margin: 0 5px;
+            padding: 0 10px;
+            border: 1px solid gold;
+            background-color: rgba(48, 44, 44, 0);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .save-item button:hover {
+            border-color: orange;
         }
 
         #calculator {
@@ -56,40 +96,109 @@
 </head>
 <body>
     <div class="top">
-        <button id="saveButton">Save</button>
-        <button id="loadButton">Load</button>
-        <input type="file" id="fileInput" style="display: none;">
+        <input type="text" id="saveName" placeholder="Save Name">
+        <button id="createSaveButton">Save New</button>
     </div>
+    <div id="saveList"></div>
     <div id="calculator"></div>
     <script>
         var elt = document.getElementById('calculator');
         var calculator = Desmos.GraphingCalculator(elt);
-        document.getElementById('saveButton').addEventListener('click', function() {
-            var state = calculator.getState();
-            var blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'Dismos_Save.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-        document.getElementById('loadButton').addEventListener('click', function() {
-            document.getElementById('fileInput').click();
-        });
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            var file = event.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var state = JSON.parse(e.target.result);
-                    calculator.setState(state);
-                };
-                reader.readAsText(file);
+
+        function updateSaveList() {
+            var saveList = document.getElementById('saveList');
+            saveList.innerHTML = ''; // Clear the list
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key.startsWith('desmosState_')) {
+                    var saveName = key.replace('desmosState_', '');
+                    var saveItem = document.createElement('div');
+                    saveItem.className = 'save-item';
+
+                    var saveInput = document.createElement('input');
+                    saveInput.type = 'text';
+                    saveInput.value = saveName;
+                    saveItem.appendChild(saveInput);
+
+                    var loadButton = document.createElement('button');
+                    loadButton.textContent = 'Load';
+                    loadButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            var savedState = localStorage.getItem('desmosState_' + saveName);
+                            if (savedState) {
+                                calculator.setState(JSON.parse(savedState));
+                                alert('Loaded "' + saveName + '"');
+                            }
+                        };
+                    }(saveName));
+                    saveItem.appendChild(loadButton);
+
+                    var overrideButton = document.createElement('button');
+                    overrideButton.textContent = 'Override';
+                    overrideButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            var state = calculator.getState();
+                            localStorage.setItem('desmosState_' + saveName, JSON.stringify(state));
+                            alert('Overridden save "' + saveName + '"');
+                        };
+                    }(saveName));
+                    saveItem.appendChild(overrideButton);
+
+                    var deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            localStorage.removeItem('desmosState_' + saveName);
+                            alert('Deleted save "' + saveName + '"');
+                            updateSaveList();
+                        };
+                    }(saveName));
+                    saveItem.appendChild(deleteButton);
+
+                    var editButton = document.createElement('button');
+                    editButton.textContent = 'Rename';
+                    editButton.addEventListener('click', function(oldName, inputElement) {
+                        return function() {
+                            var newName = inputElement.value.trim();
+                            if (newName && newName !== oldName) {
+                                var savedState = localStorage.getItem('desmosState_' + oldName);
+                                localStorage.setItem('desmosState_' + newName, savedState);
+                                localStorage.removeItem('desmosState_' + oldName);
+                                alert('Renamed "' + oldName + '" to "' + newName + '"');
+                                updateSaveList();
+                            } else {
+                                alert('Invalid name or no change detected.');
+                            }
+                        };
+                    }(saveName, saveInput));
+                    saveItem.appendChild(editButton);
+
+                    saveList.appendChild(saveItem);
+                }
+            }
+        }
+
+        document.getElementById('createSaveButton').addEventListener('click', function() {
+            var saveName = document.getElementById('saveName').value.trim();
+            if (saveName) {
+                if (localStorage.getItem('desmosState_' + saveName)) {
+                    if (confirm('A save with this name already exists. Do you want to override it?')) {
+                        var state = calculator.getState();
+                        localStorage.setItem('desmosState_' + saveName, JSON.stringify(state));
+                        alert('Overridden save "' + saveName + '"');
+                    }
+                } else {
+                    var state = calculator.getState();
+                    localStorage.setItem('desmosState_' + saveName, JSON.stringify(state));
+                    alert('Saved as "' + saveName + '"');
+                }
+                updateSaveList();
+            } else {
+                alert('Please enter a name for the save.');
             }
         });
+
+        updateSaveList();  // Populate the list on page load
     </script>
 </body>
 </html>
