@@ -55,6 +55,7 @@
             background-color: #444;
             overflow-y: auto;
             max-height: calc(100vh - 45px);
+            display: none; /* Initially hidden */
         }
 
         .save-item {
@@ -98,6 +99,7 @@
     <div class="top">
         <input type="text" id="saveName" placeholder="Save Name">
         <button id="createSaveButton">Save New</button>
+        <button id="toggleSavesButton">Open Saves</button>
     </div>
     <div id="saveList"></div>
     <div id="calculator"></div>
@@ -195,6 +197,17 @@
                 updateSaveList();
             } else {
                 alert('Please enter a name for the save.');
+            }
+        });
+
+        document.getElementById('toggleSavesButton').addEventListener('click', function() {
+            var saveList = document.getElementById('saveList');
+            if (saveList.style.display === 'none' || saveList.style.display === '') {
+                saveList.style.display = 'block';
+                this.textContent = 'Close Saves';
+            } else {
+                saveList.style.display = 'none';
+                this.textContent = 'Open Saves';
             }
         });
 
