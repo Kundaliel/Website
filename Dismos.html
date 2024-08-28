@@ -1,28 +1,273 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-<meta charset=UTF-8>
-<link rel=icon href=Dismos_Images/favicon.ico type=image/x-icon>
-<meta name=viewport content="width=device-width, initial-scale=1.0">
-<title>Dismos</title>
-<script src="https://www.desmos.com/api/v1.9/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-<style>body,html{margin:0;padding:0;overflow:hidden;height:100%}.top{position:fixed;top:0;left:0;width:100%;height:45px;background-color:#302c2c;display:flex;align-items:center;z-index:1000;padding:0 10px}.top input,.top button,.top select{height:30px;margin:0 5px;padding:0 15px;color:#fff;background-color:rgba(48,44,44,0);border:1px solid gold;border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition-duration:.5s}.top button:hover,.top select:hover{border:1px solid orange}#saveList{position:fixed;top:45px;left:0;width:100%;background-color:#444;overflow-y:auto;max-height:calc(100vh - 45px);display:none}.save-item{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #555;align-items:center;color:#fff}.save-item input{background:transparent;border:0;color:#fff;flex:1;margin-right:10px}.save-item button{margin:0 5px;padding:0 10px;border:1px solid gold;background-color:rgba(48,44,44,0);border-radius:3px;cursor:pointer}.save-item button:hover{border-color:orange}#calculator{margin-top:45px;width:100vw;height:calc(100vh - 45px)}#fileInput{display:none}</style>
+    <meta charset="UTF-8">
+    <link rel="icon" href="Dismos_Images/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dismos</title>
+    <script src="https://www.desmos.com/api/v1.9/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45px;
+            background-color: #302c2c;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            padding: 0 10px;
+        }
+
+        .top input, .top button, .top select {
+            height: 30px;
+            margin: 0 5px;
+            padding: 0 15px;
+            color: #fff;
+            background-color: rgba(48, 44, 44, 0);
+            border: 1px solid gold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition-duration: 0.5s;
+        }
+
+        .top button:hover, .top select:hover {
+            border: 1px solid orange;
+        }
+
+        #saveList {
+            position: fixed;
+            top: 45px;
+            left: 0;
+            width: 100%;
+            background-color: #444;
+            overflow-y: auto;
+            max-height: calc(100vh - 45px);
+            display: none; 
+        }
+
+        .save-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #555;
+            align-items: center;
+            color: #fff;
+        }
+
+        .save-item input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .save-item button {
+            margin: 0 5px;
+            padding: 0 10px;
+            border: 1px solid gold;
+            background-color: rgba(48, 44, 44, 0);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .save-item button:hover {
+            border-color: orange;
+        }
+
+        #calculator {
+            margin-top: 45px;
+            width: 100vw;
+            height: calc(100vh - 45px);
+        }
+
+        #fileInput {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<div class=top>
-<input type=text id=saveName placeholder="Save Name">
-<button id=createSaveButton>Save New</button>
-<button id=loadSaveButton>Load Save</button>
-<select id=fileOptions>
-<option value disabled selected>File Options</option>
-<option value=saveToFile>Save to File</option>
-<option value=loadFromFile>Load from File</option>
-</select>
-<button id=toggleSavesButton>Open Saves</button>
-<input type=file id=fileInput accept=.json>
-</div>
-<div id=saveList></div>
-<div id=calculator></div>
-<script>var elt=document.getElementById("calculator");var calculator=Desmos.GraphingCalculator(elt);function updateSaveList(){var c=document.getElementById("saveList");c.innerHTML="";for(var b=0;b<localStorage.length;b++){var h=localStorage.key(b);if(h.startsWith("desmosState_")){var j=h.replace("desmosState_","");var g=document.createElement("div");g.className="save-item";var k=document.createElement("input");k.type="text";k.value=j;g.appendChild(k);var f=document.createElement("button");f.textContent="Load";f.addEventListener("click",function(i){return function(){var l=localStorage.getItem("desmosState_"+i);if(l){calculator.setState(JSON.parse(l));alert('Loaded "'+i+'"')}}}(j));g.appendChild(f);var d=document.createElement("button");d.textContent="Override";d.addEventListener("click",function(i){return function(){var l=calculator.getState();localStorage.setItem("desmosState_"+i,JSON.stringify(l));alert('Overridden save "'+i+'"')}}(j));g.appendChild(d);var e=document.createElement("button");e.textContent="Delete";e.addEventListener("click",function(i){return function(){localStorage.removeItem("desmosState_"+i);alert('Deleted save "'+i+'"');updateSaveList()}}(j));g.appendChild(e);var a=document.createElement("button");a.textContent="Rename";a.addEventListener("click",function(i,l){return function(){var m=l.value.trim();if(m&&m!==i){var n=localStorage.getItem("desmosState_"+i);localStorage.setItem("desmosState_"+m,n);localStorage.removeItem("desmosState_"+i);alert('Renamed "'+i+'" to "'+m+'"');updateSaveList()}else{alert("Invalid name or no change detected.")}}}(j,k));g.appendChild(a);c.appendChild(g)}}}document.getElementById("createSaveButton").addEventListener("click",function(){var b=document.getElementById("saveName").value.trim();if(b){if(localStorage.getItem("desmosState_"+b)){if(confirm("A save with this name already exists. Do you want to override it?")){var a=calculator.getState();localStorage.setItem("desmosState_"+b,JSON.stringify(a));alert('Overridden save "'+b+'"')}}else{var a=calculator.getState();localStorage.setItem("desmosState_"+b,JSON.stringify(a));alert('Saved as "'+b+'"')}updateSaveList()}else{alert("Please enter a name for the save.")}});document.getElementById("loadSaveButton").addEventListener("click",function(){var b=document.getElementById("saveName").value.trim();if(b){var a=localStorage.getItem("desmosState_"+b);if(a){calculator.setState(JSON.parse(a));alert('Loaded "'+b+'"')}else{alert('No save found with the name "'+b+'"')}}else{alert("Please enter a name to load.")}});document.getElementById("toggleSavesButton").addEventListener("click",function(){var a=document.getElementById("saveList");if(a.style.display==="none"||a.style.display===""){a.style.display="block";this.textContent="Close Saves"}else{a.style.display="none";this.textContent="Open Saves"}});document.getElementById("fileOptions").addEventListener("change",function(){var d=this.value;if(d==="saveToFile"){var e=calculator.getState();var c=new Blob([JSON.stringify(e)],{type:"application/json"});var b=document.createElement("a");b.href=URL.createObjectURL(c);b.download="desmosState.json";document.body.appendChild(b);b.click();document.body.removeChild(b)}else{if(d==="loadFromFile"){document.getElementById("fileInput").click()}}this.value=""});document.getElementById("fileInput").addEventListener("change",function(c){var b=c.target.files[0];if(b){var a=new FileReader();a.onload=function(f){var d=JSON.parse(f.target.result);calculator.setState(d);alert("Loaded state from file.")};a.readAsText(b)}});updateSaveList();</script>
+    <div class="top">
+        <input type="text" id="saveName" placeholder="Save Name">
+        <button id="createSaveButton">Save New</button>
+        <button id="loadSaveButton">Load Save</button>
+        <select id="fileOptions">
+            <option value="" disabled selected>File Options</option>
+            <option value="saveToFile">Save to File</option>
+            <option value="loadFromFile">Load from File</option>
+        </select>
+        <button id="toggleSavesButton">Open Saves</button>
+        <input type="file" id="fileInput" accept=".json">
+    </div>
+    <div id="saveList"></div>
+    <div id="calculator"></div>
+    <script>
+        var elt = document.getElementById('calculator');
+        var calculator = Desmos.GraphingCalculator(elt);
+
+        function updateSaveList() {
+            var saveList = document.getElementById('saveList');
+            saveList.innerHTML = ''; 
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key.startsWith('desmosState_')) {
+                    var saveName = key.replace('desmosState_', '');
+                    var saveItem = document.createElement('div');
+                    saveItem.className = 'save-item';
+
+                    var saveInput = document.createElement('input');
+                    saveInput.type = 'text';
+                    saveInput.value = saveName;
+                    saveItem.appendChild(saveInput);
+
+                    var loadButton = document.createElement('button');
+                    loadButton.textContent = 'Load';
+                    loadButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            var savedState = localStorage.getItem('desmosState_' + saveName);
+                            if (savedState) {
+                                calculator.setState(JSON.parse(savedState));
+                                alert('Loaded "' + saveName + '"');
+                            }
+                        };
+                    }(saveName));
+                    saveItem.appendChild(loadButton);
+
+                    var overrideButton = document.createElement('button');
+                    overrideButton.textContent = 'Override';
+                    overrideButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            var state = calculator.getState();
+                            localStorage.setItem('desmosState_' + saveName, JSON.stringify(state));
+                            alert('Overridden save "' + saveName + '"');
+                        };
+                    }(saveName));
+                    saveItem.appendChild(overrideButton);
+
+                    var deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            localStorage.removeItem('desmosState_' + saveName);
+                            alert('Deleted save "' + saveName + '"');
+                            updateSaveList();
+                        };
+                    }(saveName));
+                    saveItem.appendChild(deleteButton);
+
+                    var editButton = document.createElement('button');
+                    editButton.textContent = 'Rename';
+                    editButton.addEventListener('click', function(oldName, inputElement) {
+                        return function() {
+                            var newName = inputElement.value.trim();
+                            if (newName && newName !== oldName) {
+                                var savedState = localStorage.getItem('desmosState_' + oldName);
+                                localStorage.setItem('desmosState_' + newName, savedState);
+                                localStorage.removeItem('desmosState_' + oldName);
+                                alert('Renamed "' + oldName + '" to "' + newName + '"');
+                                updateSaveList();
+                            } else {
+                                alert('Invalid name or no change detected.');
+                            }
+                        };
+                    }(saveName, saveInput));
+                    saveItem.appendChild(editButton);
+
+                    saveList.appendChild(saveItem);
+                }
+            }
+        }
+
+        document.getElementById('createSaveButton').addEventListener('click', function() {
+            var saveName = document.getElementById('saveName').value.trim();
+            if (saveName) {
+                if (localStorage.getItem('desmosState_' + saveName)) {
+                    if (confirm('A save with this name already exists. Do you want to override it?')) {
+                        var state = calculator.getState();
+                        localStorage.setItem('desmosState_' + saveName, JSON.stringify(state));
+                        alert('Overridden save "' + saveName + '"');
+                    }
+                } else {
+                    var state = calculator.getState();
+                    localStorage.setItem('desmosState_' + saveName, JSON.stringify(state));
+                    alert('Saved as "' + saveName + '"');
+                }
+                updateSaveList();
+            } else {
+                alert('Please enter a name for the save.');
+            }
+        });
+
+        document.getElementById('loadSaveButton').addEventListener('click', function() {
+            var saveName = document.getElementById('saveName').value.trim();
+            if (saveName) {
+                var savedState = localStorage.getItem('desmosState_' + saveName);
+                if (savedState) {
+                    calculator.setState(JSON.parse(savedState));
+                    alert('Loaded "' + saveName + '"');
+                } else {
+                    alert('No save found with the name "' + saveName + '"');
+                }
+            } else {
+                alert('Please enter a name to load.');
+            }
+        });
+
+        document.getElementById('toggleSavesButton').addEventListener('click', function() {
+            var saveList = document.getElementById('saveList');
+            if (saveList.style.display === 'none' || saveList.style.display === '') {
+                saveList.style.display = 'block';
+                this.textContent = 'Close Saves';
+            } else {
+                saveList.style.display = 'none';
+                this.textContent = 'Open Saves';
+            }
+        });
+
+        document.getElementById('fileOptions').addEventListener('change', function() {
+            var option = this.value;
+            if (option === 'saveToFile') {
+                var state = calculator.getState();
+                var blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'desmosState.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else if (option === 'loadFromFile') {
+                document.getElementById('fileInput').click();
+            }
+            this.value = ''; 
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var state = JSON.parse(e.target.result);
+                    calculator.setState(state);
+                    alert('Loaded state from file.');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        updateSaveList(); 
+    </script>
 </body>
 </html>
