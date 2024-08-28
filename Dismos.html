@@ -99,6 +99,7 @@
     <div class="top">
         <input type="text" id="saveName" placeholder="Save Name">
         <button id="createSaveButton">Save New</button>
+        <button id="loadSaveButton">Load Save</button>
         <button id="toggleSavesButton">Open Saves</button>
     </div>
     <div id="saveList"></div>
@@ -197,6 +198,21 @@
                 updateSaveList();
             } else {
                 alert('Please enter a name for the save.');
+            }
+        });
+
+        document.getElementById('loadSaveButton').addEventListener('click', function() {
+            var saveName = document.getElementById('saveName').value.trim();
+            if (saveName) {
+                var savedState = localStorage.getItem('desmosState_' + saveName);
+                if (savedState) {
+                    calculator.setState(JSON.parse(savedState));
+                    alert('Loaded "' + saveName + '"');
+                } else {
+                    alert('No save found with the name "' + saveName + '"');
+                }
+            } else {
+                alert('Please enter a name to load.');
             }
         });
 
