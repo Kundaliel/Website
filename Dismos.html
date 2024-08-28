@@ -27,7 +27,7 @@
             padding: 0 10px;
         }
 
-        .top input, .top button {
+        .top input, .top button, .top select {
             height: 30px;
             margin: 0 5px;
             padding: 0 15px;
@@ -43,7 +43,7 @@
             transition-duration: 0.5s;
         }
 
-        .top button:hover {
+        .top button:hover, .top select:hover {
             border: 1px solid orange;
         }
 
@@ -55,7 +55,7 @@
             background-color: #444;
             overflow-y: auto;
             max-height: calc(100vh - 45px);
-            display: none; /* Initially hidden */
+            display: none; 
         }
 
         .save-item {
@@ -93,6 +93,10 @@
             width: 100vw;
             height: calc(100vh - 45px);
         }
+
+        #fileInput {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +104,13 @@
         <input type="text" id="saveName" placeholder="Save Name">
         <button id="createSaveButton">Save New</button>
         <button id="loadSaveButton">Load Save</button>
+        <select id="fileOptions">
+            <option value="" disabled selected>File Options</option>
+            <option value="saveToFile">Save to File</option>
+            <option value="loadFromFile">Load from File</option>
+        </select>
         <button id="toggleSavesButton">Open Saves</button>
+        <input type="file" id="fileInput" accept=".json">
     </div>
     <div id="saveList"></div>
     <div id="calculator"></div>
@@ -110,7 +120,7 @@
 
         function updateSaveList() {
             var saveList = document.getElementById('saveList');
-            saveList.innerHTML = ''; // Clear the list
+            saveList.innerHTML = ''; 
             for (var i = 0; i < localStorage.length; i++) {
                 var key = localStorage.key(i);
                 if (key.startsWith('desmosState_')) {
@@ -227,7 +237,37 @@
             }
         });
 
-        updateSaveList();  // Populate the list on page load
+        document.getElementById('fileOptions').addEventListener('change', function() {
+            var option = this.value;
+            if (option === 'saveToFile') {
+                var state = calculator.getState();
+                var blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'desmosState.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else if (option === 'loadFromFile') {
+                document.getElementById('fileInput').click();
+            }
+            this.value = ''; 
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var state = JSON.parse(e.target.result);
+                    calculator.setState(state);
+                    alert('Loaded state from file.');
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        updateSaveList(); 
     </script>
 </body>
 </html>
