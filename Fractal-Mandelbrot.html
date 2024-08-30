@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractal - Mandelbrot</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #returnButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #e0e0e0;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mandelbrotCanvas"></canvas>
+    <button id="returnButton">Return</button>
+    <script>
+        const canvas = document.getElementById('mandelbrotCanvas');
+        const ctx = canvas.getContext('2d');
+        const returnButton = document.getElementById('returnButton');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        let zoom = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+
+        function mandelbrot(x, y) {
+            let real = x;
+            let imag = y;
+            let n = 0;
+            while (n < 100) {
+                let real2 = real * real;
+                let imag2 = imag * imag;
+                if (real2 + imag2 > 4) break;
+                imag = 2 * real * imag + y;
+                real = real2 - imag2 + x;
+                n++;
+            }
+            return n;
+        }
+
+        function draw() {
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    let real = (x - width / 2) / (0.5 * zoom * width) + offsetX;
+                    let imag = (y - height / 2) / (0.5 * zoom * height) + offsetY;
+                    let n = mandelbrot(real, imag);
+                    let color = n === 100 ? 0 : n * 255 / 100;
+                    let index = (x + y * width) * 4;
+                    data[index] = color;
+                    data[index + 1] = color;
+                    data[index + 2] = color;
+                    data[index + 3] = 255;
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function onMouseWheel(event) {
+            event.preventDefault();
+            const zoomFactor = 1.1;
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+
+            const normalizedX = (mouseX - width / 2) / (0.5 * zoom * width) + offsetX;
+            const normalizedY = (mouseY - height / 2) / (0.5 * zoom * height) + offsetY;
+
+            if (event.deltaY < 0) {
+                zoom *= zoomFactor;
+            } else {
+                zoom /= zoomFactor;
+            }
+
+            offsetX = normalizedX - (mouseX - width / 2) / (0.5 * zoom * width);
+            offsetY = normalizedY - (mouseY - height / 2) / (0.5 * zoom * height);
+
+            draw();
+        }
+
+        function onMouseDown(event) {
+            startX = event.clientX;
+            startY = event.clientY;
+            isDragging = true;
+        }
+
+        function onMouseMove(event) {
+            if (isDragging) {
+                const dx = (event.clientX - startX) / width;
+                const dy = (event.clientY - startY) / height;
+                offsetX -= dx / zoom;
+                offsetY -= dy / zoom;
+                startX = event.clientX;
+                startY = event.clientY;
+                draw();
+            }
+        }
+
+        function onMouseUp() {
+            isDragging = false;
+        }
+
+        function animateResetView(duration) {
+            const startZoom = zoom;
+            const startOffsetX = offsetX;
+            const startOffsetY = offsetY;
+            const targetZoom = 1;
+            const targetOffsetX = 0;
+            const targetOffsetY = 0;
+            const startTime = performance.now();
+
+            function animationLoop(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = progress * (2 - progress);
+
+                zoom = startZoom + (targetZoom - startZoom) * easedProgress;
+                offsetX = startOffsetX + (targetOffsetX - startOffsetX) * easedProgress;
+                offsetY = startOffsetY + (targetOffsetY - startOffsetY) * easedProgress;
+
+                draw();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animationLoop);
+                }
+            }
+
+            requestAnimationFrame(animationLoop);
+        }
+
+        function resetView() {
+            animateResetView(1000);
+        }
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            draw();
+        }
+
+        canvas.addEventListener('wheel', onMouseWheel);
+        canvas.addEventListener('mousedown', onMouseDown);
+        canvas.addEventListener('mousemove', onMouseMove);
+        canvas.addEventListener('mouseup', onMouseUp);
+        returnButton.addEventListener('click', resetView);
+        window.addEventListener('resize', resizeCanvas);
+
+        draw();
+    </script>
+</body>
+</html>
