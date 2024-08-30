@@ -6,7 +6,12 @@
     <title>Fractal - Mandelbrot</title>
     <style>
         body { margin: 0; }
-        canvas { display: block; }
+        canvas {
+            display: block;
+            width: 800px; 
+            height: 600px; 
+            background-color: #000; 
+        }
         #returnButton {
             position: absolute;
             top: 10px;
@@ -18,18 +23,20 @@
             border-radius: 5px;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1; 
         }
     </style>
 </head>
 <body>
     <canvas id="mandelbrotCanvas"></canvas>
-    <button id="returnButton">Return</button>
+    <button id="returnButton" aria-label="Reset View">Return</button>
     <script>
         const canvas = document.getElementById('mandelbrotCanvas');
         const ctx = canvas.getContext('2d');
         const returnButton = document.getElementById('returnButton');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+
+        let width = canvas.width = 800; 
+        let height = canvas.height = 600; 
 
         let zoom = 1;
         let offsetX = 0;
@@ -149,18 +156,11 @@
             animateResetView(1000);
         }
 
-        function resizeCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            draw();
-        }
-
         canvas.addEventListener('wheel', onMouseWheel);
         canvas.addEventListener('mousedown', onMouseDown);
         canvas.addEventListener('mousemove', onMouseMove);
         canvas.addEventListener('mouseup', onMouseUp);
         returnButton.addEventListener('click', resetView);
-        window.addEventListener('resize', resizeCanvas);
 
         draw();
     </script>
