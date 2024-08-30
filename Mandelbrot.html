@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fractal - Mandelbrot</title>
     <style>
-        body { margin: 0; }
-        canvas {
-            display: block;
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        #canvasContainer {
+            position: relative;
             width: 800px; 
-            height: 600px; 
-            background-color: #000; 
+            height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            background-color: #000;
+            border: 2px solid #fff; 
         }
         #returnButton {
             position: absolute;
@@ -23,20 +36,25 @@
             border-radius: 5px;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            z-index: 1; 
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-    <canvas id="mandelbrotCanvas"></canvas>
-    <button id="returnButton" aria-label="Reset View">Return</button>
+    <div id="canvasContainer">
+        <canvas id="mandelbrotCanvas"></canvas>
+        <button id="returnButton" aria-label="Reset View">Return</button>
+    </div>
     <script>
         const canvas = document.getElementById('mandelbrotCanvas');
         const ctx = canvas.getContext('2d');
         const returnButton = document.getElementById('returnButton');
 
-        let width = canvas.width = 800; 
-        let height = canvas.height = 600; 
+        function resizeCanvas() {
+            canvas.width = 800; 
+            canvas.height = window.innerHeight; 
+            draw();
+        }
 
         let zoom = 1;
         let offsetX = 0;
@@ -61,6 +79,8 @@
         }
 
         function draw() {
+            const width = canvas.width;
+            const height = canvas.height;
             const imageData = ctx.createImageData(width, height);
             const data = imageData.data;
 
@@ -84,11 +104,11 @@
         function onMouseWheel(event) {
             event.preventDefault();
             const zoomFactor = 1.1;
-            const mouseX = event.clientX;
-            const mouseY = event.clientY;
+            const mouseX = event.clientX - canvas.getBoundingClientRect().left;
+            const mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
-            const normalizedX = (mouseX - width / 2) / (0.5 * zoom * width) + offsetX;
-            const normalizedY = (mouseY - height / 2) / (0.5 * zoom * height) + offsetY;
+            const normalizedX = (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width) + offsetX;
+            const normalizedY = (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height) + offsetY;
 
             if (event.deltaY < 0) {
                 zoom *= zoomFactor;
@@ -96,8 +116,8 @@
                 zoom /= zoomFactor;
             }
 
-            offsetX = normalizedX - (mouseX - width / 2) / (0.5 * zoom * width);
-            offsetY = normalizedY - (mouseY - height / 2) / (0.5 * zoom * height);
+            offsetX = normalizedX - (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width);
+            offsetY = normalizedY - (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height);
 
             draw();
         }
@@ -110,8 +130,8 @@
 
         function onMouseMove(event) {
             if (isDragging) {
-                const dx = (event.clientX - startX) / width;
-                const dy = (event.clientY - startY) / height;
+                const dx = (event.clientX - startX) / canvas.width;
+                const dy = (event.clientY - startY) / canvas.height;
                 offsetX -= dx / zoom;
                 offsetY -= dy / zoom;
                 startX = event.clientX;
@@ -156,13 +176,14 @@
             animateResetView(1000);
         }
 
+        window.addEventListener('resize', resizeCanvas);
         canvas.addEventListener('wheel', onMouseWheel);
         canvas.addEventListener('mousedown', onMouseDown);
         canvas.addEventListener('mousemove', onMouseMove);
         canvas.addEventListener('mouseup', onMouseUp);
         returnButton.addEventListener('click', resetView);
 
-        draw();
+        resizeCanvas();
     </script>
 </body>
 </html>
