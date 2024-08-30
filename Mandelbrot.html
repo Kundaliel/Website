@@ -15,8 +15,6 @@
         }
         #canvasContainer {
             position: relative;
-            width: 800px; 
-            height: 100vh; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -51,8 +49,9 @@
         const returnButton = document.getElementById('returnButton');
 
         function resizeCanvas() {
-            canvas.width = 800; 
-            canvas.height = window.innerHeight; 
+            const height = window.innerHeight;
+            canvas.height = height;
+            canvas.width = height * 1.333333333333333; 
             draw();
         }
 
