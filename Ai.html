@@ -79,7 +79,7 @@
             const genAI = new GoogleGenerativeAI(API_KEY);
             const model = genAI.getGenerativeModel({ 
                 model: "gemini-1.5-flash",
-                systemInstruction: "You only have access to plain text. Avoid formatting such as '*bold*' or '**text**'. When performing mathematical calculations or working through equations, show your steps clearly. Do not provide explanations unless the user requests them. Refrain from including 'bot:' in your messages."
+                systemInstruction: "You only have access to plain text. Avoid formatting such as '*bold*' or '**text**'. When performing mathematical calculations or working through equations, show your steps clearly. Do not provide explanations unless the user requests them. Refrain from including 'bot:' in your messages. Accept complements and when people tell you good job"
             });
 
             // Maintain a history of messages
