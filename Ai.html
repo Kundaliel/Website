@@ -123,7 +123,7 @@
             if (response.startsWith("bot:")) {
                 response = response.substring(4).trim(); // Remove "bot:" and trim whitespace
             }
-            typeEffect(response, 50); // Call typing effect with a delay of 50ms
+            typeEffect(response, 0); // Call typing effect with a delay of 50ms
         }
 
         userPrompt.addEventListener("keypress", (event) => {
