@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding AI</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 600px;
+        margin: auto;
+        background-color: #2e2e2e;
+        color: #f0f0f0;
+        filter: grayscale(100%);
+    }
+    #responseBox {
+        border: 1px solid #555;
+        padding: 15px;
+        margin-top: 10px;
+        background-color: #3e3e3e;
+        min-height: 50vh;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        box-sizing: border-box;
+        overflow-y: auto;
+        max-height: 50vh;
+        position: relative;
+        padding-top: 40px;
+    }
+    #headerBox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #444;
+        color: #f0f0f0;
+        text-align: center;
+        padding: 5px;
+        border-bottom: 1px solid #555;
+        border-radius: 5px 5px 0 0;
+    }
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border: 1px solid #777;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: #4e4e4e;
+        color: #f0f0f0;
+        box-sizing: border-box;
+    }
+    input:focus {
+        border-color: #aaa;
+        outline: none;
+        background-color: #5e5e5e;
+    }
+    @media (max-width: 600px) {
+        body {
+            padding: 10px;
+        }
+        input {
+            font-size: 14px;
+        }
+    }
+    #copyButton {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #666;
+        color: #f0f0f0;
+        cursor: pointer;
+        margin-top: 10px;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+    #copyButton:hover {
+        background-color: #888;
+    }
+</style>
+    <script type="importmap">
+    {
+        "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="responseBox">
+        <div id="headerBox"></div>
+        <div id="responseText"></div>
+        <button id="copyButton">Copy</button>
+    </div>
+    <input type="text" id="userPrompt" placeholder="Enter your request here" />
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+        const API_KEY = "AIzaSyBgd3e0SEi-NY9LeD495N6SS3tmeSVxMf8";
+        const responseBox = document.getElementById("responseBox");
+        const responseText = document.getElementById("responseText");
+        const headerBox = document.getElementById("headerBox");
+        const userPrompt = document.getElementById("userPrompt");
+        const copyButton = document.getElementById("copyButton");
+        let messageHistory = [];
+        async function generateContent(prompt) {
+            const genAI = new GoogleGenerativeAI(API_KEY);
+            const model = genAI.getGenerativeModel({
+                model: "gemini-1.5-flash",
+                systemInstruction: "You are an AI. Your job is to Generate code. The human is counting on you to generate code for them without any comments or explanation. They will say what they want the code to be about, then the code language, do not respond to any messages that aren’t about code. you are typing in plain text, so you cant use code windows so just type it without the ````"
+            });
+            messageHistory.push({ role: "user", content: prompt });
+            if (messageHistory.length > 20) {
+                messageHistory.shift();
+            }
+            const context = messageHistory.map(msg => `${msg.role}: ${msg.content}`);
+            try {
+                const result = await model.generateContent(context);
+                const response = result.response.text();
+                messageHistory.push({ role: "bot", content: response });
+                updateResponseBox(response);
+            } catch (error) {
+                responseText.textContent = "Error generating content: " + error.message;
+            }
+        }
+        function updateResponseBox(response) {
+            const languageRegex = /^```(python|css|html|javascript)/;
+            const matches = response.match(languageRegex);
+            if (matches) {
+                headerBox.textContent = matches[1].toUpperCase();
+                response = response.replace(languageRegex, "").replace(/```$/, "").trim();
+            } else {
+                headerBox.textContent = "";
+            }
+            responseText.textContent = response.startsWith("bot:") ? response.substring(4).trim() : response;
+        }
+        copyButton.addEventListener("click", () => {
+            let text = responseText.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copyButton.textContent = "Copied!";
+                setTimeout(() => {
+                    copyButton.textContent = "Copy";
+                }, 1000);
+            });
+        });
+        userPrompt.addEventListener("keypress", event => {
+            if (event.key === "Enter") {
+                const prompt = userPrompt.value.trim();
+                if (prompt) {
+                    generateContent(prompt);
+                    userPrompt.value = "";
+                } else {
+                    responseText.textContent = "Please enter a prompt.";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
