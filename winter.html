@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Winter Break Countdown</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #87CEEB, #1E4D8C);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #countdown {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        #title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .time-block {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 100px;
+        }
+        .time-unit {
+            font-size: 3em;
+            font-weight: bold;
+            display: block;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .time-label {
+            font-size: 1em;
+            color: #e0e0e0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown">
+        <h1 id="title">Winter Break Countdown</h1>
+        <div class="timer-container">
+            <div class="time-block">
+                <span id="days" class="time-unit">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-block">
+                <span id="hours" class="time-unit">00</span>
+                <span class="time-label">Hours</span>
+            </div>
+            <div class="time-block">
+                <span id="minutes" class="time-unit">00</span>
+                <span class="time-label">Minutes</span>
+            </div>
+            <div class="time-block">
+                <span id="seconds" class="time-unit">00</span>
+                <span class="time-label">Seconds</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            // Create the target date in GMT-5 time zone
+            const targetDate = new Date('December 20, 2024 12:45:00 GMT-0500');
+            const now = new Date();
+            
+            // Ensure the time is calculated in GMT-5
+            const timeLeft = targetDate.getTime() - now.getTime();
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        // Snowfall effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            
+            const size = Math.random() * 3 + 1;
+            snowflake.style.width = `${size}px`;
+            snowflake.style.height = `${size}px`;
+            
+            snowflake.style.left = `${Math.random() * window.innerWidth}px`;
+            snowflake.style.top = '-10px';
+            
+            document.body.appendChild(snowflake);
+
+            const animationDuration = Math.random() * 10 + 5;
+            snowflake.style.animation = `fall ${animationDuration}s linear infinite`;
+
+            // Remove snowflake after animation
+            setTimeout(() => {
+                document.body.removeChild(snowflake);
+            }, animationDuration * 1000);
+        }
+
+        // Add CSS for snowflake animation
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // Update countdown immediately and then every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Create snowflakes periodically
+        setInterval(createSnowflake, 200);
+    </script>
+</body>
+</html>
