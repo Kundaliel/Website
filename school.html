@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is Kundaliel In School?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        #status {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <p id="status"></p>
+
+    <script>
+        function checkSchoolTime() {
+            const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+            const day = now.getDay();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+
+            const schoolStart = 7 * 60 + 45;
+            const schoolEnd = 16 * 60 + 10;
+            const currentTime = hours * 60 + minutes;
+
+            let status = "Not in School";
+
+            if (day >= 1 && day <= 5) {
+                if (currentTime >= schoolStart && currentTime <= schoolEnd) {
+                    status = "In School";
+                }
+            }
+
+            document.getElementById("status").innerText = status;
+        }
+
+        checkSchoolTime();
+    </script>
+</body>
+</html>
