@@ -34,6 +34,11 @@
         .details span {
             font-weight: bold;
         }
+        .time-display {
+            font-size: 22px;
+            color: #2980b9;
+            margin-top: 20px;
+        }
         .fullscreen-btn {
             position: fixed;
             top: 10px;
@@ -53,6 +58,7 @@
     <div class="container">
         <div class="block-info" id="currentBlock">Loading...</div>
         <div class="details" id="timeDetails"></div>
+        <div class="time-display" id="currentTime">Current Time: Loading...</div>
     </div>
 
     <script>
@@ -107,8 +113,22 @@
             }
         }
 
+        function updateCurrentTime() {
+            const currentTimeElement = document.getElementById('currentTime');
+            const now = getGMT5Date();
+            const formattedTime = now.toLocaleTimeString("en-US", {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            currentTimeElement.textContent = `Current Time: ${formattedTime}`;
+        }
+
         updateBlockInfo();
+        updateCurrentTime();
         setInterval(updateBlockInfo, 0);
+        setInterval(updateCurrentTime, 0);
 
         document.getElementById('fullscreenBtn').addEventListener('click', () => {
             if (!document.fullscreenElement) {
