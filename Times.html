@@ -21,7 +21,7 @@
             background-color: #ffffff;
             border-radius: 8px;
             border: 1px solid #ddd;
-            position: relative; /* Required for positioning the fullscreen button */
+            position: relative;
         }
         .block-info {
             font-size: 26px;
@@ -51,7 +51,7 @@
             background-size: cover;
             border: none;
             cursor: pointer;
-            z-index: 1000; /* Ensure the button is on top of other elements */
+            z-index: 1000;
         }
         .peprally-btn {
             position: fixed;
@@ -67,9 +67,6 @@
             text-decoration: none;
             z-index: 1000;
         }
-        .peprally-btn:hover {
-            background-color: #3498db;
-        }
     </style>
 </head>
 <body>
@@ -81,27 +78,19 @@
             Block schedule updated dynamically based on current time.
         </div>
     </div>
-    
-    <a href="./peprallytimes.html" class="peprally-btn">Pep Rally Times</a>
 
     <script>
         function getCurrentBlock() {
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes();
-            
-            // Convert current time to minutes since midnight
             const currentTime = hours * 60 + minutes;
-            
-            // Define block times in minutes since midnight
             const blockTimes = [
                 {name: "1st Block", start: 8 * 60 + 40, end: 10 * 60 + 7},
                 {name: "2nd Block", start: 10 * 60 + 14, end: 11 * 60 + 41},
                 {name: "3rd Block & Lunch", start: 11 * 60 + 48, end: 14 * 60 + 8},
                 {name: "4th Block", start: 14 * 60 + 15, end: 15 * 60 + 45}
             ];
-            
-            // Determine which block we're in and calculate times
             for (const block of blockTimes) {
                 if (currentTime >= block.start && currentTime <= block.end) {
                     const timeInBlock = currentTime - block.start;
@@ -113,8 +102,6 @@
                     };
                 }
             }
-            
-            // If not in any block
             return {
                 name: "Outside of Block Schedule",
                 timeInBlock: null,
@@ -141,12 +128,8 @@
                 detailsElement.innerHTML = `Time Elapsed: <span>${formatTime(blockInfo.timeInBlock)}</span> | Time Remaining: <span>${formatTime(blockInfo.timeRemaining)}</span>`;
             }
         }
-
-        // Update the block information on page load and every minute
         updateBlockInfo();
-        setInterval(updateBlockInfo, 1000); // Update every 60 seconds
-
-        // Fullscreen button functionality
+        setInterval(updateBlockInfo, 0);
         document.getElementById('fullscreenBtn').addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
