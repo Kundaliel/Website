@@ -56,7 +56,6 @@
     </div>
 
     <script>
-        // Convert to GMT-5 regardless of system time
         function getGMT5Date() {
             const nowUTC = new Date();
             return new Date(nowUTC.toLocaleString("en-US", { timeZone: "Etc/GMT+5" }));
@@ -108,11 +107,9 @@
             }
         }
 
-        // Update block information every minute
         updateBlockInfo();
         setInterval(updateBlockInfo, 60000);
 
-        // Fullscreen toggle
         document.getElementById('fullscreenBtn').addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
