@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Zone Grid</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #222;
@@ -13,29 +18,36 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
+            overflow: hidden;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 10px;
-            width: 60%;
-            max-width: 600px;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
         }
         .box {
             background: #333;
-            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             border-radius: 8px;
-            text-align: center;
             border: 1px solid #555;
+            font-size: 1.5rem;
         }
         .time-zone {
             font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
         }
         .time {
-            margin-top: 5px;
-            font-size: 14px;
+            font-size: 1.2rem;
             color: #bbb;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -82,7 +94,7 @@
         }
 
         updateTime();
-        setInterval(updateTime, 0);
+        setInterval(updateTime, 1000);
     </script>
 
 </body>
