@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Grid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            width: 60%;
+            max-width: 600px;
+        }
+        .box {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #555;
+        }
+        .time-zone {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .time {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid">
+        <div class="box">
+            <div class="time-zone">GMT-8</div>
+            MinebotUltra
+            <div class="time" id="gmtMinus8"></div>
+        </div>
+        <div class="box">
+            <div class="time-zone">GMT-6</div>
+            Emiluu, SilentSkiess
+            <div class="time" id="gmtMinus6"></div>
+        </div>
+        <div class="box">
+            <div class="time-zone">GMT-5</div>
+            Kundaliel
+            <div class="time" id="gmtMinus5"></div>
+        </div>
+        <div class="box">
+            <div class="time-zone">GMT+8</div>
+            Siqns
+            <div class="time" id="gmtPlus8"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const timeZones = [
+                { id: "gmtMinus8", offset: -8 },
+                { id: "gmtMinus6", offset: -6 },
+                { id: "gmtMinus5", offset: -5 },
+                { id: "gmtPlus8", offset: 8 }
+            ];
+            
+            timeZones.forEach(zone => {
+                let now = new Date();
+                let utc = now.getTime() + now.getTimezoneOffset() * 60000;
+                let time = new Date(utc + (3600000 * zone.offset));
+                document.getElementById(zone.id).innerText = time.toLocaleTimeString();
+            });
+        }
+
+        updateTime();
+        setInterval(updateTime, 0);
+    </script>
+
+</body>
+</html>
