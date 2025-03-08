@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <title>Suffix Generator</title>
-    <link rel="icon" href="./Images/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -12,59 +11,464 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #2e2e2e; /* Dark gray background */
-            color: #e0e0e0; /* Light gray text */
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: #2e2e2e;
+            color: #e0e0e0;
         }
-        input, textarea {
-            margin: 10px 0;
-            padding: 10px;
-            width: 300px;
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        input, textarea, select {
+            padding: 12px;
             font-size: 16px;
-            background-color: #3e3e3e; /* Medium gray for input fields */
-            color: #ffffff; /* White text inside input fields */
-            border: 1px solid #5e5e5e; /* Slightly darker gray border */
+            background-color: #3e3e3e;
+            color: #ffffff;
+            border: 1px solid #5e5e5e;
+            border-radius: 4px;
         }
         textarea {
-            height: 100px;
+            height: 120px;
+            resize: vertical;
         }
         input::placeholder, textarea::placeholder {
-            color: #a0a0a0; /* Light gray for placeholders */
+            color: #a0a0a0;
+        }
+        .color-picker {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        input[type="color"] {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+        }
+        .gradient-controls {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .color-stop {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        .color-stop-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .color-stop-value {
+            font-family: monospace;
+            font-size: 14px;
+            width: 80px;
+        }
+        .preview {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #1e1e1e;
+            border-radius: 4px;
+            min-height: 50px;
+            word-break: break-all;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5a5a5a;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-switch input[type="checkbox"] {
+            width: auto;
+            height: auto;
+        }
+        .format-container {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #3a3a3a;
+            border-radius: 4px;
+        }
+        .format-option {
+            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
-
-    <input type="text" id="inputText" placeholder="Enter your text">
-    <input type="color" id="colorPicker" value="#000000">
-    <textarea id="outputText" readonly placeholder="Output will appear here"></textarea>
+    <div class="container">
+        <h1>Suffix Generator</h1>
+        
+        <div class="input-group">
+            <label for="inputText">Your Text</label>
+            <input type="text" id="inputText" placeholder="Enter your text">
+        </div>
+        
+        <div class="input-group">
+            <div class="toggle-switch">
+                <input type="checkbox" id="gradientToggle">
+                <label for="gradientToggle">Use Gradient</label>
+            </div>
+        </div>
+        
+        <div id="singleColorSection" class="input-group">
+            <label>Single Color</label>
+            <div class="color-picker">
+                <input type="color" id="colorPicker" value="#ff5555">
+                <span id="colorHexValue" class="color-stop-value">#FF5555</span>
+            </div>
+        </div>
+        
+        <div id="gradientSection" class="input-group" style="display: none;">
+            <label>Gradient Colors</label>
+            <div class="gradient-controls" id="gradientControls">
+                <!-- Color stops will be added here -->
+            </div>
+            <button id="addColorBtn">+ Add Color</button>
+            
+            <div class="format-container">
+                <label>Format Type:</label>
+                <div class="format-option">
+                    <input type="radio" id="formatHex" name="formatType" value="hex" checked>
+                    <label for="formatHex">Hex (&#RRGGBB)</label>
+                </div>
+                <div class="format-option">
+                    <input type="radio" id="formatX" name="formatType" value="x">
+                    <label for="formatX">X Format (&x&R&R&G&G&B&B)</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="outputText">Output</label>
+            <textarea id="outputText" readonly placeholder="Output will appear here"></textarea>
+        </div>
+        
+        <div class="preview">
+            <label>Preview:</label>
+            <div id="previewText"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="copyButton">Copy to Clipboard</button>
+            <button id="resetButton">Reset</button>
+        </div>
+    </div>
 
     <script>
         const inputText = document.getElementById('inputText');
         const colorPicker = document.getElementById('colorPicker');
+        const colorHexValue = document.getElementById('colorHexValue');
         const outputText = document.getElementById('outputText');
+        const previewText = document.getElementById('previewText');
+        const gradientToggle = document.getElementById('gradientToggle');
+        const singleColorSection = document.getElementById('singleColorSection');
+        const gradientSection = document.getElementById('gradientSection');
+        const gradientControls = document.getElementById('gradientControls');
+        const addColorBtn = document.getElementById('addColorBtn');
+        const copyButton = document.getElementById('copyButton');
+        const resetButton = document.getElementById('resetButton');
+        const formatRadios = document.getElementsByName('formatType');
 
-        const convertText = (text) => {
-            const map = {
-                'A': 'ᴀ', 'B': 'ʙ', 'C': 'ᴄ', 'D': 'ᴅ', 'E': 'ᴇ', 'F': 'ғ', 
-                'G': 'ɢ', 'H': 'ʜ', 'I': 'ɪ', 'J': 'ᴊ', 'K': 'ᴋ', 'L': 'ʟ', 
-                'M': 'ᴍ', 'N': 'ɴ', 'O': 'ᴏ', 'P': 'ᴘ', 'Q': 'ᴏ̨', 'R': 'ʀ', 
-                'S': 's', 'T': 'ᴛ', 'U': 'ᴜ', 'V': 'ᴠ', 'W': 'ᴡ', 'X': 'x', 
-                'Y': 'ʏ', 'Z': 'ᴢ'
+        const smallCapsMap = {
+            'A': 'ᴀ', 'B': 'ʙ', 'C': 'ᴄ', 'D': 'ᴅ', 'E': 'ᴇ', 'F': 'ғ', 
+            'G': 'ɢ', 'H': 'ʜ', 'I': 'ɪ', 'J': 'ᴊ', 'K': 'ᴋ', 'L': 'ʟ', 
+            'M': 'ᴍ', 'N': 'ɴ', 'O': 'ᴏ', 'P': 'ᴘ', 'Q': 'ǫ', 'R': 'ʀ', 
+            'S': 's', 'T': 'ᴛ', 'U': 'ᴜ', 'V': 'ᴠ', 'W': 'ᴡ', 'X': 'x', 
+            'Y': 'ʏ', 'Z': 'ᴢ'
+        };
+
+        const convertToSmallCaps = (text) => {
+            return text.toUpperCase().split('').map(char => smallCapsMap[char] || char).join('');
+        };
+
+        let colorStopCounter = 0;
+        const createColorStop = (hexColor = '#FF5555') => {
+            const id = `color-${colorStopCounter++}`;
+            const colorStop = document.createElement('div');
+            colorStop.className = 'color-stop';
+            colorStop.id = id;
+            
+            const colorInput = document.createElement('input');
+            colorInput.type = 'color';
+            colorInput.value = hexColor;
+            colorInput.className = 'gradient-color';
+            
+            const colorValue = document.createElement('span');
+            colorValue.className = 'color-stop-value';
+            colorValue.textContent = hexColor.toUpperCase();
+            
+            colorInput.addEventListener('input', () => {
+                colorValue.textContent = colorInput.value.toUpperCase();
+                updateOutput();
+            });
+            
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'color-stop-actions';
+            
+            const upBtn = document.createElement('button');
+            upBtn.textContent = '↑';
+            upBtn.title = 'Move up';
+            upBtn.onclick = () => moveColorStop(id, 'up');
+            
+            const downBtn = document.createElement('button');
+            downBtn.textContent = '↓';
+            downBtn.title = 'Move down';
+            downBtn.onclick = () => moveColorStop(id, 'down');
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = '×';
+            removeBtn.title = 'Remove color';
+            removeBtn.onclick = () => {
+                if (document.querySelectorAll('.color-stop').length > 2) {
+                    document.getElementById(id).remove();
+                    updateOutput();
+                } else {
+                    alert('Minimum 2 colors required for gradient');
+                }
             };
+            
+            actionDiv.appendChild(upBtn);
+            actionDiv.appendChild(downBtn);
+            actionDiv.appendChild(removeBtn);
+            
+            colorStop.appendChild(colorInput);
+            colorStop.appendChild(colorValue);
+            colorStop.appendChild(actionDiv);
+            
+            return colorStop;
+        };
 
-            return text.toUpperCase().split('').map(char => map[char] || char).join('');
+        const moveColorStop = (id, direction) => {
+            const currentStop = document.getElementById(id);
+            const stops = document.querySelectorAll('.color-stop');
+            const currentIndex = Array.from(stops).indexOf(currentStop);
+            
+            if (direction === 'up' && currentIndex > 0) {
+                gradientControls.insertBefore(currentStop, stops[currentIndex - 1]);
+            } else if (direction === 'down' && currentIndex < stops.length - 1) {
+                if (currentIndex === stops.length - 2) {
+                    gradientControls.appendChild(currentStop);
+                } else {
+                    gradientControls.insertBefore(currentStop, stops[currentIndex + 2]);
+                }
+            }
+            
+            updateOutput();
+        };
+
+        const interpolateColor = (color1, color2, factor) => {
+            const r1 = parseInt(color1.substr(1, 2), 16);
+            const g1 = parseInt(color1.substr(3, 2), 16);
+            const b1 = parseInt(color1.substr(5, 2), 16);
+            
+            const r2 = parseInt(color2.substr(1, 2), 16);
+            const g2 = parseInt(color2.substr(3, 2), 16);
+            const b2 = parseInt(color2.substr(5, 2), 16);
+            
+            const r = Math.round(r1 + factor * (r2 - r1));
+            const g = Math.round(g1 + factor * (g2 - g1));
+            const b = Math.round(b1 + factor * (b2 - b1));
+            
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        };
+
+        const generateGradientColors = (length, colorStops) => {
+            if (length <= 1) return [colorStops[0]];
+            if (colorStops.length === 1) return Array(length).fill(colorStops[0]);
+            
+            const result = [];
+            
+            const segments = colorStops.length - 1;
+            const segmentSize = length / segments;
+            
+            for (let i = 0; i < length; i++) {
+                const segmentIndex = Math.min(Math.floor(i / segmentSize), segments - 1);
+                const segmentPosition = (i - segmentIndex * segmentSize) / segmentSize;
+                
+                const color1 = colorStops[segmentIndex];
+                const color2 = colorStops[segmentIndex + 1];
+                
+                result.push(interpolateColor(color1, color2, segmentPosition));
+            }
+            
+            return result;
+        };
+
+        const formatHexColor = (hex, format) => {
+            const cleanHex = hex.replace('#', '').toUpperCase();
+            
+            if (format === 'hex') {
+                return `&#${cleanHex}`;
+            } else if (format === 'x') {
+                return `&x&${cleanHex.split('').join('&')}`;
+            }
+            
+            return hex;
+        };
+
+        const getFormatType = () => {
+            for (const radio of formatRadios) {
+                if (radio.checked) {
+                    return radio.value;
+                }
+            }
+            return 'hex';
         };
 
         const updateOutput = () => {
-            const convertedText = convertText(inputText.value);
-            const colorHex = colorPicker.value;
-            outputText.value = `&8[&${colorHex}${convertedText}&8]`;
+            const text = inputText.value;
+            if (!text) {
+                outputText.value = '';
+                previewText.innerHTML = '';
+                return;
+            }
+            
+            const convertedText = convertToSmallCaps(text);
+            let formattedText;
+            let previewHtml = '<span style="color: #555555;">[</span>';
+            
+            if (gradientToggle.checked) {
+                const colorStops = Array.from(document.querySelectorAll('.gradient-color')).map(input => input.value);
+                
+                const gradientColors = generateGradientColors(convertedText.length, colorStops);
+                
+                const formatType = getFormatType();
+                
+                let outputParts = [];
+                
+                for (let i = 0; i < convertedText.length; i++) {
+                    const color = gradientColors[i];
+                    const char = convertedText[i];
+                    
+                    outputParts.push(`${formatHexColor(color, formatType)}${char}`);
+                    previewHtml += `<span style="color: ${color};">${char}</span>`;
+                }
+                
+                formattedText = `&8[${outputParts.join('')}&8]`;
+                
+            } else {
+                const hexColor = colorPicker.value;
+                const formatType = getFormatType();
+                formattedText = `&8[${formatHexColor(hexColor, formatType)}${convertedText}&8]`;
+                previewHtml += `<span style="color: ${hexColor};">${convertedText}</span>`;
+            }
+            
+            previewHtml += '<span style="color: #555555;">]</span>';
+            outputText.value = formattedText;
+            previewText.innerHTML = previewHtml;
         };
 
-        inputText.addEventListener('input', updateOutput);
-        colorPicker.addEventListener('input', updateOutput);
-    </script>
+        const initColorStops = () => {
+            gradientControls.innerHTML = '';
+            
+            gradientControls.appendChild(createColorStop('#000000'));
+            gradientControls.appendChild(createColorStop('#FFFFFF'));
+        };
 
+        gradientToggle.addEventListener('change', () => {
+            if (gradientToggle.checked) {
+                singleColorSection.style.display = 'none';
+                gradientSection.style.display = 'block';
+
+                if (gradientControls.children.length === 0) {
+                    initColorStops();
+                }
+            } else {
+                singleColorSection.style.display = 'block';
+                gradientSection.style.display = 'none';
+            }
+            updateOutput();
+        });
+
+        addColorBtn.addEventListener('click', () => {
+            let newColor = '#FF5555';
+            const colorInputs = document.querySelectorAll('.gradient-color');
+            
+            if (colorInputs.length >= 2) {
+                const firstColor = colorInputs[0].value;
+                const lastColor = colorInputs[colorInputs.length - 1].value;
+                newColor = interpolateColor(firstColor, lastColor, 0.5);
+            }
+            
+            gradientControls.appendChild(createColorStop(newColor));
+            updateOutput();
+        });
+
+        colorPicker.addEventListener('input', () => {
+            const hexValue = colorPicker.value.toUpperCase();
+            colorHexValue.textContent = hexValue;
+            updateOutput();
+        });
+        
+        for (const radio of formatRadios) {
+            radio.addEventListener('change', updateOutput);
+        }
+        
+        inputText.addEventListener('input', updateOutput);
+        
+        copyButton.addEventListener('click', () => {
+            outputText.select();
+            document.execCommand('copy');
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+                copyButton.textContent = 'Copy to Clipboard';
+            }, 1500);
+        });
+        
+        resetButton.addEventListener('click', () => {
+            inputText.value = '';
+            gradientToggle.checked = false;
+            colorPicker.value = '#FF5555';
+            colorHexValue.textContent = '#FF5555';
+            document.getElementById('formatHex').checked = true;
+            singleColorSection.style.display = 'block';
+            gradientSection.style.display = 'none';
+            initColorStops();
+            updateOutput();
+        });
+
+        initColorStops();
+        updateOutput();
+    </script>
 </body>
 </html>
