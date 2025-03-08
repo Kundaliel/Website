@@ -1,4 +1,4 @@
-<!DOCTYPE html>a
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <link rel="icon" href="./Images/favicon.ico" type="image/x-icon">
@@ -7,7 +7,7 @@
     <title>Text List Manager</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #f8f9fa;
             color: #212529;
             transition: background-color 0.3s, color 0.3s;
@@ -17,9 +17,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
         body.dark-mode {
-            background-color: #343a40;
+            background-color: #222;
             color: #e9ecef;
         }
         .container {
@@ -27,9 +28,36 @@
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
+            margin-top: 20px;
         }
-        #input-container, #export-import-buttons {
+        .app-title {
+            text-align: center;
             margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #input-container input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        #input-container input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        body.dark-mode #input-container input {
+            background-color: #333;
+            color: #fff;
+            border-color: #555;
         }
         #list {
             margin-bottom: 20px;
@@ -38,29 +66,57 @@
             margin: 10px 0;
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #fff;
             color: #212529;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .list-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .list-item.dark-mode {
-            background-color: #495057;
-            border: 1px solid #6c757d;
+            background-color: #333;
+            border: 1px solid #555;
             color: #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .list-item span {
             flex: 1;
+            word-break: break-word;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+        .list-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .button {
-            margin-left: 10px;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border: none;
             color: #fff;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 4px;
             font-size: 14px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        .button:active {
+            transform: scale(0.98);
+        }
+        .button-add {
+            background-color: #007bff;
         }
         .button-edit {
             background-color: #007bff;
@@ -71,51 +127,105 @@
         .button-copy {
             background-color: #28a745;
         }
-        .button-dark-mode {
-            background-color: #6c757d;
+        .button-export {
+            background-color: #17a2b8;
         }
-        .button-container {
-            display: flex;
-            gap: 10px;
+        .button-import {
+            background-color: #6610f2;
         }
         #dark-mode-button {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
             color: #fff;
             background-color: #6c757d;
             cursor: pointer;
             border-radius: 5px;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dark-mode-icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        #notification.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        body.dark-mode .empty-state {
+            color: #adb5bd;
         }
         input[type="file"] {
             display: none;
         }
-        input, button {
-            font-size: 16px;
+        @media (max-width: 600px) {
+            .list-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .list-controls {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <div class="app-title">Text List Manager</div>
+        
         <div id="input-container">
             <input type="text" id="display-text-input" placeholder="Enter display text" />
             <input type="text" id="copy-text-input" placeholder="Enter copy text" />
-            <button class="button button-edit" onclick="addItem()">Add</button>
+            <button class="button button-add" onclick="addItem()">Add Item</button>
         </div>
 
         <div id="list"></div>
 
         <div id="export-import-buttons" class="button-container">
-            <button class="button button-copy" onclick="exportItems()">Export JSON</button>
+            <button class="button button-export" onclick="exportItems()">Export JSON</button>
             <input type="file" id="import-input" accept=".json" onchange="importItems(event)" />
-            <button class="button button-edit" onclick="document.getElementById('import-input').click()">Import JSON</button>
+            <button class="button button-import" onclick="document.getElementById('import-input').click()">Import JSON</button>
         </div>
     </div>
 
-    <button id="dark-mode-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    <button id="dark-mode-button" onclick="toggleDarkMode()">
+        <svg class="dark-mode-icon" viewBox="0 0 24 24">
+            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7Z" />
+        </svg>
+        Toggle Theme
+    </button>
+
+    <div id="notification"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -136,6 +246,9 @@
                 displayTextInput.value = '';
                 copyTextInput.value = '';
                 loadItems();
+                showNotification('Item added successfully!');
+            } else {
+                showNotification('Please fill in both fields!', 'error');
             }
         }
 
@@ -143,38 +256,78 @@
             const list = document.getElementById('list');
             list.innerHTML = '';
             let items = JSON.parse(localStorage.getItem('items')) || [];
+            
+            if (items.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.textContent = 'No items in your list. Add some items to get started!';
+                list.appendChild(emptyState);
+                return;
+            }
+            
             items.forEach((item, index) => {
                 const listItem = document.createElement('div');
                 listItem.className = 'list-item';
                 if (document.body.classList.contains('dark-mode')) {
                     listItem.classList.add('dark-mode');
                 }
-                listItem.innerHTML = `
-                    <span>${item.displayText}</span>
-                    <button class="button button-copy" onclick="copyToClipboard('${item.copyText}')">Copy</button>
-                    <button class="button button-edit" onclick="editItem(${index}, '${item.displayText}', '${item.copyText}')">Edit</button>
-                    <button class="button button-delete" onclick="confirmDelete(${index})">Delete</button>
-                `;
+                
+                const controls = document.createElement('div');
+                controls.className = 'list-controls';
+                
+                const textSpan = document.createElement('span');
+                textSpan.textContent = item.displayText;
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'button button-copy';
+                copyBtn.textContent = 'Copy';
+                copyBtn.onclick = () => copyToClipboard(item.copyText);
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'button button-edit';
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = () => editItem(index, item.displayText, item.copyText);
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'button button-delete';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => confirmDelete(index);
+                
+                controls.appendChild(copyBtn);
+                controls.appendChild(editBtn);
+                controls.appendChild(deleteBtn);
+                
+                listItem.appendChild(textSpan);
+                listItem.appendChild(controls);
+                
                 list.appendChild(listItem);
             });
         }
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Text copied to clipboard!');
+                showNotification('Text copied to clipboard!');
             }, (err) => {
                 console.error('Failed to copy text: ', err);
+                showNotification('Failed to copy text!', 'error');
             });
         }
 
         function editItem(index, currentDisplayText, currentCopyText) {
             const newDisplayText = prompt('Edit display text:', currentDisplayText);
+            if (newDisplayText === null) return;
+            
             const newCopyText = prompt('Edit copy text:', currentCopyText);
-            if (newDisplayText !== null && newDisplayText.trim() !== '' && newCopyText !== null && newCopyText.trim() !== '') {
+            if (newCopyText === null) return;
+            
+            if (newDisplayText.trim() !== '' && newCopyText.trim() !== '') {
                 let items = JSON.parse(localStorage.getItem('items')) || [];
                 items[index] = { displayText: newDisplayText.trim(), copyText: newCopyText.trim() };
                 localStorage.setItem('items', JSON.stringify(items));
                 loadItems();
+                showNotification('Item updated successfully!');
+            } else {
+                showNotification('Both fields are required!', 'error');
             }
         }
 
@@ -189,6 +342,7 @@
             items.splice(index, 1);
             localStorage.setItem('items', JSON.stringify(items));
             loadItems();
+            showNotification('Item deleted successfully!');
         }
 
         function toggleDarkMode() {
@@ -197,6 +351,7 @@
             const isDarkMode = body.classList.contains('dark-mode');
             localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
             loadItems();
+            showNotification(isDarkMode ? 'Dark mode enabled' : 'Light mode enabled');
         }
 
         function applyTheme() {
@@ -210,17 +365,18 @@
 
         function exportItems() {
             const items = localStorage.getItem('items');
-            if (items) {
+            if (items && JSON.parse(items).length > 0) {
                 const blob = new Blob([items], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'items.json';
+                a.download = 'text-list-items.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+                showNotification('Items exported successfully!');
             } else {
-                alert('No items to export.');
+                showNotification('No items to export!', 'error');
             }
         }
 
@@ -232,18 +388,62 @@
                     try {
                         const importedItems = JSON.parse(reader.result);
                         if (Array.isArray(importedItems)) {
-                            localStorage.setItem('items', JSON.stringify(importedItems));
-                            loadItems();
+                            if (importedItems.length > 0) {
+                                if (confirm('Do you want to replace existing items or merge with them?')) {
+                                    localStorage.setItem('items', JSON.stringify(importedItems));
+                                } else {
+                                    let currentItems = JSON.parse(localStorage.getItem('items')) || [];
+                                    localStorage.setItem('items', JSON.stringify([...currentItems, ...importedItems]));
+                                }
+                                loadItems();
+                                showNotification('Items imported successfully!');
+                            } else {
+                                showNotification('The imported file contains no items!', 'warning');
+                            }
                         } else {
-                            alert('Invalid JSON format: Must be an array.');
+                            showNotification('Invalid JSON format: Must be an array!', 'error');
                         }
                     } catch (e) {
-                        alert('Failed to parse JSON. The file might be corrupted or in an invalid format.');
+                        showNotification('Failed to parse JSON file!', 'error');
                     }
                 };
                 reader.readAsText(file);
             }
+            // Reset the file input so the same file can be imported again if needed
+            event.target.value = '';
         }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            
+            // Set color based on type
+            if (type === 'error') {
+                notification.style.backgroundColor = '#dc3545';
+            } else if (type === 'warning') {
+                notification.style.backgroundColor = '#ffc107';
+                notification.style.color = '#212529';
+            } else {
+                notification.style.backgroundColor = '#28a745';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Enter or Cmd+Enter to add item when in input fields
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                if (document.activeElement === document.getElementById('display-text-input') || 
+                    document.activeElement === document.getElementById('copy-text-input')) {
+                    addItem();
+                }
+            }
+        });
     </script>
 
 </body>
