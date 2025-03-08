@@ -4,80 +4,312 @@
     <link rel="icon" href="./Images/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Navigation menu for web applications and tools">
+    <title>Interactive Menu</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body, h1, ul, li {
+        :root {
+            --primary-color: #4a6fa5;
+            --hover-color: #2c3e50;
+            --text-color: #333;
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            --transition-speed: 0.3s;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #64b5f6;
+                --hover-color: #90caf9;
+                --text-color: #e0e0e0;
+                --bg-color: #121212;
+                --card-bg: #1e1e1e;
+                --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8, #e0e5e8);
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color), #e0e5e8);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-        .container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            transition: background-color var(--transition-speed);
             padding: 20px;
-            max-width: 600px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            padding: 30px;
+            max-width: 650px;
             width: 100%;
+            transition: all var(--transition-speed);
         }
-        h1 {
+
+        header {
+            margin-bottom: 30px;
             text-align: center;
-            color: #333;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            font-weight: 700;
         }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.6em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: var(--text-color);
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
         .menu {
             list-style: none;
             padding: 0;
+            margin-top: 20px;
         }
+
         .menu-item {
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform var(--transition-speed);
         }
-        .menu-item:last-child {
-            border-bottom: none;
+
+        .menu-item:hover {
+            transform: translateY(-3px);
         }
+
         .menu-item a {
-            display: block;
-            padding: 15px;
-            color: #333;
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            color: var(--text-color);
             text-decoration: none;
             font-size: 1.1em;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: rgba(0,0,0,0.03);
+            border-radius: 8px;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
         }
+
         .menu-item a:hover {
-            background-color: #007bff;
-            color: #fff;
+            background-color: var(--primary-color);
+            color: white;
         }
-        .menu-item a::before {
-            content: '➤';
-            margin-right: 10px;
-            color: #007bff;
+
+        .menu-item a:hover .icon {
+            transform: translateX(5px);
+            color: white;
+        }
+
+        .menu-item a:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.3);
+        }
+
+        .icon {
+            margin-right: 15px;
+            color: var(--primary-color);
+            transition: transform var(--transition-speed), color var(--transition-speed);
+            width: 24px;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85em;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all var(--transition-speed);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .menu-item {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .menu-item:nth-child(1) { animation-delay: 0.1s; }
+        .menu-item:nth-child(2) { animation-delay: 0.2s; }
+        .menu-item:nth-child(3) { animation-delay: 0.3s; }
+        .menu-item:nth-child(4) { animation-delay: 0.4s; }
+        .menu-item:nth-child(5) { animation-delay: 0.5s; }
+        .menu-item:nth-child(6) { animation-delay: 0.6s; }
+        .menu-item:nth-child(7) { animation-delay: 0.7s; }
+        .menu-item:nth-child(8) { animation-delay: 0.8s; }
+        .menu-item:nth-child(9) { animation-delay: 0.9s; }
+
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+                margin: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .menu-item a {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="container">
-        <h1>Menu</h1>
-        <ul class="menu">
-            <li class="menu-item"><a href="./suffix.html">Suffix</a></li>
-            <li class="menu-item"><a href="./School-Countdown.html">School Countdown</a></li>
-            <li class="menu-item"><a href="./Event-Countdown.html">School Events</a></li>
-            <li class="menu-item"><a href="./Dismos.html">Dismos</a></li>
-            <li class="menu-item"><a href="./Saves.html">Saves</a></li>
-            <li class="menu-item"><a href="./Times.html">Block Information</a></li>
-            <li class="menu-item"><a href="./Mandelbrot.html">Mandelbrot Set</a></li>
-            <li class="menu-item"><a href="./Ai.html">AI</a></li>
-            <li class="menu-item"><a href="./Jscript.html">PsCode</a></li>
-        </ul>
+        <header>
+            <h1>Menu</h1>
+            <p class="subtitle">Select a tool or application to navigate</p>
+        </header>
+
+        <nav>
+            <ul class="menu" role="menu">
+                <li class="menu-item" role="menuitem">
+                    <a href="./suffix.html" aria-label="Navigate to Suffix">
+                        <span class="icon"><i class="fas fa-font"></i></span>
+                        <span>Suffix</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./School-Countdown.html" aria-label="Navigate to School Countdown">
+                        <span class="icon"><i class="fas fa-school"></i></span>
+                        <span>School Countdown</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Event-Countdown.html" aria-label="Navigate to School Events">
+                        <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+                        <span>School Events</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Dismos.html" aria-label="Navigate to Dismos">
+                        <span class="icon"><i class="fas fa-chart-line"></i></span>
+                        <span>Dismos</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Saves.html" aria-label="Navigate to Saves">
+                        <span class="icon"><i class="fas fa-save"></i></span>
+                        <span>Saves</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Times.html" aria-label="Navigate to Block Information">
+                        <span class="icon"><i class="fas fa-clock"></i></span>
+                        <span>Block Information</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Mandelbrot.html" aria-label="Navigate to Mandelbrot Set">
+                        <span class="icon"><i class="fas fa-square-root-alt"></i></span>
+                        <span>Mandelbrot Set</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Ai.html" aria-label="Navigate to AI">
+                        <span class="icon"><i class="fas fa-robot"></i></span>
+                        <span>AI</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="menuitem">
+                    <a href="./Jscript.html" aria-label="Navigate to PsCode">
+                        <span class="icon"><i class="fas fa-code"></i></span>
+                        <span>PsCode</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <footer>
+            <p>Select an option to explore features</p>
+        </footer>
     </div>
+
+    <script>
+        const themeToggle = document.querySelector('.theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+
+            if (isDarkMode) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            const isDarkMode = e.matches;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            
+            if (isDarkMode) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+    </script>
 </body>
 </html>
