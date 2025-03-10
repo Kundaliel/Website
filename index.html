@@ -138,7 +138,6 @@
             opacity: 0.7;
         }
 
-        /* Theme toggle */
         .theme-toggle {
             position: absolute;
             top: 20px;
@@ -158,7 +157,6 @@
             background-color: rgba(0,0,0,0.1);
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -179,19 +177,17 @@
         .menu-item:nth-child(4) { animation-delay: 0.4s; }
         .menu-item:nth-child(5) { animation-delay: 0.5s; }
         .menu-item:nth-child(6) { animation-delay: 0.6s; }
-        .menu-item:nth-child(7) { animation-delay: 0.7s; }
 
-        /* Responsive adjustments */
         @media (max-width: 500px) {
             .container {
                 padding: 20px;
                 margin: 15px;
             }
-            
+
             h1 {
                 font-size: 2em;
             }
-            
+
             .menu-item a {
                 padding: 12px 15px;
                 font-size: 1em;
@@ -222,12 +218,6 @@
                     <a href="./School-Countdown.html" aria-label="Navigate to School Countdown">
                         <span class="icon"><i class="fas fa-school"></i></span>
                         <span>School Countdown</span>
-                    </a>
-                </li>
-                <li class="menu-item" role="menuitem">
-                    <a href="./Event-Countdown.html" aria-label="Navigate to School Events">
-                        <span class="icon"><i class="fas fa-calendar-alt"></i></span>
-                        <span>School Events</span>
                     </a>
                 </li>
                 <li class="menu-item" role="menuitem">
@@ -263,15 +253,13 @@
     </div>
 
     <script>
-        // Dark mode toggle functionality
+
         const themeToggle = document.querySelector('.theme-toggle');
         const themeIcon = themeToggle.querySelector('i');
-        
-        // Function to toggle dark mode
+
         function toggleDarkMode() {
             const isDarkMode = document.body.classList.toggle('dark-mode');
-            
-            // Update the icon
+
             if (isDarkMode) {
                 themeIcon.classList.remove('fa-moon');
                 themeIcon.classList.add('fa-sun');
@@ -279,18 +267,14 @@
                 themeIcon.classList.remove('fa-sun');
                 themeIcon.classList.add('fa-moon');
             }
-            
-            // Save preference to localStorage
+
             localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
         }
-        
-        // Event listener for the toggle button
+
         themeToggle.addEventListener('click', toggleDarkMode);
-        
-        // Check for saved user preference
+
         const savedDarkMode = localStorage.getItem('darkMode');
-        
-        // Apply dark mode if saved preference exists
+
         if (savedDarkMode === 'enabled') {
             document.body.classList.add('dark-mode');
             themeIcon.classList.remove('fa-moon');
