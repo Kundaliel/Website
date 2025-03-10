@@ -3,140 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Block Schedule</title>
+    <title>Block Schedule Tracker</title>
     <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
+            background-color: var(--light-color);
+            color: var(--dark-color);
             margin: 0;
             padding: 0;
             text-align: center;
+            transition: background-color 0.3s ease;
         }
+
+        body.dark-mode {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+        }
+
         .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
-        .block-info {
+
+        body.dark-mode .container {
+            background: #1a2530;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title {
             font-size: 28px;
             font-weight: bold;
-            color: #2c3e50;
+            color: var(--secondary-color);
+            margin: 0;
         }
+
+        body.dark-mode .title {
+            color: var(--light-color);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .block-display {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .block-info {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        body.dark-mode .block-info {
+            color: var(--light-color);
+        }
+
         .details {
-            font-size: 18px;
+            font-size: 20px;
             color: #555;
-            margin-top: 10px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
+
+        body.dark-mode .details {
+            color: #ccc;
+        }
+
+        .detail-item {
+            padding: 10px 15px;
+            border-radius: 8px;
+            background-color: #f8f8f8;
+        }
+
+        body.dark-mode .detail-item {
+            background-color: #2c3e50;
+        }
+
         .details span {
             font-weight: bold;
+            color: var(--primary-color);
         }
+
+        body.dark-mode .details span {
+            color: #3498db;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+
+        body.dark-mode .progress-container {
+            background-color: #2c3e50;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
         .time-display {
-            font-size: 22px;
-            color: #2980b9;
-            margin-top: 20px;
+            font-size: 24px;
+            color: var(--primary-color);
+            margin: 20px 0;
         }
-        .fullscreen-btn {
+
+        body.dark-mode .time-display {
+            color: #3498db;
+        }
+
+        .schedule-container {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        body.dark-mode .schedule-container {
+            border-top: 1px solid #2c3e50;
+        }
+
+        .schedule-title {
+            font-size: 22px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        body.dark-mode .schedule-title {
+            color: var(--light-color);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .block-card {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f8f8;
+            border-left: 4px solid #ddd;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        body.dark-mode .block-card {
+            background-color: #2c3e50;
+            border-left: 4px solid #34495e;
+        }
+
+        .block-card.active {
+            border-left: 4px solid var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .block-card.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .block-name {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+
+        body.dark-mode .block-name {
+            color: var(--light-color);
+        }
+
+        .block-time {
+            font-size: 14px;
+            color: #666;
+        }
+
+        body.dark-mode .block-time {
+            color: #bbb;
+        }
+
+        .countdown {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+        }
+
+        body.dark-mode .countdown {
+            color: #3498db;
+        }
+
+        .next-block {
+            font-size: 18px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        body.dark-mode .next-block {
+            color: #bbb;
+        }
+
+        .next-block span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .next-block span {
+            color: #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .schedule-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .details {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .notification {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            background: url('https://cdn-icons-png.flaticon.com/128/1549/1549457.png') no-repeat center;
-            background-size: cover;
-            width: 30px;
-            height: 30px;
-            border: none;
-            cursor: pointer;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
             z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.warning {
+            background-color: var(--warning-color);
         }
     </style>
 </head>
 <body>
-    <button class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"></button>
     <div class="container">
-        <div class="block-info" id="currentBlock">Loading...</div>
-        <div class="details" id="timeDetails"></div>
+        <div class="header">
+            <h1 class="title">Block Schedule Tracker</h1>
+            <div class="controls">
+                <button class="btn" id="darkModeBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 18.5C15.5899 18.5 18.5 15.5899 18.5 12C18.5 8.41015 15.5899 5.5 12 5.5V18.5Z" fill="currentColor"/>
+                    </svg>
+                    Theme
+                </button>
+                <button class="btn" id="notificationsBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Notifications
+                </button>
+                <button class="btn" id="fullscreenBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V8M21 8V5C21 4.46957 20.7893 3.96086 20.4142 3.58579C20.0391 3.21071 19.5304 3 19 3H16M16 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V16M3 16V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Fullscreen
+                </button>
+            </div>
+        </div>
+
+        <div class="block-display">
+            <div class="block-info" id="currentBlock">Loading...</div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="blockProgress" style="width: 0%"></div>
+            </div>
+
+            <div class="details">
+                <div class="detail-item">
+                    Time Elapsed: <span id="timeElapsed">--:--</span>
+                </div>
+                <div class="detail-item">
+                    Time Remaining: <span id="timeRemaining">--:--</span>
+                </div>
+            </div>
+
+            <div class="countdown" id="countdown"></div>
+            <div class="next-block" id="nextBlock"></div>
+        </div>
+
         <div class="time-display" id="currentTime">Current Time: Loading...</div>
+
+        <div class="schedule-container">
+            <h2 class="schedule-title">Today's Schedule</h2>
+            <div class="schedule-grid" id="scheduleGrid"></div>
+        </div>
     </div>
 
+    <div class="notification" id="notification">Block change notification</div>
+
     <script>
-        function getGMT5Date() {
-            const nowUTC = new Date();
-            return new Date(nowUTC.toLocaleString("en-US", { timeZone: "Etc/GMT+6" }));
+
+        const currentBlockEl = document.getElementById('currentBlock');
+        const timeElapsedEl = document.getElementById('timeElapsed');
+        const timeRemainingEl = document.getElementById('timeRemaining');
+        const currentTimeEl = document.getElementById('currentTime');
+        const blockProgressEl = document.getElementById('blockProgress');
+        const scheduleGridEl = document.getElementById('scheduleGrid');
+        const countdownEl = document.getElementById('countdown');
+        const nextBlockEl = document.getElementById('nextBlock');
+        const notificationEl = document.getElementById('notification');
+
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const notificationsBtn = document.getElementById('notificationsBtn');
+
+        let notificationsEnabled = false;
+        let previousBlock = null;
+
+        const blockSchedule = [
+            { name: "1st Block", start: { hour: 8, minute: 40 }, end: { hour: 10, minute: 7 } },
+            { name: "2nd Block", start: { hour: 10, minute: 14 }, end: { hour: 11, minute: 41 } },
+            { name: "3rd Block & Lunch", start: { hour: 11, minute: 48 }, end: { hour: 14, minute: 8 } },
+            { name: "4th Block", start: { hour: 14, minute: 15 }, end: { hour: 15, minute: 45 } }
+        ];
+
+        function getTimeZoneAdjustedDate() {
+
+            return new Date(new Date().toLocaleString("en-US", { timeZone: "Etc/GMT+6" }));
         }
 
-        function getCurrentBlock() {
-            const now = getGMT5Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const currentTime = hours * 60 + minutes;
-
-            const blockTimes = [
-                { name: "1st Block", start: 8 * 60 + 40, end: 10 * 60 + 7 },
-                { name: "2nd Block", start: 10 * 60 + 14, end: 11 * 60 + 41 },
-                { name: "3rd Block & Lunch", start: 11 * 60 + 48, end: 14 * 60 + 8 },
-                { name: "4th Block", start: 14 * 60 + 15, end: 15 * 60 + 45 }
-            ];
-
-            for (const block of blockTimes) {
-                if (currentTime >= block.start && currentTime <= block.end) {
-                    return {
-                        name: block.name,
-                        timeInBlock: currentTime - block.start,
-                        timeRemaining: block.end - currentTime
-                    };
-                }
-            }
-
-            return { name: "Outside of Block Schedule", timeInBlock: null, timeRemaining: null };
+        function timeToMinutes(hours, minutes) {
+            return hours * 60 + minutes;
         }
 
-        function formatTime(minutes) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            return `${hours}h ${mins}m`;
-        }
+        function minutesToTimeString(totalMinutes) {
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = Math.floor(totalMinutes % 60);
+            const seconds = Math.floor((totalMinutes % 1) * 60);
 
-        function updateBlockInfo() {
-            const blockInfo = getCurrentBlock();
-            const blockElement = document.getElementById('currentBlock');
-            const detailsElement = document.getElementById('timeDetails');
-
-            if (blockInfo.name === "Outside of Block Schedule") {
-                blockElement.textContent = blockInfo.name;
-                detailsElement.textContent = "";
+            if (hours > 0) {
+                return `${hours}h ${minutes}m`;
             } else {
-                blockElement.textContent = `Current Block: ${blockInfo.name}`;
-                detailsElement.innerHTML = `Time Elapsed: <span>${formatTime(blockInfo.timeInBlock)}</span> | Time Remaining: <span>${formatTime(blockInfo.timeRemaining)}</span>`;
+                return `${minutes}m ${seconds}s`;
             }
         }
 
-        function updateCurrentTime() {
-            const currentTimeElement = document.getElementById('currentTime');
-            const now = getGMT5Date();
-            const formattedTime = now.toLocaleTimeString("en-US", {
+        function formatTimeDisplay(date) {
+            return date.toLocaleTimeString("en-US", {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: true
             });
-            currentTimeElement.textContent = `Current Time: ${formattedTime}`;
         }
 
-        updateBlockInfo();
-        updateCurrentTime();
-        setInterval(updateBlockInfo, 0);
-        setInterval(updateCurrentTime, 0);
+        function formatBlockTimeDisplay(timeObj) {
+            const hour12 = timeObj.hour > 12 ? timeObj.hour - 12 : timeObj.hour;
+            const amPm = timeObj.hour >= 12 ? 'PM' : 'AM';
+            return `${hour12}:${timeObj.minute.toString().padStart(2, '0')} ${amPm}`;
+        }
 
-        document.getElementById('fullscreenBtn').addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
+        function getCurrentBlock() {
+            const now = getTimeZoneAdjustedDate();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const currentTimeInMinutes = timeToMinutes(hours, minutes) + seconds / 60;
+
+            let nextBlockIndex = -1;
+
+            for (let i = 0; i < blockSchedule.length; i++) {
+                const block = blockSchedule[i];
+                const blockStart = timeToMinutes(block.start.hour, block.start.minute);
+                const blockEnd = timeToMinutes(block.end.hour, block.end.minute);
+
+                if (currentTimeInMinutes >= blockStart && currentTimeInMinutes <= blockEnd) {
+                    const timeInBlock = currentTimeInMinutes - blockStart;
+                    const timeRemaining = blockEnd - currentTimeInMinutes;
+                    const percentComplete = (timeInBlock / (blockEnd - blockStart)) * 100;
+
+                    nextBlockIndex = (i + 1) % blockSchedule.length;
+
+                    return {
+                        name: block.name,
+                        timeInBlock,
+                        timeRemaining,
+                        percentComplete,
+                        isActive: true,
+                        index: i,
+                        nextBlockIndex
+                    };
+                } else if (currentTimeInMinutes < blockStart && nextBlockIndex === -1) {
+                    nextBlockIndex = i;
+                }
             }
-        });
+
+            if (nextBlockIndex === -1) {
+
+                nextBlockIndex = 0;
+            }
+
+            let timeUntilNext;
+            const nextBlock = blockSchedule[nextBlockIndex];
+            const nextBlockStart = timeToMinutes(nextBlock.start.hour, nextBlock.start.minute);
+
+            if (currentTimeInMinutes < nextBlockStart) {
+
+                timeUntilNext = nextBlockStart - currentTimeInMinutes;
+            } else {
+
+                timeUntilNext = (24 * 60) - currentTimeInMinutes + nextBlockStart;
+            }
+
+            return {
+                name: "Outside of Block Schedule",
+                isActive: false,
+                nextBlockIndex,
+                timeUntilNext
+            };
+        }
+
+        function showNotification(message, isWarning = false) {
+            if (!notificationsEnabled) return;
+
+            notificationEl.textContent = message;
+            notificationEl.classList.add('show');
+
+            if (isWarning) {
+                notificationEl.classList.add('warning');
+            } else {
+                notificationEl.classList.remove('warning');
+            }
+
+            if (window.Notification && Notification.permission === "granted") {
+                new Notification("Block Schedule", {
+                    body: message
+                });
+            }
+
+            setTimeout(() => {
+                notificationEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function renderScheduleGrid(currentBlockInfo) {
+            scheduleGridEl.innerHTML = '';
+
+            blockSchedule.forEach((block, index) => {
+                const blockCard = document.createElement('div');
+                blockCard.className = 'block-card';
+
+                if (currentBlockInfo.isActive && currentBlockInfo.index === index) {
+                    blockCard.classList.add('active');
+                }
+
+                const blockName = document.createElement('div');
+                blockName.className = 'block-name';
+                blockName.textContent = block.name;
+
+                const blockTime = document.createElement('div');
+                blockTime.className = 'block-time';
+                blockTime.textContent = `${formatBlockTimeDisplay(block.start)} - ${formatBlockTimeDisplay(block.end)}`;
+
+                blockCard.appendChild(blockName);
+                blockCard.appendChild(blockTime);
+                scheduleGridEl.appendChild(blockCard);
+            });
+        }
+
+        function updateBlockDisplay() {
+            const blockInfo = getCurrentBlock();
+
+            if (previousBlock && previousBlock.name !== blockInfo.name) {
+                if (blockInfo.isActive) {
+                    showNotification(`Now in ${blockInfo.name}`);
+                } else {
+                    showNotification("Outside of block schedule");
+                }
+            }
+            previousBlock = blockInfo;
+
+            if (blockInfo.isActive) {
+                currentBlockEl.textContent = blockInfo.name;
+                timeElapsedEl.textContent = minutesToTimeString(blockInfo.timeInBlock);
+                timeRemainingEl.textContent = minutesToTimeString(blockInfo.timeRemaining);
+                blockProgressEl.style.width = `${blockInfo.percentComplete}%`;
+
+                const minutesRemaining = Math.floor(blockInfo.timeRemaining);
+                const secondsRemaining = Math.floor((blockInfo.timeRemaining % 1) * 60);
+                countdownEl.textContent = `${minutesRemaining}:${secondsRemaining.toString().padStart(2, '0')}`;
+
+                const nextBlock = blockSchedule[blockInfo.nextBlockIndex];
+                nextBlockEl.innerHTML = `Next: <span>${nextBlock.name}</span> at ${formatBlockTimeDisplay(nextBlock.start)}`;
+
+                if (blockInfo.timeRemaining <= 5 && blockInfo.timeRemaining > 4.9) {
+                    showNotification(`5 minutes remaining in ${blockInfo.name}`, true);
+                }
+            } else {
+                currentBlockEl.textContent = "Outside of Block Schedule";
+                timeElapsedEl.textContent = "--:--";
+                timeRemainingEl.textContent = "--:--";
+                blockProgressEl.style.width = "0%";
+
+                if (blockInfo.timeUntilNext) {
+                    const nextBlock = blockSchedule[blockInfo.nextBlockIndex];
+                    const minutesUntil = Math.floor(blockInfo.timeUntilNext);
+                    const secondsUntil = Math.floor((blockInfo.timeUntilNext % 1) * 60);
+
+                    countdownEl.textContent = `${minutesUntil}:${secondsUntil.toString().padStart(2, '0')} until next block`;
+                    nextBlockEl.innerHTML = `Next: <span>${nextBlock.name}</span> at ${formatBlockTimeDisplay(nextBlock.start)}`;
+
+                    if (blockInfo.timeUntilNext <= 5 && blockInfo.timeUntilNext > 4.9) {
+                        showNotification(`${nextBlock.name} begins in 5 minutes`, true);
+                    }
+                } else {
+                    countdownEl.textContent = "";
+                    nextBlockEl.textContent = "";
+                }
+            }
+
+            renderScheduleGrid(blockInfo);
+        }
+
+        function updateCurrentTime() {
+            const now = getTimeZoneAdjustedDate();
+            currentTimeEl.textContent = `Current Time: ${formatTimeDisplay(now)}`;
+        }
+
+        function initApp() {
+
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+
+            notificationsEnabled = localStorage.getItem('notifications') === 'true';
+
+            updateBlockDisplay();
+            updateCurrentTime();
+
+            setInterval(updateBlockDisplay, 1000);
+            setInterval(updateCurrentTime, 1000);
+
+            darkModeBtn.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            });
+
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            notificationsBtn.addEventListener('click', () => {
+                if (window.Notification && Notification.permission !== "granted") {
+                    Notification.requestPermission();
+                }
+
+                notificationsEnabled = !notificationsEnabled;
+                localStorage.setItem('notifications', notificationsEnabled);
+
+                showNotification(notificationsEnabled ? 
+                    "Notifications enabled" : 
+                    "Notifications disabled");
+            });
+        }
+
+        initApp();
     </script>
 </body>
 </html>
