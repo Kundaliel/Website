@@ -3,99 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Zones!</title>
+    <title>Time Zones Dashboard</title>
     <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --card-border: #333;
+            --primary-text: #ffffff;
+            --secondary-text: #b0b0b0;
+            --accent-color: #4f8cff;
+            --time-color: #ffc107;
+            --date-color: #8bc34a;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #222;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-            width: 100%;
-            height: 100%;
-            padding: 10px;
-        }
-        .box {
-            background: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
-            border: 1px solid #555;
-            font-size: 1.5rem;
+            overflow-x: hidden;
         }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .description {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+        }
+
         .time-zone {
             font-weight: bold;
             font-size: 1.8rem;
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
         }
-        .time {
+
+        .names {
             font-size: 1.2rem;
-            color: #bbb;
-            margin-top: 5px;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-text);
+        }
+
+        .time {
+            font-size: 2rem;
+            color: var(--time-color);
+            font-weight: bold;
+            margin-top: 0.5rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date {
+            font-size: 1rem;
+            color: var(--date-color);
+            margin-top: 0.5rem;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .current-time {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+            width: 100%;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        #utc-time {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Global Time Zone Dashboard</h1>
+        <p class="description">Real-time clock for team members across different time zones</p>
+    </header>
 
-    <div class="grid">
-        <div class="box">
-            <div class="time-zone">GMT-8</div>
-            MinebotUltra
-            <div class="time" id="gmtMinus8"></div>
-        </div>
-        <div class="box">
-            <div class="time-zone">GMT-6</div>
-            Emiluu, SilentSkiess
-            <div class="time" id="gmtMinus6"></div>
-        </div>
-        <div class="box">
-            <div class="time-zone">GMT-5</div>
-            Kundaliel, IslandsForLife
-            <div class="time" id="gmtMinus5"></div>
-        </div>
-        <div class="box">
-            <div class="time-zone">GMT+8</div>
-            Siqns
-            <div class="time" id="gmtPlus8"></div>
-        </div>
+    <div class="grid" id="timezone-grid">
+        <!-- Time zone cards will be dynamically inserted here -->
     </div>
 
+    <div class="current-time">
+        Your local time: <span id="local-time"></span> | UTC time: <span id="utc-time"></span>
+    </div>
+
+    <footer>
+        <p>Last updated: 3/10/2025 8:14am GMT-6</p>
+    </footer>
+
     <script>
-        function updateTime() {
-            const timeZones = [
-                { id: "gmtMinus8", offset: -8 },
-                { id: "gmtMinus6", offset: -6 },
-                { id: "gmtMinus5", offset: -5 },
-                { id: "gmtPlus8", offset: 8 }
-            ];
-            
+
+        const timeZones = [
+            { id: "gmtMinus8", name: "Pacific Time", offset: -8, locations: ["MinebotUltra"], emoji: "🌉" },
+            { id: "gmtMinus6", name: "Central Time", offset: -6, locations: ["Emiluu", "SilentSkiess"], emoji: "🌽" },
+            { id: "gmtMinus5", name: "Eastern Time", offset: -5, locations: ["Kundaliel", "IslandsForLife"], emoji: "🗽" },
+            { id: "gmtPlus8", name: "China/Philippines", offset: 8, locations: ["Siqns"], emoji: "🏮" }
+        ];
+
+        function createTimeZoneCards() {
+            const grid = document.getElementById('timezone-grid');
             timeZones.forEach(zone => {
-                let now = new Date();
-                let utc = now.getTime() + now.getTimezoneOffset() * 60000;
-                let time = new Date(utc + (3600000 * zone.offset));
-                document.getElementById(zone.id).innerText = time.toLocaleTimeString();
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="time-zone">${zone.emoji} ${zone.name} (GMT${zone.offset >= 0 ? '+' : ''}${zone.offset})</div>
+                    <div class="names">${zone.locations.join(', ')}</div>
+                    <div class="time" id="${zone.id}-time"></div>
+                    <div class="date" id="${zone.id}-date"></div>
+                    <div class="info">
+                        <div id="${zone.id}-relative"></div>
+                    </div>
+                `;
+                grid.appendChild(card);
             });
         }
 
-        updateTime();
-        setInterval(updateTime, 0);
-    </script>
+        function formatTime(date) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
 
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString(undefined, options);
+        }
+
+        function getRelativeTimeDescription(localTime, otherTime) {
+            const hourDiff = otherTime.getHours() - localTime.getHours();
+
+            if (otherTime.getDate() > localTime.getDate() || 
+                (otherTime.getMonth() > localTime.getMonth()) || 
+                (otherTime.getFullYear() > localTime.getFullYear())) {
+                return "One day ahead";
+            } else if (otherTime.getDate() < localTime.getDate() || 
+                      (otherTime.getMonth() < localTime.getMonth()) || 
+                      (otherTime.getFullYear() < localTime.getFullYear())) {
+                return "One day behind";
+            } else if (hourDiff === 0) {
+                return "Same time as you";
+            } else if (hourDiff > 0) {
+                return `${hourDiff} hour${hourDiff !== 1 ? 's' : ''} ahead of you`;
+            } else {
+                return `${Math.abs(hourDiff)} hour${Math.abs(hourDiff) !== 1 ? 's' : ''} behind you`;
+            }
+        }
+
+        function updateAllClocks() {
+            const now = new Date();
+            const localTime = now;
+            const utcTime = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+
+            document.getElementById('local-time').textContent = formatTime(localTime);
+            document.getElementById('utc-time').textContent = formatTime(utcTime);
+
+            timeZones.forEach(zone => {
+                const zoneTime = new Date(utcTime.getTime() + (3600000 * zone.offset));
+                document.getElementById(`${zone.id}-time`).textContent = formatTime(zoneTime);
+                document.getElementById(`${zone.id}-date`).textContent = formatDate(zoneTime);
+                document.getElementById(`${zone.id}-relative`).textContent = getRelativeTimeDescription(localTime, zoneTime);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createTimeZoneCards();
+            updateAllClocks();
+
+            setInterval(updateAllClocks, 0);
+        });
+    </script>
 </body>
 </html>
