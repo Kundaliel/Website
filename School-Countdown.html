@@ -135,49 +135,9 @@
   .theme-button:hover {
     background-color: rgba(255, 255, 255, 0.4);
   }
-
-  .events {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: inline-block;
-    transition-duration: 500ms;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 8px;
-    border-radius: 10px;
-  }
-
-  .events-icon {
-    width: 35px;
-    height: 35px;
-    text-align: center;
-    font-size: 12px;
-    border-radius: 5px;
-    transition-duration: 500ms;
-  }
-
-  .events:hover {
-    transform: scale(1.1);
-  }
-
-  .events:hover::after {
-    content: "Events Page";
-    position: absolute;
-    top: -30px;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    white-space: nowrap;
-  }
 </style>
 </head>
 <body>
-<a href="./Event-Countdown.html" class="events">
-  <img src="./Images/android-chrome-192x192.png" width="35px" class="events-icon">
-</a>
 
 <div id="countdown-container">
   <div id="countdown-title">School's End Countdown</div>
