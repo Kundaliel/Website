@@ -406,7 +406,6 @@
         ];
 
         function getTimeZoneAdjustedDate() {
-
             return new Date(new Date().toLocaleString("en-US", { timeZone: "Etc/GMT+4" }));
         }
 
@@ -477,7 +476,6 @@
             }
 
             if (nextBlockIndex === -1) {
-
                 nextBlockIndex = 0;
             }
 
@@ -486,10 +484,8 @@
             const nextBlockStart = timeToMinutes(nextBlock.start.hour, nextBlock.start.minute);
 
             if (currentTimeInMinutes < nextBlockStart) {
-
                 timeUntilNext = nextBlockStart - currentTimeInMinutes;
             } else {
-
                 timeUntilNext = (24 * 60) - currentTimeInMinutes + nextBlockStart;
             }
 
@@ -549,7 +545,12 @@
             });
         }
 
-        function updateBlockDisplay() {
+        function updateDisplay() {
+
+            const now = getTimeZoneAdjustedDate();
+
+            currentTimeEl.textContent = `Current Time: ${formatTimeDisplay(now)}`;
+
             const blockInfo = getCurrentBlock();
 
             if (previousBlock && previousBlock.name !== blockInfo.name) {
@@ -603,11 +604,6 @@
             renderScheduleGrid(blockInfo);
         }
 
-        function updateCurrentTime() {
-            const now = getTimeZoneAdjustedDate();
-            currentTimeEl.textContent = `Current Time: ${formatTimeDisplay(now)}`;
-        }
-
         function initApp() {
 
             if (localStorage.getItem('darkMode') === 'true') {
@@ -616,11 +612,9 @@
 
             notificationsEnabled = localStorage.getItem('notifications') === 'true';
 
-            updateBlockDisplay();
-            updateCurrentTime();
+            updateDisplay();
 
-            setInterval(updateBlockDisplay, 0);
-            setInterval(updateCurrentTime, 0);
+            setInterval(updateDisplay, 500);
 
             darkModeBtn.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
