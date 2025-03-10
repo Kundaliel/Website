@@ -1,621 +1,582 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enhanced Mandelbrot Explorer</title>
     <style>
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #121212;
-            font-family: 'Arial', sans-serif;
-            color: #f0f0f0;
-            overflow: hidden;
-        }
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #121212;
+        font-family: 'Arial', sans-serif;
+        color: #f0f0f0;
+        overflow: hidden;
+      }
 
-        header {
-            width: 100%;
-            padding: 10px 0;
-            text-align: center;
-            background-color: #1e1e1e;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
+      header {
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
 
-        h1 {
-            margin: 0;
-            font-size: 24px;
-        }
+      h1 {
+        margin: 0;
+        font-size: 24px;
+      }
 
-        #canvasContainer {
-            position: relative;
-            margin: 20px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
+      #canvasContainer {
+        position: relative;
+        margin: 20px 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      }
 
-        canvas {
-            display: block;
-            background-color: #000;
-            border: 1px solid #333;
-        }
+      canvas {
+        display: block;
+        background-color: #000;
+        border: 1px solid #333;
+      }
 
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px;
+        background-color: #1e1e1e;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+        background-color: #3a3a3a;
+        color: #fff;
+        border: 1px solid #555;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      button:hover {
+        background-color: #4a4a4a;
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      select,
+      input {
+        padding: 8px;
+        background-color: #2a2a2a;
+        color: #fff;
+        border: 1px solid #555;
+        border-radius: 4px;
+      }
+
+      .color-picker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .info-panel {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        pointer-events: none;
+      }
+
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
         .controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 10px;
-            background-color: #1e1e1e;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+          flex-direction: column;
+          align-items: center;
         }
-
-        button {
-            padding: 8px 16px;
-            font-size: 14px;
-            background-color: #3a3a3a;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #4a4a4a;
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        select, input {
-            padding: 8px;
-            background-color: #2a2a2a;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 4px;
-        }
-
-        .color-picker {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .info-panel {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            pointer-events: none;
-        }
-
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>Mandelbrot Explorer</h1>
+      <h1>Mandelbrot Explorer</h1>
     </header>
-
     <div id="canvasContainer">
-        <canvas id="mandelbrotCanvas"></canvas>
-        <div class="info-panel">
-            <div id="coordinates">X: 0.0 Y: 0.0</div>
-            <div id="zoomLevel">Zoom: 1.0x</div>
-            <div id="iterations">Iterations: 100</div>
-        </div>
-        <div class="loading" id="loadingIndicator">Rendering...</div>
+      <canvas id="mandelbrotCanvas"></canvas>
+      <div class="info-panel">
+        <div id="coordinates">X: 0.0 Y: 0.0</div>
+        <div id="zoomLevel">Zoom: 1.0x</div>
+        <div id="iterations">Iterations: 100</div>
+      </div>
+      <div class="loading" id="loadingIndicator">Rendering...</div>
     </div>
-
     <div class="controls">
-        <button id="resetButton">Reset View</button>
-        <button id="zoomInButton">Zoom In</button>
-        <button id="zoomOutButton">Zoom Out</button>
-
-        <select id="colorScheme">
-            <option value="grayscale">Grayscale</option>
-            <option value="rainbow">Rainbow</option>
-            <option value="fire">Fire</option>
-            <option value="ocean">Ocean</option>
-            <option value="electric">Electric</option>
-        </select>
-
-        <div class="color-picker">
-            <label for="iterationsInput">Max Iterations:</label>
-            <input type="number" id="iterationsInput" min="50" max="1000" step="50" value="100">
-        </div>
-
-        <button id="screenshotButton">Take Screenshot</button>
+      <button id="resetButton">Reset View</button>
+      <button id="zoomInButton">Zoom In</button>
+      <button id="zoomOutButton">Zoom Out</button>
+      <select id="colorScheme">
+        <option value="grayscale">Grayscale</option>
+        <option value="rainbow">Rainbow</option>
+        <option value="fire">Fire</option>
+        <option value="ocean">Ocean</option>
+        <option value="electric">Electric</option>
+      </select>
+      <div class="color-picker">
+        <label for="iterationsInput">Max Iterations:</label>
+        <input type="number" id="iterationsInput" min="50" max="1000" step="50" value="100">
+      </div>
+      <button id="screenshotButton">Take Screenshot</button>
     </div>
-
     <script>
+      const canvas = document.getElementById('mandelbrotCanvas');
+      const ctx = canvas.getContext('2d');
+      const resetButton = document.getElementById('resetButton');
+      const zoomInButton = document.getElementById('zoomInButton');
+      const zoomOutButton = document.getElementById('zoomOutButton');
+      const colorSchemeSelect = document.getElementById('colorScheme');
+      const iterationsInput = document.getElementById('iterationsInput');
+      const screenshotButton = document.getElementById('screenshotButton');
+      const coordinatesDisplay = document.getElementById('coordinates');
+      const zoomLevelDisplay = document.getElementById('zoomLevel');
+      const iterationsDisplay = document.getElementById('iterations');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+      let zoom = 1;
+      let offsetX = -0.5;
+      let offsetY = 0;
+      let startX = 0;
+      let startY = 0;
+      let isDragging = false;
+      let maxIterations = 100;
+      let colorScheme = 'grayscale';
+      let mouseX = 0;
+      let mouseY = 0;
+      let isRendering = false;
+      let workers = [];
+      let numWorkers = Math.max(2, navigator.hardwareConcurrency || 4);
 
-        const canvas = document.getElementById('mandelbrotCanvas');
-        const ctx = canvas.getContext('2d');
-        const resetButton = document.getElementById('resetButton');
-        const zoomInButton = document.getElementById('zoomInButton');
-        const zoomOutButton = document.getElementById('zoomOutButton');
-        const colorSchemeSelect = document.getElementById('colorScheme');
-        const iterationsInput = document.getElementById('iterationsInput');
-        const screenshotButton = document.getElementById('screenshotButton');
-        const coordinatesDisplay = document.getElementById('coordinates');
-        const zoomLevelDisplay = document.getElementById('zoomLevel');
-        const iterationsDisplay = document.getElementById('iterations');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-
-        let zoom = 1;
-        let offsetX = -0.5; 
-        let offsetY = 0;
-        let startX = 0;
-        let startY = 0;
-        let isDragging = false;
-        let maxIterations = 100;
-        let colorScheme = 'grayscale';
-        let mouseX = 0;
-        let mouseY = 0;
-        let isRendering = false;
-        let workers = [];
-        let numWorkers = Math.max(2, navigator.hardwareConcurrency || 4);
-
-        function resizeCanvas() {
-
-            const maxWidth = window.innerWidth * 0.9;
-            const maxHeight = window.innerHeight * 0.7;
-
-            let width, height;
-            if (maxWidth / 16 * 9 <= maxHeight) {
-                width = maxWidth;
-                height = maxWidth / 16 * 9;
-            } else {
-                height = maxHeight;
-                width = height / 9 * 16;
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            draw();
+      function resizeCanvas() {
+        const maxWidth = window.innerWidth * 0.9;
+        const maxHeight = window.innerHeight * 0.7;
+        let width, height;
+        if (maxWidth / 16 * 9 <= maxHeight) {
+          width = maxWidth;
+          height = maxWidth / 16 * 9;
+        } else {
+          height = maxHeight;
+          width = height / 9 * 16;
         }
+        canvas.width = width;
+        canvas.height = height;
+        draw();
+      }
 
-        function getColor(iteration, maxIteration) {
-
-            if (iteration === maxIteration) return [0, 0, 0];
-
-            const t = iteration / maxIteration;
-
-            switch (colorScheme) {
-                case 'grayscale':
-                    const brightness = Math.floor(255 * t);
-                    return [brightness, brightness, brightness];
-
-                case 'rainbow':
-
-                    const hue = 360 * t;
-                    return hslToRgb(hue / 360, 0.8, 0.5);
-
-                case 'fire':
-                    return [
-                        Math.floor(255 * Math.min(1, t * 3)),
-                        Math.floor(255 * Math.min(1, t * 2)),
-                        Math.floor(255 * Math.pow(t, 3))
-                    ];
-
-                case 'ocean':
-                    return [
-                        Math.floor(255 * Math.pow(t, 2)),
-                        Math.floor(255 * Math.pow(t, 1.5)),
-                        Math.floor(255 * Math.min(1, t))
-                    ];
-
-                case 'electric':
-                    return [
-                        Math.floor(255 * Math.pow(t, 0.5)),
-                        Math.floor(255 * Math.pow(1 - t, 2)),
-                        Math.floor(255 * Math.min(1, t * 3))
-                    ];
-
-                default:
-                    return [255 * t, 255 * t, 255 * t];
-            }
+      function getColor(iteration, maxIteration) {
+        if (iteration === maxIteration) return [0, 0, 0];
+        const t = iteration / maxIteration;
+        switch (colorScheme) {
+          case 'grayscale':
+            const brightness = Math.floor(255 * t);
+            return [brightness, brightness, brightness];
+          case 'rainbow':
+            const hue = 360 * t;
+            return hslToRgb(hue / 360, 0.8, 0.5);
+          case 'fire':
+            return [
+              Math.floor(255 * Math.min(1, t * 3)),
+              Math.floor(255 * Math.min(1, t * 2)),
+              Math.floor(255 * Math.pow(t, 3))
+            ];
+          case 'ocean':
+            return [
+              Math.floor(255 * Math.pow(t, 2)),
+              Math.floor(255 * Math.pow(t, 1.5)),
+              Math.floor(255 * Math.min(1, t))
+            ];
+          case 'electric':
+            return [
+              Math.floor(255 * Math.pow(t, 0.5)),
+              Math.floor(255 * Math.pow(1 - t, 2)),
+              Math.floor(255 * Math.min(1, t * 3))
+            ];
+          default:
+            return [255 * t, 255 * t, 255 * t];
         }
+      }
 
-        function hslToRgb(h, s, l) {
-            let r, g, b;
-            if (s === 0) {
-                r = g = b = l;
-            } else {
-                const hue2rgb = (p, q, t) => {
-                    if (t < 0) t += 1;
-                    if (t > 1) t -= 1;
-                    if (t < 1/6) return p + (q - p) * 6 * t;
-                    if (t < 1/2) return q;
-                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                    return p;
-                };
-
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1/3);
-            }
-
-            return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+      function hslToRgb(h, s, l) {
+        let r, g, b;
+        if (s === 0) {
+          r = g = b = l;
+        } else {
+          const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+          };
+          const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          const p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1 / 3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1 / 3);
         }
+        return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+      }
 
-        function mandelbrot(x, y, maxIter) {
-            let real = x;
-            let imag = y;
-            let i = 0;
-            let realSquared = real * real;
-            let imagSquared = imag * imag;
-
-            const q = (real - 0.25) * (real - 0.25) + imagSquared;
-            if (q * (q + (real - 0.25)) < 0.25 * imagSquared || 
-                (real + 1) * (real + 1) + imagSquared < 0.0625) {
-                return maxIter;
-            }
-
-            while (i < maxIter && realSquared + imagSquared < 4) {
-                imag = 2 * real * imag + y;
-                real = realSquared - imagSquared + x;
-                realSquared = real * real;
-                imagSquared = imag * imag;
-                i++;
-            }
-
-            if (i < maxIter) {
-
-                const log_zn = Math.log(realSquared + imagSquared) / 2;
-                const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
-                i = i + 1 - nu;
-            }
-
-            return i;
+      function mandelbrot(x, y, maxIter) {
+        let real = x;
+        let imag = y;
+        let i = 0;
+        let realSquared = real * real;
+        let imagSquared = imag * imag;
+        const q = (real - 0.25) * (real - 0.25) + imagSquared;
+        if (q * (q + (real - 0.25)) < 0.25 * imagSquared || (real + 1) * (real + 1) + imagSquared < 0.0625) {
+          return maxIter;
         }
+        while (i < maxIter && realSquared + imagSquared < 4) {
+          imag = 2 * real * imag + y;
+          real = realSquared - imagSquared + x;
+          realSquared = real * real;
+          imagSquared = imag * imag;
+          i++;
+        }
+        if (i < maxIter) {
+          const log_zn = Math.log(realSquared + imagSquared) / 2;
+          const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
+          i = i + 1 - nu;
+        }
+        return i;
+      }
 
-        function draw() {
-            if (isRendering) {
+      function draw() {
+        if (isRendering) {
+          workers.forEach(worker => worker.terminate());
+          workers = [];
+        }
+        isRendering = true;
+        loadingIndicator.style.display = 'block';
+        const width = canvas.width;
+        const height = canvas.height;
+        const chunkHeight = Math.ceil(height / numWorkers);
+        ctx.clearRect(0, 0, width, height);
+        const imageData = ctx.createImageData(width, height);
+        let completedChunks = 0;
+        iterationsDisplay.textContent = `Iterations: ${maxIterations}`;
+        zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
+        for (let workerIndex = 0; workerIndex < numWorkers; workerIndex++) {
+          const yStart = workerIndex * chunkHeight;
+          const yEnd = Math.min(yStart + chunkHeight, height);
+          const worker = new Worker(URL.createObjectURL(new Blob([`
+            function mandelbrot(x, y, maxIter) {
+                let real = x;
+                let imag = y;
+                let i = 0;
+                let realSquared = real * real;
+                let imagSquared = imag * imag;
 
-                workers.forEach(worker => worker.terminate());
-                workers = [];
+                const q = (real - 0.25) * (real - 0.25) + imagSquared;
+                if (q * (q + (real - 0.25)) < 0.25 * imagSquared || 
+                    (real + 1) * (real + 1) + imagSquared < 0.0625) {
+                    return maxIter;
+                }
+
+                while (i < maxIter && realSquared + imagSquared < 4) {
+                    imag = 2 * real * imag + y;
+                    real = realSquared - imagSquared + x;
+                    realSquared = real * real;
+                    imagSquared = imag * imag;
+                    i++;
+                }
+
+                if (i < maxIter) {
+                    const log_zn = Math.log(realSquared + imagSquared) / 2;
+                    const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
+                    i = i + 1 - nu;
+                }
+
+                return i;
             }
 
-            isRendering = true;
-            loadingIndicator.style.display = 'block';
-
-            const width = canvas.width;
-            const height = canvas.height;
-            const chunkHeight = Math.ceil(height / numWorkers);
-
-            ctx.clearRect(0, 0, width, height);
-
-            const imageData = ctx.createImageData(width, height);
-            let completedChunks = 0;
-
-            iterationsDisplay.textContent = `Iterations: ${maxIterations}`;
-            zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
-
-            for (let workerIndex = 0; workerIndex < numWorkers; workerIndex++) {
-                const yStart = workerIndex * chunkHeight;
-                const yEnd = Math.min(yStart + chunkHeight, height);
-
-                const worker = new Worker(URL.createObjectURL(new Blob([`
-                    function mandelbrot(x, y, maxIter) {
-                        let real = x;
-                        let imag = y;
-                        let i = 0;
-                        let realSquared = real * real;
-                        let imagSquared = imag * imag;
-
-                        const q = (real - 0.25) * (real - 0.25) + imagSquared;
-                        if (q * (q + (real - 0.25)) < 0.25 * imagSquared || 
-                            (real + 1) * (real + 1) + imagSquared < 0.0625) {
-                            return maxIter;
-                        }
-
-                        while (i < maxIter && realSquared + imagSquared < 4) {
-                            imag = 2 * real * imag + y;
-                            real = realSquared - imagSquared + x;
-                            realSquared = real * real;
-                            imagSquared = imag * imag;
-                            i++;
-                        }
-
-                        if (i < maxIter) {
-                            const log_zn = Math.log(realSquared + imagSquared) / 2;
-                            const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
-                            i = i + 1 - nu;
-                        }
-
-                        return i;
-                    }
-
-                    function hslToRgb(h, s, l) {
-                        let r, g, b;
-                        if (s === 0) {
-                            r = g = b = l;
-                        } else {
-                            const hue2rgb = (p, q, t) => {
-                                if (t < 0) t += 1;
-                                if (t > 1) t -= 1;
-                                if (t < 1/6) return p + (q - p) * 6 * t;
-                                if (t < 1/2) return q;
-                                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                                return p;
-                            };
-
-                            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                            const p = 2 * l - q;
-                            r = hue2rgb(p, q, h + 1/3);
-                            g = hue2rgb(p, q, h);
-                            b = hue2rgb(p, q, h - 1/3);
-                        }
-
-                        return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
-                    }
-
-                    function getColor(iteration, maxIteration, scheme) {
-                        if (iteration === maxIteration) return [0, 0, 0];
-
-                        const t = iteration / maxIteration;
-
-                        switch (scheme) {
-                            case 'grayscale':
-                                const brightness = Math.floor(255 * t);
-                                return [brightness, brightness, brightness];
-
-                            case 'rainbow':
-                                const hue = 360 * t;
-                                return hslToRgb(hue / 360, 0.8, 0.5);
-
-                            case 'fire':
-                                return [
-                                    Math.floor(255 * Math.min(1, t * 3)),
-                                    Math.floor(255 * Math.min(1, t * 2)),
-                                    Math.floor(255 * Math.pow(t, 3))
-                                ];
-
-                            case 'ocean':
-                                return [
-                                    Math.floor(255 * Math.pow(t, 2)),
-                                    Math.floor(255 * Math.pow(t, 1.5)),
-                                    Math.floor(255 * Math.min(1, t))
-                                ];
-
-                            case 'electric':
-                                return [
-                                    Math.floor(255 * Math.pow(t, 0.5)),
-                                    Math.floor(255 * Math.pow(1 - t, 2)),
-                                    Math.floor(255 * Math.min(1, t * 3))
-                                ];
-
-                            default:
-                                return [255 * t, 255 * t, 255 * t];
-                        }
-                    }
-
-                    self.onmessage = function(e) {
-                        const { width, height, yStart, yEnd, offsetX, offsetY, zoom, maxIterations, colorScheme } = e.data;
-
-                        const buffer = new Uint8ClampedArray(width * (yEnd - yStart) * 4);
-
-                        for (let y = yStart; y < yEnd; y++) {
-                            for (let x = 0; x < width; x++) {
-
-                                const real = (x - width / 2) / (0.5 * zoom * width) + offsetX;
-                                const imag = (y - height / 2) / (0.5 * zoom * height) + offsetY;
-
-                                const iteration = mandelbrot(real, imag, maxIterations);
-
-                                const [r, g, b] = getColor(iteration, maxIterations, colorScheme);
-
-                                const bufferIndex = ((y - yStart) * width + x) * 4;
-                                buffer[bufferIndex] = r;
-                                buffer[bufferIndex + 1] = g;
-                                buffer[bufferIndex + 2] = b;
-                                buffer[bufferIndex + 3] = 255;
-                            }
-                        }
-
-                        self.postMessage({
-                            buffer,
-                            yStart,
-                            yEnd
-                        }, [buffer.buffer]);
+            function hslToRgb(h, s, l) {
+                let r, g, b;
+                if (s === 0) {
+                    r = g = b = l;
+                } else {
+                    const hue2rgb = (p, q, t) => {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1/6) return p + (q - p) * 6 * t;
+                        if (t < 1/2) return q;
+                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                        return p;
                     };
-                `], { type: 'application/javascript' })));
 
-                workers.push(worker);
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+                    r = hue2rgb(p, q, h + 1/3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1/3);
+                }
 
-                worker.onmessage = function(e) {
-                    const { buffer, yStart, yEnd } = e.data;
-
-                    const chunk = new Uint8ClampedArray(buffer);
-                    let pixel = 0;
-                    for (let y = yStart; y < yEnd; y++) {
-                        for (let x = 0; x < width; x++) {
-                            const dataIndex = (y * width + x) * 4;
-                            imageData.data[dataIndex] = chunk[pixel++];
-                            imageData.data[dataIndex + 1] = chunk[pixel++];
-                            imageData.data[dataIndex + 2] = chunk[pixel++];
-                            imageData.data[dataIndex + 3] = chunk[pixel++];
-                        }
-                    }
-
-                    ctx.putImageData(imageData, 0, 0);
-
-                    completedChunks++;
-                    if (completedChunks === numWorkers) {
-                        isRendering = false;
-                        loadingIndicator.style.display = 'none';
-                    }
-                };
-
-                worker.postMessage({
-                    width,
-                    height,
-                    yStart,
-                    yEnd,
-                    offsetX,
-                    offsetY,
-                    zoom,
-                    maxIterations,
-                    colorScheme
-                });
+                return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
             }
-        }
 
-        function onMouseWheel(event) {
-            event.preventDefault();
-            const zoomFactor = event.deltaY < 0 ? 1.5 : 0.67;
-            zoomAtPoint(event.clientX, event.clientY, zoomFactor);
-        }
+            function getColor(iteration, maxIteration, scheme) {
+                if (iteration === maxIteration) return [0, 0, 0];
 
-        function zoomAtPoint(clientX, clientY, zoomFactor) {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = clientX - rect.left;
-            const mouseY = clientY - rect.top;
+                const t = iteration / maxIteration;
 
-            const normalizedX = (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width) + offsetX;
-            const normalizedY = (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height) + offsetY;
+                switch (scheme) {
+                    case 'grayscale':
+                        const brightness = Math.floor(255 * t);
+                        return [brightness, brightness, brightness];
 
-            zoom *= zoomFactor;
+                    case 'rainbow':
+                        const hue = 360 * t;
+                        return hslToRgb(hue / 360, 0.8, 0.5);
 
-            offsetX = normalizedX - (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width);
-            offsetY = normalizedY - (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height);
+                    case 'fire':
+                        return [
+                            Math.floor(255 * Math.min(1, t * 3)),
+                            Math.floor(255 * Math.min(1, t * 2)),
+                            Math.floor(255 * Math.pow(t, 3))
+                        ];
 
-            zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
+                    case 'ocean':
+                        return [
+                            Math.floor(255 * Math.pow(t, 2)),
+                            Math.floor(255 * Math.pow(t, 1.5)),
+                            Math.floor(255 * Math.min(1, t))
+                        ];
 
-            draw();
-        }
+                    case 'electric':
+                        return [
+                            Math.floor(255 * Math.pow(t, 0.5)),
+                            Math.floor(255 * Math.pow(1 - t, 2)),
+                            Math.floor(255 * Math.min(1, t * 3))
+                        ];
 
-        function updateCoordinates(event) {
-            const rect = canvas.getBoundingClientRect();
-            mouseX = event.clientX - rect.left;
-            mouseY = event.clientY - rect.top;
-
-            const realX = (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width) + offsetX;
-            const realY = (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height) + offsetY;
-
-            coordinatesDisplay.textContent = `X: ${realX.toFixed(6)} Y: ${realY.toFixed(6)}`;
-        }
-
-        function onMouseDown(event) {
-            startX = event.clientX;
-            startY = event.clientY;
-            isDragging = true;
-            canvas.style.cursor = 'grabbing';
-        }
-
-        function onMouseMove(event) {
-            updateCoordinates(event);
-
-            if (isDragging) {
-                const dx = (event.clientX - startX) / canvas.width;
-                const dy = (event.clientY - startY) / canvas.height;
-
-                offsetX -= dx * 3 / zoom;
-                offsetY -= dy * 3 / zoom;
-
-                startX = event.clientX;
-                startY = event.clientY;
-
-                draw();
-            }
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            canvas.style.cursor = 'crosshair';
-        }
-
-        function animateResetView(duration) {
-            const startTime = performance.now();
-            const startZoom = zoom;
-            const startOffsetX = offsetX;
-            const startOffsetY = offsetY;
-            const targetZoom = 1;
-            const targetOffsetX = -0.5;
-            const targetOffsetY = 0;
-
-            function animate(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                const easeOutQuad = (t) => t * (2 - t);
-                const easedProgress = easeOutQuad(progress);
-
-                zoom = startZoom + (targetZoom - startZoom) * easedProgress;
-                offsetX = startOffsetX + (targetOffsetX - startOffsetX) * easedProgress;
-                offsetY = startOffsetY + (targetOffsetY - startOffsetY) * easedProgress;
-
-                zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
-                draw();
-
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
+                    default:
+                        return [255 * t, 255 * t, 255 * t];
                 }
             }
 
-            requestAnimationFrame(animate);
+            self.onmessage = function(e) {
+                const { width, height, yStart, yEnd, offsetX, offsetY, zoom, maxIterations, colorScheme } = e.data;
+
+                const buffer = new Uint8ClampedArray(width * (yEnd - yStart) * 4);
+
+                for (let y = yStart; y < yEnd; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const real = (x - width / 2) / (0.5 * zoom * width) + offsetX;
+                        const imag = (y - height / 2) / (0.5 * zoom * height) + offsetY;
+
+                        const iteration = mandelbrot(real, imag, maxIterations);
+
+                        const [r, g, b] = getColor(iteration, maxIterations, colorScheme);
+
+                        const bufferIndex = ((y - yStart) * width + x) * 4;
+                        buffer[bufferIndex] = r;
+                        buffer[bufferIndex + 1] = g;
+                        buffer[bufferIndex + 2] = b;
+                        buffer[bufferIndex + 3] = 255;
+                    }
+                }
+
+                self.postMessage({
+                    buffer,
+                    yStart,
+                    yEnd
+                }, [buffer.buffer]);
+            };
+        `], {
+            type: 'application/javascript'
+          })));
+          workers.push(worker);
+          worker.onmessage = function(e) {
+            const {
+              buffer,
+              yStart,
+              yEnd
+            } = e.data;
+            const chunk = new Uint8ClampedArray(buffer);
+            let pixel = 0;
+            for (let y = yStart; y < yEnd; y++) {
+              for (let x = 0; x < width; x++) {
+                const dataIndex = (y * width + x) * 4;
+                imageData.data[dataIndex] = chunk[pixel++];
+                imageData.data[dataIndex + 1] = chunk[pixel++];
+                imageData.data[dataIndex + 2] = chunk[pixel++];
+                imageData.data[dataIndex + 3] = chunk[pixel++];
+              }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            completedChunks++;
+            if (completedChunks === numWorkers) {
+              isRendering = false;
+              loadingIndicator.style.display = 'none';
+            }
+          };
+          worker.postMessage({
+            width,
+            height,
+            yStart,
+            yEnd,
+            offsetX,
+            offsetY,
+            zoom,
+            maxIterations,
+            colorScheme
+          });
         }
+      }
 
-        function takeScreenshot() {
-            const link = document.createElement('a');
-            link.download = `mandelbrot-${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+      function onMouseWheel(event) {
+        event.preventDefault();
+
+        if (!isRendering) {
+          const zoomFactor = event.deltaY < 0 ? 1.5 : 0.67;
+          zoomAtPoint(event.clientX, event.clientY, zoomFactor);
         }
+      }
 
-        window.addEventListener('resize', resizeCanvas);
-        canvas.addEventListener('wheel', onMouseWheel);
-        canvas.addEventListener('mousedown', onMouseDown);
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
-        resetButton.addEventListener('click', () => animateResetView(1000));
-        zoomInButton.addEventListener('click', () => zoomAtPoint(canvas.width/2, canvas.height/2, 2));
-        zoomOutButton.addEventListener('click', () => zoomAtPoint(canvas.width/2, canvas.height/2, 0.5));
-        colorSchemeSelect.addEventListener('change', () => {
-            colorScheme = colorSchemeSelect.value;
-            draw();
-        });
-        iterationsInput.addEventListener('change', () => {
-            maxIterations = parseInt(iterationsInput.value, 10);
-            draw();
-        });
-        screenshotButton.addEventListener('click', takeScreenshot);
+      function zoomAtPoint(clientX, clientY, zoomFactor) {
 
+        if (isRendering) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = clientX - rect.left;
+        const mouseY = clientY - rect.top;
+        const normalizedX = (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width) + offsetX;
+        const normalizedY = (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height) + offsetY;
+        zoom *= zoomFactor;
+        offsetX = normalizedX - (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width);
+        offsetY = normalizedY - (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height);
+        zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
+        draw();
+      }
+
+      function updateCoordinates(event) {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = event.clientX - rect.left;
+        mouseY = event.clientY - rect.top;
+        const realX = (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width) + offsetX;
+        const realY = (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height) + offsetY;
+        coordinatesDisplay.textContent = `X: ${realX.toFixed(6)} Y: ${realY.toFixed(6)}`;
+      }
+
+      function onMouseDown(event) {
+        startX = event.clientX;
+        startY = event.clientY;
+        isDragging = true;
+        canvas.style.cursor = 'grabbing';
+      }
+
+      function onMouseMove(event) {
+        updateCoordinates(event);
+        if (isDragging) {
+          const dx = (event.clientX - startX) / canvas.width;
+          const dy = (event.clientY - startY) / canvas.height;
+          offsetX -= dx * 3 / zoom;
+          offsetY -= dy * 3 / zoom;
+          startX = event.clientX;
+          startY = event.clientY;
+          draw();
+        }
+      }
+
+      function onMouseUp() {
+        isDragging = false;
         canvas.style.cursor = 'crosshair';
+      }
 
-        resizeCanvas();
+      function animateResetView(duration) {
+        const startTime = performance.now();
+        const startZoom = zoom;
+        const startOffsetX = offsetX;
+        const startOffsetY = offsetY;
+        const targetZoom = 1;
+        const targetOffsetX = -0.5;
+        const targetOffsetY = 0;
+
+        function animate(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeOutQuad = (t) => t * (2 - t);
+          const easedProgress = easeOutQuad(progress);
+          zoom = startZoom + (targetZoom - startZoom) * easedProgress;
+          offsetX = startOffsetX + (targetOffsetX - startOffsetX) * easedProgress;
+          offsetY = startOffsetY + (targetOffsetY - startOffsetY) * easedProgress;
+          zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
+          draw();
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function takeScreenshot() {
+        const link = document.createElement('a');
+        link.download = `mandelbrot-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+      window.addEventListener('resize', resizeCanvas);
+      canvas.addEventListener('wheel', onMouseWheel);
+      canvas.addEventListener('mousedown', onMouseDown);
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+      resetButton.addEventListener('click', () => {
+        if (!isRendering) {
+          animateResetView(1000);
+        }
+      });
+      zoomInButton.addEventListener('click', () => {
+        if (!isRendering) {
+          zoomAtPoint(canvas.width / 2, canvas.height / 2, 2);
+        }
+      });
+      zoomOutButton.addEventListener('click', () => {
+        if (!isRendering) {
+          zoomAtPoint(canvas.width / 2, canvas.height / 2, 0.5);
+        }
+      });
+      colorSchemeSelect.addEventListener('change', () => {
+        colorScheme = colorSchemeSelect.value;
+        draw();
+      });
+      iterationsInput.addEventListener('change', () => {
+        maxIterations = parseInt(iterationsInput.value, 10);
+        draw();
+      });
+      screenshotButton.addEventListener('click', takeScreenshot);
+      canvas.style.cursor = 'crosshair';
+      resizeCanvas();
     </script>
-</body>
+  </body>
 </html>
