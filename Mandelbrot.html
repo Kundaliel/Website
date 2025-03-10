@@ -292,129 +292,129 @@
           const yStart = workerIndex * chunkHeight;
           const yEnd = Math.min(yStart + chunkHeight, height);
           const worker = new Worker(URL.createObjectURL(new Blob([`
-            function mandelbrot(x, y, maxIter) {
-                let real = x;
-                let imag = y;
-                let i = 0;
-                let realSquared = real * real;
-                let imagSquared = imag * imag;
+      function mandelbrot(x, y, maxIter) {
+          let real = x;
+          let imag = y;
+          let i = 0;
+          let realSquared = real * real;
+          let imagSquared = imag * imag;
 
-                const q = (real - 0.25) * (real - 0.25) + imagSquared;
-                if (q * (q + (real - 0.25)) < 0.25 * imagSquared || 
-                    (real + 1) * (real + 1) + imagSquared < 0.0625) {
-                    return maxIter;
-                }
+          const q = (real - 0.25) * (real - 0.25) + imagSquared;
+          if (q * (q + (real - 0.25)) < 0.25 * imagSquared || 
+              (real + 1) * (real + 1) + imagSquared < 0.0625) {
+              return maxIter;
+          }
 
-                while (i < maxIter && realSquared + imagSquared < 4) {
-                    imag = 2 * real * imag + y;
-                    real = realSquared - imagSquared + x;
-                    realSquared = real * real;
-                    imagSquared = imag * imag;
-                    i++;
-                }
+          while (i < maxIter && realSquared + imagSquared < 4) {
+              imag = 2 * real * imag + y;
+              real = realSquared - imagSquared + x;
+              realSquared = real * real;
+              imagSquared = imag * imag;
+              i++;
+          }
 
-                if (i < maxIter) {
-                    const log_zn = Math.log(realSquared + imagSquared) / 2;
-                    const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
-                    i = i + 1 - nu;
-                }
+          if (i < maxIter) {
+              const log_zn = Math.log(realSquared + imagSquared) / 2;
+              const nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
+              i = i + 1 - nu;
+          }
 
-                return i;
-            }
+          return i;
+      }
 
-            function hslToRgb(h, s, l) {
-                let r, g, b;
-                if (s === 0) {
-                    r = g = b = l;
-                } else {
-                    const hue2rgb = (p, q, t) => {
-                        if (t < 0) t += 1;
-                        if (t > 1) t -= 1;
-                        if (t < 1/6) return p + (q - p) * 6 * t;
-                        if (t < 1/2) return q;
-                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                        return p;
-                    };
+      function hslToRgb(h, s, l) {
+          let r, g, b;
+          if (s === 0) {
+              r = g = b = l;
+          } else {
+              const hue2rgb = (p, q, t) => {
+                  if (t < 0) t += 1;
+                  if (t > 1) t -= 1;
+                  if (t < 1/6) return p + (q - p) * 6 * t;
+                  if (t < 1/2) return q;
+                  if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                  return p;
+              };
 
-                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                    const p = 2 * l - q;
-                    r = hue2rgb(p, q, h + 1/3);
-                    g = hue2rgb(p, q, h);
-                    b = hue2rgb(p, q, h - 1/3);
-                }
+              const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+              const p = 2 * l - q;
+              r = hue2rgb(p, q, h + 1/3);
+              g = hue2rgb(p, q, h);
+              b = hue2rgb(p, q, h - 1/3);
+          }
 
-                return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
-            }
+          return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+      }
 
-            function getColor(iteration, maxIteration, scheme) {
-                if (iteration === maxIteration) return [0, 0, 0];
+      function getColor(iteration, maxIteration, scheme) {
+          if (iteration === maxIteration) return [0, 0, 0];
 
-                const t = iteration / maxIteration;
+          const t = iteration / maxIteration;
 
-                switch (scheme) {
-                    case 'grayscale':
-                        const brightness = Math.floor(255 * t);
-                        return [brightness, brightness, brightness];
+          switch (scheme) {
+              case 'grayscale':
+                  const brightness = Math.floor(255 * t);
+                  return [brightness, brightness, brightness];
 
-                    case 'rainbow':
-                        const hue = 360 * t;
-                        return hslToRgb(hue / 360, 0.8, 0.5);
+              case 'rainbow':
+                  const hue = 360 * t;
+                  return hslToRgb(hue / 360, 0.8, 0.5);
 
-                    case 'fire':
-                        return [
-                            Math.floor(255 * Math.min(1, t * 3)),
-                            Math.floor(255 * Math.min(1, t * 2)),
-                            Math.floor(255 * Math.pow(t, 3))
-                        ];
+              case 'fire':
+                  return [
+                      Math.floor(255 * Math.min(1, t * 3)),
+                      Math.floor(255 * Math.min(1, t * 2)),
+                      Math.floor(255 * Math.pow(t, 3))
+                  ];
 
-                    case 'ocean':
-                        return [
-                            Math.floor(255 * Math.pow(t, 2)),
-                            Math.floor(255 * Math.pow(t, 1.5)),
-                            Math.floor(255 * Math.min(1, t))
-                        ];
+              case 'ocean':
+                  return [
+                      Math.floor(255 * Math.pow(t, 2)),
+                      Math.floor(255 * Math.pow(t, 1.5)),
+                      Math.floor(255 * Math.min(1, t))
+                  ];
 
-                    case 'electric':
-                        return [
-                            Math.floor(255 * Math.pow(t, 0.5)),
-                            Math.floor(255 * Math.pow(1 - t, 2)),
-                            Math.floor(255 * Math.min(1, t * 3))
-                        ];
+              case 'electric':
+                  return [
+                      Math.floor(255 * Math.pow(t, 0.5)),
+                      Math.floor(255 * Math.pow(1 - t, 2)),
+                      Math.floor(255 * Math.min(1, t * 3))
+                  ];
 
-                    default:
-                        return [255 * t, 255 * t, 255 * t];
-                }
-            }
+              default:
+                  return [255 * t, 255 * t, 255 * t];
+          }
+      }
 
-            self.onmessage = function(e) {
-                const { width, height, yStart, yEnd, offsetX, offsetY, zoom, maxIterations, colorScheme } = e.data;
+      self.onmessage = function(e) {
+          const { width, height, yStart, yEnd, offsetX, offsetY, zoom, maxIterations, colorScheme } = e.data;
 
-                const buffer = new Uint8ClampedArray(width * (yEnd - yStart) * 4);
+          const buffer = new Uint8ClampedArray(width * (yEnd - yStart) * 4);
 
-                for (let y = yStart; y < yEnd; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const real = (x - width / 2) / (0.5 * zoom * width) + offsetX;
-                        const imag = (y - height / 2) / (0.5 * zoom * height) + offsetY;
+          for (let y = yStart; y < yEnd; y++) {
+              for (let x = 0; x < width; x++) {
+                  const real = (x - width / 2) / (0.5 * zoom * width) + offsetX;
+                  const imag = (y - height / 2) / (0.5 * zoom * height) + offsetY;
 
-                        const iteration = mandelbrot(real, imag, maxIterations);
+                  const iteration = mandelbrot(real, imag, maxIterations);
 
-                        const [r, g, b] = getColor(iteration, maxIterations, colorScheme);
+                  const [r, g, b] = getColor(iteration, maxIterations, colorScheme);
 
-                        const bufferIndex = ((y - yStart) * width + x) * 4;
-                        buffer[bufferIndex] = r;
-                        buffer[bufferIndex + 1] = g;
-                        buffer[bufferIndex + 2] = b;
-                        buffer[bufferIndex + 3] = 255;
-                    }
-                }
+                  const bufferIndex = ((y - yStart) * width + x) * 4;
+                  buffer[bufferIndex] = r;
+                  buffer[bufferIndex + 1] = g;
+                  buffer[bufferIndex + 2] = b;
+                  buffer[bufferIndex + 3] = 255;
+              }
+          }
 
-                self.postMessage({
-                    buffer,
-                    yStart,
-                    yEnd
-                }, [buffer.buffer]);
-            };
-        `], {
+          self.postMessage({
+              buffer,
+              yStart,
+              yEnd
+          }, [buffer.buffer]);
+      };
+  `], {
             type: 'application/javascript'
           })));
           workers.push(worker);
@@ -458,7 +458,6 @@
 
       function onMouseWheel(event) {
         event.preventDefault();
-
         if (!isRendering) {
           const zoomFactor = event.deltaY < 0 ? 1.5 : 0.67;
           zoomAtPoint(event.clientX, event.clientY, zoomFactor);
@@ -466,14 +465,17 @@
       }
 
       function zoomAtPoint(clientX, clientY, zoomFactor) {
-
         if (isRendering) return;
         const rect = canvas.getBoundingClientRect();
         const mouseX = clientX - rect.left;
         const mouseY = clientY - rect.top;
         const normalizedX = (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width) + offsetX;
         const normalizedY = (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height) + offsetY;
-        zoom *= zoomFactor;
+        let newZoom = zoom * zoomFactor;
+        if (newZoom < 0.1) {
+          newZoom = 0.1;
+        }
+        zoom = newZoom;
         offsetX = normalizedX - (mouseX - canvas.width / 2) / (0.5 * zoom * canvas.width);
         offsetY = normalizedY - (mouseY - canvas.height / 2) / (0.5 * zoom * canvas.height);
         zoomLevelDisplay.textContent = `Zoom: ${zoom.toFixed(1)}x`;
