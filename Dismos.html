@@ -159,6 +159,153 @@
             font-style: italic;
         }
 
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            width: 80%;
+            max-width: 900px;
+            max-height: 80vh;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #222;
+            color: white;
+            border-bottom: 1px solid #444;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .json-editor {
+            flex: 1;
+            width: 100%;
+            min-height: 300px;
+            padding: 10px;
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            white-space: pre;
+            overflow: auto;
+            tab-size: 2;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 15px 20px;
+            background-color: #222;
+            border-top: 1px solid #444;
+        }
+
+        .modal-button {
+            padding: 8px 15px;
+            background-color: #222;
+            color: white;
+            border: 1px solid gold;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            border-color: orange;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-button.primary {
+            background-color: #2a5885;
+            border-color: #2a5885;
+        }
+
+        .modal-button.primary:hover {
+            background-color: #3a6fa5;
+            border-color: #3a6fa5;
+        }
+
+        .modal-error {
+            color: #ff6b6b;
+            padding: 10px 0;
+            font-size: 14px;
+            display: none;
+        }
+
+        .editor-controls {
+            display: flex;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .editor-button {
+            padding: 5px 10px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #666;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .editor-button:hover {
+            background-color: #444;
+            border-color: #888;
+        }
+
         @media (max-width: 768px) {
             .top {
                 flex-wrap: wrap;
@@ -184,6 +331,11 @@
             .save-item button {
                 margin-top: 5px;
             }
+
+            .modal-container {
+                width: 95%;
+                max-height: 90vh;
+            }
         }
     </style>
 </head>
@@ -202,10 +354,37 @@
     </div>
     <div id="saveList"></div>
     <div id="calculator"></div>
+
+    <!-- JSON Editor Modal -->
+    <div id="jsonEditorModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">Edit JSON State - <span id="editSaveName">Untitled</span></div>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="editor-controls">
+                    <button class="editor-button" id="formatJson">Format JSON</button>
+                    <button class="editor-button" id="minifyJson">Minify JSON</button>
+                    <button class="editor-button" id="resetJson">Reset to Original</button>
+                </div>
+                <div class="modal-error" id="jsonError"></div>
+                <textarea id="jsonEditor" class="json-editor" spellcheck="false"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-button" id="cancelEdit">Cancel</button>
+                <button class="modal-button primary" id="saveJsonChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
 
         var elt = document.getElementById('calculator');
         var calculator = Desmos.GraphingCalculator(elt);
+
+        let currentEditingSaveName = '';
+        let originalJsonState = '';
 
         function showNotification(message) {
 
@@ -333,6 +512,15 @@
                     }(saveName, saveInput));
                     buttonContainer.appendChild(editButton);
 
+                    var jsonEditButton = document.createElement('button');
+                    jsonEditButton.textContent = 'Edit JSON';
+                    jsonEditButton.addEventListener('click', function(saveName) {
+                        return function() {
+                            openJsonEditor(saveName);
+                        };
+                    }(saveName));
+                    buttonContainer.appendChild(jsonEditButton);
+
                     saveItem.appendChild(buttonContainer);
                     saveList.appendChild(saveItem);
                 }
@@ -345,6 +533,107 @@
                 saveList.appendChild(noSaves);
             }
         }
+
+        function openJsonEditor(saveName) {
+            currentEditingSaveName = saveName;
+            document.getElementById('editSaveName').textContent = saveName;
+
+            try {
+                const savedState = localStorage.getItem('desmosState_' + saveName);
+                if (savedState) {
+
+                    const jsonObj = JSON.parse(savedState);
+                    originalJsonState = savedState;
+                    const formattedJson = JSON.stringify(jsonObj, null, 2);
+
+                    document.getElementById('jsonEditor').value = formattedJson;
+                    document.getElementById('jsonEditorModal').classList.add('active');
+                    document.getElementById('jsonError').style.display = 'none';
+
+                    setTimeout(() => {
+                        document.getElementById('jsonEditor').focus();
+                    }, 100);
+                }
+            } catch (error) {
+                showNotification('Error loading JSON: ' + error.message);
+            }
+        }
+
+        function closeJsonEditor() {
+            document.getElementById('jsonEditorModal').classList.remove('active');
+            currentEditingSaveName = '';
+            originalJsonState = '';
+        }
+
+        document.getElementById('formatJson').addEventListener('click', function() {
+            const editor = document.getElementById('jsonEditor');
+            try {
+                const jsonObj = JSON.parse(editor.value);
+                editor.value = JSON.stringify(jsonObj, null, 2);
+                document.getElementById('jsonError').style.display = 'none';
+            } catch (error) {
+                document.getElementById('jsonError').textContent = 'Invalid JSON: ' + error.message;
+                document.getElementById('jsonError').style.display = 'block';
+            }
+        });
+
+        document.getElementById('minifyJson').addEventListener('click', function() {
+            const editor = document.getElementById('jsonEditor');
+            try {
+                const jsonObj = JSON.parse(editor.value);
+                editor.value = JSON.stringify(jsonObj);
+                document.getElementById('jsonError').style.display = 'none';
+            } catch (error) {
+                document.getElementById('jsonError').textContent = 'Invalid JSON: ' + error.message;
+                document.getElementById('jsonError').style.display = 'block';
+            }
+        });
+
+        document.getElementById('resetJson').addEventListener('click', function() {
+            if (originalJsonState) {
+                try {
+                    const jsonObj = JSON.parse(originalJsonState);
+                    document.getElementById('jsonEditor').value = JSON.stringify(jsonObj, null, 2);
+                    document.getElementById('jsonError').style.display = 'none';
+                } catch (error) {
+                    document.getElementById('jsonError').textContent = 'Error resetting JSON: ' + error.message;
+                    document.getElementById('jsonError').style.display = 'block';
+                }
+            }
+        });
+
+        document.getElementById('saveJsonChanges').addEventListener('click', function() {
+            if (!currentEditingSaveName) return;
+
+            const jsonEditor = document.getElementById('jsonEditor');
+            try {
+
+                const jsonObj = JSON.parse(jsonEditor.value);
+
+                localStorage.setItem('desmosState_' + currentEditingSaveName, JSON.stringify(jsonObj));
+
+                const currentState = calculator.getState();
+
+                if (JSON.stringify(currentState) === originalJsonState) {
+                    calculator.setState(jsonObj);
+                }
+
+                showNotification('JSON changes saved for "' + currentEditingSaveName + '"');
+                closeJsonEditor();
+            } catch (error) {
+                document.getElementById('jsonError').textContent = 'Invalid JSON: ' + error.message;
+                document.getElementById('jsonError').style.display = 'block';
+            }
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', closeJsonEditor);
+        document.getElementById('closeModal').addEventListener('click', closeJsonEditor);
+
+        document.getElementById('jsonEditorModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeJsonEditor();
+            }
+        });
 
         document.getElementById('createSaveButton').addEventListener('click', function() {
             var saveName = document.getElementById('saveName').value.trim();
@@ -450,13 +739,35 @@
 
         document.addEventListener('keydown', function(event) {
 
-            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
-                event.preventDefault();
-                document.getElementById('createSaveButton').click();
+            if (event.key === 'Escape') {
+                if (document.getElementById('jsonEditorModal').classList.contains('active')) {
+                    closeJsonEditor();
+                } else if (document.getElementById('saveList').style.display === 'block') {
+                    document.getElementById('toggleSavesButton').click();
+                }
             }
 
-            if (event.key === 'Escape' && document.getElementById('saveList').style.display === 'block') {
-                document.getElementById('toggleSavesButton').click();
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+
+                if (document.getElementById('jsonEditorModal').classList.contains('active')) {
+                    document.getElementById('saveJsonChanges').click();
+                } else {
+                    document.getElementById('createSaveButton').click();
+                }
+            }
+
+            if (event.key === 'Tab' && document.getElementById('jsonEditorModal').classList.contains('active')) {
+                const editor = document.getElementById('jsonEditor');
+                if (document.activeElement === editor) {
+                    event.preventDefault();
+                    const start = editor.selectionStart;
+                    const end = editor.selectionEnd;
+
+                    editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+
+                    editor.selectionStart = editor.selectionEnd = start + 2;
+                }
             }
         });
 
