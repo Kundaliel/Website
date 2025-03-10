@@ -619,8 +619,8 @@
             updateBlockDisplay();
             updateCurrentTime();
 
-            setInterval(updateBlockDisplay, 1000);
-            setInterval(updateCurrentTime, 1000);
+            setInterval(updateBlockDisplay, 0);
+            setInterval(updateCurrentTime, 0);
 
             darkModeBtn.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
