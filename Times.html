@@ -434,11 +434,8 @@
         const hours = Math.floor(totalMinutes / 60);
         const minutes = Math.floor(totalMinutes % 60);
         const seconds = Math.floor((totalMinutes % 1) * 60);
-        if (hours > 0) {
-          return `${hours}h ${minutes}m`;
-        } else {
-          return `${minutes}m ${seconds}s`;
-        }
+
+        return `${hours}h ${minutes}m ${seconds}s`;
       }
 
       function formatTimeDisplay(date) {
@@ -564,10 +561,12 @@
           blockProgressEl.style.width = `${blockInfo.percentComplete}%`;
 
           const totalMillisecondsRemaining = Math.round(blockInfo.timeRemaining * 60000);
-          const minutesRemaining = Math.floor(totalMillisecondsRemaining / 60000);
+          const hoursRemaining = Math.floor(totalMillisecondsRemaining / 3600000);
+          const minutesRemaining = Math.floor((totalMillisecondsRemaining % 3600000) / 60000);
           const secondsRemaining = Math.floor((totalMillisecondsRemaining % 60000) / 1000);
 
-          countdownEl.textContent = `${minutesRemaining}:${secondsRemaining.toString().padStart(2, '0')}`;
+          countdownEl.textContent = `${hoursRemaining}:${minutesRemaining.toString().padStart(2, '0')}:${secondsRemaining.toString().padStart(2, '0')}`;
+
           const nextBlock = blockSchedule[blockInfo.nextBlockIndex];
           nextBlockEl.innerHTML = `Next: 
 					<span>${nextBlock.name}</span> at ${formatBlockTimeDisplay(nextBlock.start)}`;
@@ -583,9 +582,12 @@
             const nextBlock = blockSchedule[blockInfo.nextBlockIndex];
 
             const totalMillisecondsUntil = Math.round(blockInfo.timeUntilNext * 60000);
-            const minutesUntil = Math.floor(totalMillisecondsUntil / 60000);
+            const hoursUntil = Math.floor(totalMillisecondsUntil / 3600000);
+            const minutesUntil = Math.floor((totalMillisecondsUntil % 3600000) / 60000);
             const secondsUntil = Math.floor((totalMillisecondsUntil % 60000) / 1000);
-            countdownEl.textContent = `${minutesUntil}:${secondsUntil.toString().padStart(2, '0')} until next block`;
+
+            countdownEl.textContent = `${hoursUntil}:${minutesUntil.toString().padStart(2, '0')}:${secondsUntil.toString().padStart(2, '0')} until next block`;
+
             nextBlockEl.innerHTML = `Next: 
 					<span>${nextBlock.name}</span> at ${formatBlockTimeDisplay(nextBlock.start)}`;
             if (blockInfo.timeUntilNext <= 5 && blockInfo.timeUntilNext > 4.9) {
