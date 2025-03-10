@@ -1,187 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found - asdasdsdfwe.site</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --text-color: #333;
-            --light-text: #7f8c8d;
-            --background: #f9fafb;
-            --card-bg: #ffffff;
-            --border-radius: 6px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--background);
-            color: var(--text-color);
-            line-height: 1.6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 650px;
-            width: 100%;
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            overflow: hidden;
-        }
-        
-        .header {
-            background-color: var(--primary-color);
-            padding: 25px 40px;
-            color: white;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .logo {
-            font-weight: 700;
-            font-size: 22px;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-        
-        .content {
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .error-illustration {
-            margin-bottom: 30px;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .error-code {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        
-        .error-message {
-            font-size: 24px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-        
-        .description {
-            color: var(--light-text);
-            margin-bottom: 30px;
-            font-size: 16px;
-            max-width: 480px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .actions {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .primary-button {
-            background-color: var(--accent-color);
-            color: white;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            min-width: 200px;
-        }
-        
-        .primary-button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-        
-        .secondary-links {
-            margin-top: 20px;
-            color: var(--light-text);
-            font-size: 14px;
-        }
-        
-        .secondary-links a {
-            color: var(--accent-color);
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.2s;
-        }
-        
-        .secondary-links a:hover {
-            color: #2980b9;
-            text-decoration: underline;
-        }
-        
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-size: 13px;
-            color: var(--light-text);
-        }
-
-        /* SVG styles for the illustration */
-        .page-not-found {
-            width: 180px;
-            height: 180px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">asdasdsdfwe.site</div>
-        </div>
-        <div class="content">
-            <div class="error-illustration">
-                <svg class="page-not-found" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 2.26953V6.40007C14 6.96012 14 7.24015 14.109 7.45406C14.2049 7.64222 14.3578 7.7952 14.546 7.89108C14.7599 8.00007 15.0399 8.00007 15.6 8.00007H19.7305" stroke="#2c3e50" stroke-width="1.5" stroke-linejoin="round"/>
-                    <path d="M8.5 10H12.5" stroke="#3498db" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M10.5 12H12.5" stroke="#3498db" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M8.5 14H12.5" stroke="#3498db" stroke-width="1.5" stroke-linecap="round"/>
-                    <rect x="4" y="2" width="16" height="20" rx="2" stroke="#2c3e50" stroke-width="1.5"/>
-                    <path d="M18 18L21 21M21 18L18 21" stroke="#e74c3c" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-            </div>
-            <h1 class="error-code">404</h1>
-            <h2 class="error-message">Page Not Found</h2>
-            <p class="description">
-                We couldn't find the page you were looking for. It might have been removed, renamed, or didn't exist in the first place.
-            </p>
-            <div class="actions">
-                <a href="https://asdasdsdfwe.site" class="primary-button">Return to Homepage</a>
-                <div class="secondary-links">
-                    <a href="https://asdasdsdfwe.site/sitemap.xml">View Sitemap</a>
-                </div>
-            </div>
-            <div class="footer">
-                &copy; 2025 asdasdsdfwe.site. All rights reserved.
-            </div>
-        </div>
-    </div>
-</body>
+<!DOCTYPE HTML>
+		<html>
+	<head><link rel="dns-prefetch" href="https://code.jquery.com/" ><link rel="dns-prefetch" href="https://cdn.mysitemapgenerator.com/" >
+			<title>Sitemap</title>
+			<meta name="description" content="asdasdsdfwe.site Sitemap" />
+			<meta name="keywords" content="asdasdsdfwe.site, Sitemap" />
+			<meta name="generator" content="Mystemapgenerator.com HTML Sitemap" />
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+		<style type="text/css">
+		* {box-sizing: border-box !important;}html {font-family: sans-serif;}body { background:#fff; max-width:980px; margin:0 auto; padding:5px; font: 14px "Arial", Tahoma, sans-serif; min-height: 100%; }h1 { font-size: 26px; }div.footerinfo { margin-top:16px; color:#666; font-size:12px; text-align:right; }div.footerinfo * { font-size:12px; }.sitemap{margin:5em 0}.primaryNav{clear:both;width:100%;margin-top:3em 0}.primaryNav #home{position:absolute;margin-top:-3em;margin-bottom:0;min-width:14.5em;width:100%}.primaryNav #home:before{display:none}.primaryNav #home.long-cell:before{display:block;position:absolute;border-width:0;border-color:#ccc;border-style:solid;z-index:-1;border-left-width:2px;border-top-width:2px;top:1.375em}@media screen and (max-width:1111px){.primaryNav #home.long-cell:before{left:-40px;box-shadow:-10px 0 0 0 #fff}}.primaryNav #home img{float:left;margin-right:4px}.primaryNav ul{display:flex;flex-wrap:wrap;list-style:none;position:relative;padding-inline-start:40px}.primaryNav li{flex:1;flex-basis:14.5em;padding-right:1.25em;position:relative;min-width:14.5em}.primaryNav li ul li{min-width:12.5em}.primaryNav li ul li ul li{min-width:10.5em}.primaryNav>ul>li{margin-top:3em}.primaryNav li a{margin:0;padding:.875em .9375em .9375em .9375em;display:block;font-size:.9375em;background:#fff;border:1px solid #ccc;border-radius:3px;box-shadow:0 3px 3px #666;text-decoration:none}.primaryNav li a:hover{box-shadow:0 3px 3px 1px #666}.primaryNav a:link:after,.primaryNav a:visited:after,.utilityNav a:link:after,.utilityNav a:visited:after{display:block;font-weight:600;font-size:.75em;margin-top:.25em;word-wrap:break-word;color:#666}.primaryNav ul ul{display:block}.primaryNav ul ul li{padding-top:.9875em;padding-right:0}.primaryNav ul ul li:first-child{padding-top:2em}.primaryNav ul ul ul{margin-top:.6em;padding-top:.6em;padding-bottom:.625em}.primaryNav ul ul ul li{padding-top:.3125em;padding-bottom:.3125em}.primaryNav ul ul ul li a{font-size:.75em;padding:.75em;min-width:90%;width:auto;margin-right:0;margin-left:auto}.primaryNav ul ul ul li:first-child{padding-top:1em}.primaryNav ul ul ul li a:link:after,.primaryNav ul ul ul li a:visited:after{font-size:.75em}.primaryNav ul ul ul ul{margin-top:0;padding-top:.3125em;padding-bottom:.3125em}.primaryNav ul ul ul ul li a{padding:.75em;min-width:80%;width:auto}.primaryNav ul ul ul ul li a:link:after,.primaryNav ul ul ul ul li a:visited:after{display:none}.primaryNav ul li:after,.primaryNav ul li:before,.primaryNav ul:after,.primaryNav ul:before{display:block;content:'';position:absolute;border-width:0;border-color:#ccc;border-style:solid;z-index:-2}.primaryNav>ul>li:before{height:1.375em;top:-1.375em;right:calc(50% + .625em);width:calc(100% - 2px);border-top-width:2px;border-right-width:2px}.primaryNav>ul>li:first-child+li:before{border-top-width:0;height:5em;top:-5em}.primaryNav ul ul li:after{width:50%;height:.9875em;top:0;right:1px;border-left-width:2px}.primaryNav ul ul li:first-child:before{width:50%;height:1.3125em;top:.9875em;right:1px;border-left-width:2px}.primaryNav>ul>li:last-child:after{border-bottom-width:0}.primaryNav ul ul ul li:before{width:calc(50% - 15px)!important;height:calc(100% - 2px);top:-50%;left:0;border-left-width:2px;border-bottom-width:2px}.primaryNav ul ul ul li:first-child:before{height:2.125em;top:-1px;border-top-width:2px}.primaryNav ul ul ul:before{width:50%;height:1.25em;top:-10px;right:1px;border-left-width:2px}.primaryNav ul ul ul li:after{border-width:0}.primaryNav ul ul ul ul li:before,.primaryNav ul ul ul ul li:first-child:before{display:none}.primaryNav ul ul ul ul:before{width:1px;height:calc(100% + 2.5em);top:-2.5em;left:0;border-left-width:2px}@media screen and (max-width:30em){.primaryNav ul{display:block}.primaryNav li{width:100%;padding-right:0}.primaryNav #home{width:100%;position:relative;margin-bottom:-1em;margin-top:0}}@media screen and (min-width:30em){.primaryNav>ul>li{max-width:50%}}@media screen and (min-width:38.5em){.primaryNav>ul>li{max-width:33%}}@media screen and (min-width:50em){.primaryNav>ul>li{max-width:25%}}@media screen and (min-width:61em){.primaryNav>ul>li{max-width:20%}}@media screen and (min-width:73em){.primaryNav>ul>li{max-width:16.66%}}@media screen and (min-width:84.5em){.primaryNav>ul>li{max-width:14.285%}}@media screen and (min-width:96em){.primaryNav>ul>li{max-width:12.5%}}@media screen and (min-width:107.5em){.primaryNav>ul>li{max-width:11.11%}}@media screen and (min-width:119em){.primaryNav>ul>li{max-width:10%}}a[href$="#"]{cursor:default;color:#333}.collapsed_item{display:none!important;cursor:pointer!important}.expand_items a{color:#333!important;text-align:center;cursor:pointer!important}a[href$="#"]:not(.collapsed_item,.expand_items a):before{content:""}
+		</style>
+		</head>
+		<body>
+		<h1>Sitemap</h1><script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		       <script src="https://cdn.mysitemapgenerator.com/api/htmlsitemaps.min.js"></script>
+		       <div class="sitemap"><nav class="primaryNav"><ul><li id="home"><a href="https://asdasdsdfwe.site/"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjUxMHB4IiBoZWlnaHQ9IjUxMHB4IiB2aWV3Qm94PSIwIDAgNTEwIDUxMCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTEwIDUxMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGcgaWQ9ImhvbWUiPg0KCQk8cG9seWdvbiBwb2ludHM9IjIwNCw0NzEuNzUgMjA0LDMxOC43NSAzMDYsMzE4Ljc1IDMwNiw0NzEuNzUgNDMzLjUsNDcxLjc1IDQzMy41LDI2Ny43NSA1MTAsMjY3Ljc1IDI1NSwzOC4yNSAwLDI2Ny43NSANCgkJCTc2LjUsMjY3Ljc1IDc2LjUsNDcxLjc1IAkJIi8+DQoJPC9nPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPC9zdmc+DQo=" width="16" height="16" alt="homepage" /> Home Page</a></li>
+<li><a href="https://asdasdsdfwe.site/suffix.html">Suffix Generator</a></li>
+<li><a href="https://asdasdsdfwe.site/School-Countdown.html">Countdown To School's End 2025</a></li>
+<li><a href="https://asdasdsdfwe.site/Dismos.html">Dismos</a></li>
+<li><a href="https://asdasdsdfwe.site/Saves.html">Text List Manager</a></li>
+<li><a href="https://asdasdsdfwe.site/Times.html">Block Schedule Tracker</a></li>
+<li><a href="https://asdasdsdfwe.site/Mandelbrot.html">Enhanced Mandelbrot Explorer</a></li>
+</ul>
+</nav>
+			</div>
+		</div>
+		</body>
 </html>
