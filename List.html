@@ -5,190 +5,332 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft Server Ranks</title>
     <style>
+        :root {
+            --designer-color: #55AAFF;
+            --architect-color: #55FF55;
+            --engineer-color: #FFAA00;
+            --creator-color: #FF5555;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Minecraft', Arial, sans-serif;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QgLEhcbN6O72AAAALhJREFUaN7t2LEKwjAUheF/eroIdXERx+oLiG/jA/gMTqJLcezhDsISLCTtbXPPt4Z7hrCEm5MxxhhjjLHz5zo87Pmuy+BdRERkHXqzDTP08vP8c0iiNPQSdP+KSJSCXqK+rxGJUtBL0vcjIlEKesn6fxCJUtBL9vdCJEpBL8XrVESiFPRS/N5GJEpBL1W9ExCJUtBLVe8XRCLpaoa9nHt5cO7VMRQxqjM44ZeLjlNwXHydKcYYY4wxxua9AEAkGmbtAEheAAAAAElFTkSuQmCC');
+            background-repeat: repeat;
+        }
+        
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f0f0f0;
-            color: #333;
         }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #444;
+            border-radius: 5px;
+        }
+        
         h1 {
-            color: #2c3e50;
+            font-size: 2.5rem;
+            color: #FFAA00;
+            text-shadow: 2px 2px #000000;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #AAAAAA;
+        }
+        
+        .ranks-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .rank-card {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 2px solid #444;
+            border-radius: 5px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .rank-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .designer-card {
+            border-color: var(--designer-color);
+        }
+        
+        .architect-card {
+            border-color: var(--architect-color);
+        }
+        
+        .engineer-card {
+            border-color: var(--engineer-color);
+        }
+        
+        .creator-card {
+            border-color: var(--creator-color);
+        }
+        
+        .rank-name {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
             text-align: center;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
+            padding: 5px;
+            border-radius: 3px;
         }
-        h2 {
-            color: #2980b9;
-            border-left: 4px solid #3498db;
-            padding-left: 10px;
+        
+        .designer-name {
+            background-color: var(--designer-color);
+            color: #000;
         }
-        h3 {
-            color: #1abc9c;
+        
+        .architect-name {
+            background-color: var(--architect-color);
+            color: #000;
         }
-        .rank-section {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        
+        .engineer-name {
+            background-color: var(--engineer-color);
+            color: #000;
         }
-        .donor-rank {
-            border-left: 4px solid #e74c3c;
-            padding-left: 10px;
-            background-color: rgba(231, 76, 60, 0.05);
+        
+        .creator-name {
+            background-color: var(--creator-color);
+            color: #000;
         }
+        
         .price {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        ul {
-            list-style-type: square;
-        }
-        ol {
-            list-style-type: decimal;
-        }
-        hr {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 20px 0;
-        }
-        .rank-number {
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            width: 25px;
-            height: 25px;
+            font-size: 1.8rem;
             text-align: center;
-            border-radius: 50%;
-            margin-right: 10px;
+            margin: 15px 0;
+            color: #ffffff;
+            text-shadow: 1px 1px #000000;
+        }
+        
+        .perks-title {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #AAAAAA;
+        }
+        
+        .perks-list {
+            list-style-type: none;
+        }
+        
+        .perks-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .perks-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .perks-list li::before {
+            content: "✓ ";
+            color: #55FF55;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .buy-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background-color: #555;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .designer-button {
+            background-color: var(--designer-color);
+            color: #000;
+        }
+        
+        .architect-button {
+            background-color: var(--architect-color);
+            color: #000;
+        }
+        
+        .engineer-button {
+            background-color: var(--engineer-color);
+            color: #000;
+        }
+        
+        .creator-button {
+            background-color: var(--creator-color);
+            color: #000;
+        }
+        
+        .buy-button:hover {
+            filter: brightness(120%);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .ranks-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Minecraft font mimicking */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/minecraft-font/1.0/minecraft-font.woff') format('woff'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/minecraft-font/1.0/minecraft-font.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
         }
     </style>
 </head>
 <body>
-    <h1>Server Ranks & Privileges</h1>
-    
-    <div class="rank-section">
-        <h2>Player Progression Ranks</h2>
-        <ol>
-            <li><strong>Guest</strong> – Can chat, look around, and explore but cannot build or interact.</li>
-            <li><strong>Recruit</strong> – Can place/break blocks in designated areas, use basic commands.</li>
-            <li><strong>Member</strong> – Full building rights, can use <code>/tpa</code>, <code>/home</code>, and economy commands.</li>
-            <li><strong>Trainee</strong> – Limited staff training rank; can mute/warn but not ban.</li>
-            <li><strong>Jr. Trainee</strong> – Can assist with moderation, access to staff chat.</li>
-            <li><strong>Sr. Trainee</strong> – Can kick, basic punishments, and access to staff tools.</li>
-        </ol>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Builder & Creative Specialists</h2>
-        <ol start="7">
-            <li><strong>Builder</strong> – Extra WorldEdit permissions, access to creative mode in build areas.</li>
-            <li><strong>Artist</strong> – Can use map art tools, armor stand editors, and pixel art features.</li>
-        </ol>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Premium Membership Tiers</h2>
+    <div class="container">
+        <header>
+            <h1>SERVER RANKS</h1>
+            <p class="subtitle">Choose the perfect rank to enhance your gameplay experience</p>
+        </header>
         
-        <div class="donor-rank">
-            <h3>DESIGNER RANK - <span class="price">€2.99</span></h3>
-            <strong>Perks:</strong>
-            <ul>
-                <li>Access to <code>/effect</code></li>
-                <li>Access to <code>/chatcolor</code></li>
-                <li>Access to <code>/chatgradient</code></li>
-                <li>Access to the donator world</li>
-                <li>Access to all gamemodes</li>
-                <li>Teleport to other players</li>
-                <li>2 ender chest inventories</li>
-                <li>Access to <code>/yell</code> (make donator announcements!)</li>
-            </ul>
+        <div class="ranks-container">
+            <!-- DESIGNER RANK -->
+            <div class="rank-card designer-card">
+                <div class="rank-name designer-name">Designer Rank</div>
+                <div class="price">€2.99</div>
+                <div class="perks-title">PERKS</div>
+                <ul class="perks-list">
+                    <li>Access to /effect</li>
+                    <li>Access to /chatcolor</li>
+                    <li>Access to /chatgradient</li>
+                    <li>Access to the donator world</li>
+                    <li>Access to all gamemodes</li>
+                    <li>Teleport to other players</li>
+                    <li>2 ender chest inventories</li>
+                    <li>Access to /yell (make donator announcements!)</li>
+                </ul>
+                <a href="https://50xcreative.tebex.io/checkout/packages/add/5240531/single" class="buy-button designer-button" target="_blank">Purchase Now</a>
+            </div>
+            
+            <!-- UPGRADE: DESIGNER TO ARCHITECT -->
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                <div style="background-color: rgba(0, 0, 0, 0.7); border: 2px solid #444; border-radius: 5px; padding: 15px; width: 100%; text-align: center;">
+                    <p style="font-weight: bold; color: var(--designer-color);">Designer</p>
+                    <p style="font-size: 1.5rem; margin: 5px 0;">↓</p>
+                    <p style="font-weight: bold; color: var(--architect-color);">Architect</p>
+                    <p style="font-size: 1.5rem; margin-top: 10px;">€1.49</p>
+                </div>
+            </div>
+            
+            <!-- ARCHITECT RANK -->
+            <div class="rank-card architect-card">
+                <div class="rank-name architect-name">Architect Rank</div>
+                <div class="price">€5.99</div>
+                <div class="perks-title">PERKS</div>
+                <ul class="perks-list">
+                    <li>All previous rank perks</li>
+                    <li>Ability to change rank prefix once per month</li>
+                    <li>Access to more special cosmetics</li>
+                    <li>Access to 4 plots in Plots</li>
+                </ul>
+                <a href="https://50xcreative.tebex.io/checkout/packages/add/5240558/single" class="buy-button architect-button" target="_blank">Purchase Now</a>
+            </div>
+            
+            <!-- UPGRADE: ARCHITECT TO ENGINEER -->
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                <div style="background-color: rgba(0, 0, 0, 0.7); border: 2px solid #444; border-radius: 5px; padding: 15px; width: 100%; text-align: center;">
+                    <p style="font-weight: bold; color: var(--architect-color);">Architect</p>
+                    <p style="font-size: 1.5rem; margin: 5px 0;">↓</p>
+                    <p style="font-weight: bold; color: var(--engineer-color);">Engineer</p>
+                    <p style="font-size: 1.5rem; margin-top: 10px;">€15.99</p>
+                </div>
+            </div>
+            
+            <!-- ENGINEER RANK -->
+            <div class="rank-card engineer-card">
+                <div class="rank-name engineer-name">Engineer Rank</div>
+                <div class="price">€19.99</div>
+                <div class="perks-title">PERKS</div>
+                <ul class="perks-list">
+                    <li>All previous rank perks</li>
+                    <li>Ability to change rank prefix twice per month</li>
+                    <li>Access to more special cosmetics</li>
+                    <li>Access to all WorldEdit commands</li>
+                    <li>Able to see other players' inventories</li>
+                    <li>Access to 6 plots in Plots</li>
+                </ul>
+                <a href="https://50xcreative.tebex.io/checkout/packages/add/6294497/single" class="buy-button engineer-button" target="_blank">Purchase Now</a>
+            </div>
+            
+            <!-- UPGRADE: ENGINEER TO CREATOR -->
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                <div style="background-color: rgba(0, 0, 0, 0.7); border: 2px solid #444; border-radius: 5px; padding: 15px; width: 100%; text-align: center;">
+                    <p style="font-weight: bold; color: var(--engineer-color);">Engineer</p>
+                    <p style="font-size: 1.5rem; margin: 5px 0;">↓</p>
+                    <p style="font-weight: bold; color: var(--creator-color);">Creator</p>
+                    <p style="font-size: 1.5rem; margin-top: 10px;">€15.99</p>
+                </div>
+            </div>
+            
+            <!-- CREATOR RANK -->
+            <div class="rank-card creator-card">
+                <div class="rank-name creator-name">Creator Rank</div>
+                <div class="price">€34.99</div>
+                <div class="perks-title">PERKS</div>
+                <ul class="perks-list">
+                    <li>All previous rank perks</li>
+                    <li>Ability to change rank prefix at any time</li>
+                    <li>Access to all premium cosmetics</li>
+                    <li>Access to custom NBT items</li>
+                    <li>Able to see other players' ender chests</li>
+                    <li>Access to 10 plots in Plots</li>
+                </ul>
+                <a href="https://50xcreative.tebex.io/checkout/packages/add/6294468/single" class="buy-button creator-button" target="_blank">Purchase Now</a>
+            </div>
         </div>
         
-        <div class="donor-rank">
-            <h3>ARCHITECT RANK - <span class="price">€5.99</span></h3>
-            <strong>Perks:</strong>
-            <ul>
-                <li>All previous rank perks</li>
-                <li>Ability to change rank prefix <strong>once</strong> per month</li>
-                <li>Access to more special cosmetics</li>
-                <li>Access to <strong>4 plots</strong> in Plots</li>
-            </ul>
-        </div>
-        
-        <div class="donor-rank">
-            <h3>ENGINEER RANK - <span class="price">€19.99</span></h3>
-            <strong>Perks:</strong>
-            <ul>
-                <li>All previous rank perks</li>
-                <li>Ability to change rank prefix <strong>twice</strong> per month</li>
-                <li>Access to more special cosmetics</li>
-                <li>Access to <strong>all WorldEdit commands</strong></li>
-                <li>Able to see other players' inventories</li>
-                <li>Access to <strong>6 plots</strong> in Plots</li>
-            </ul>
-        </div>
-        
-        <div class="donor-rank">
-            <h3>CREATOR RANK - <span class="price">€34.99</span></h3>
-            <strong>Perks:</strong>
-            <ul>
-                <li>All previous rank perks</li>
-                <li>Ability to change rank prefix <strong>at any time</strong></li>
-                <li>Access to <strong>all premium cosmetics</strong></li>
-                <li>Access to <strong>custom NBT items</strong></li>
-                <li>Able to see other players' <strong>ender chests</strong></li>
-                <li>Access to <strong>10 plots</strong> in Plots</li>
-            </ul>
-        </div>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Server Protectors & Moderators</h2>
-        <ol start="18">
-            <li><strong>Jr. Mod</strong> – Can mute, warn, and moderate chat.</li>
-            <li><strong>Mod</strong> – Can kick, tempban, and rollback minor griefs.</li>
-            <li><strong>Sr. Mod</strong> – Full ban powers, region protection, and moderate grief rollback.</li>
-            <li><strong>Head Mod</strong> – Leads moderators, can assign temp staff roles.</li>
-        </ol>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Community Engagement Team</h2>
-        <ol start="22">
-            <li><strong>Supporter</strong> – Helps answer player questions, access to <code>/helpop</code>.</li>
-            <li><strong>Community Manager</strong> – Manages Discord/forums, promotes events.</li>
-            <li><strong>Event Coordinator</strong> – Can create events, use <code>/broadcast</code> for announcements.</li>
-        </ol>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Administrative Command Team</h2>
-        <ol start="25">
-            <li><strong>Jr. Admin</strong> – Can manage staff, assist with server settings.</li>
-            <li><strong>Admin</strong> – Manages permissions, server rules, major grief rollbacks.</li>
-            <li><strong>Sr. Admin</strong> – Has near full control over server management.</li>
-            <li><strong>Head Admin</strong> – Oversees all admins, final say on bans and appeals.</li>
-        </ol>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Technical Operations Team</h2>
-        <ol start="29">
-            <li><strong>Manager</strong> – Handles applications, promotions, and overall staff operations.</li>
-            <li><strong>Developer</strong> – Access to plugin files, can reload/restart the server.</li>
-        </ol>
-    </div>
-    
-    <div class="rank-section">
-        <h2>Ownership & Leadership</h2>
-        <ol>
-            <li><strong>Co-Owner</strong> – Shares owner permissions, handles major decisions.</li>
-            <li><strong>Owner</strong> – Full control over everything.</li>
-            <li><strong>Founder</strong> – The original creator, holds honorary authority.</li>
-        </ol>
+        <footer>
+            <p style="margin-top: 20px;">All purchases support the continued development of the server.</p>
+        </footer>
     </div>
 </body>
 </html>
