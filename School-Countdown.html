@@ -17,6 +17,7 @@
     position: relative;
     transition: background 0.5s ease;
     font-family: 'Arial', sans-serif;
+    overflow: hidden;
   }
 
   #countdown-container {
@@ -27,6 +28,8 @@
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
   }
 
   #countdown-title {
@@ -34,6 +37,7 @@
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   #countdown {
@@ -57,12 +61,15 @@
     border-radius: 10px;
     min-width: 80px;
     margin-bottom: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   .time-label {
     font-size: 1vw;
     display: block;
     text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   .colorSelectors {
@@ -72,8 +79,10 @@
     display: flex;
     flex-direction: row;
     background-color: rgba(255, 255, 255, 0.3);
-    padding: 10px;
-    border-radius: 10px;
+    padding: 15px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
   .colorSelectorWrapper {
@@ -99,6 +108,25 @@
     background: transparent;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    overflow: hidden;
+  }
+
+  .colorSelector::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .colorSelector::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+  }
+
+  .colorSelector::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
   }
 
   .colorSelector:hover {
@@ -106,10 +134,11 @@
   }
 
   .colorLabels {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: #333;
     font-size: 12px;
     font-weight: bold;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
   }
 
   .theme-selector {
@@ -117,8 +146,10 @@
     bottom: 20px;
     left: 20px;
     background-color: rgba(255, 255, 255, 0.3);
-    padding: 10px;
-    border-radius: 10px;
+    padding: 15px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
   .theme-button {
@@ -127,13 +158,83 @@
     cursor: pointer;
     margin: 0 5px;
     padding: 8px 15px;
-    border-radius: 5px;
+    border-radius: 20px;
     font-weight: bold;
     transition: all 0.3s;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #333;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    opacity: 0.4;
+  }
+
+  #theme1:before {
+    background-color: #3498db;
+  }
+
+  #theme2:before {
+    background-color: #2ecc71;
+  }
+
+  #theme3:before {
+    background-color: #2c3e50;
+  }
+
+  #theme4:before {
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+  }
+
+  #theme5:before {
+    background: linear-gradient(45deg, #a18cd1, #fbc2eb);
   }
 
   .theme-button:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .theme-button.active {
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    #countdown-title {
+      font-size: 5vw;
+    }
+    
+    .time-label {
+      font-size: 3vw;
+    }
+    
+    .time-number {
+      min-width: 60px;
+    }
+    
+    .colorSelectors, .theme-selector {
+      position: relative;
+      margin: 10px auto;
+      bottom: auto;
+      right: auto;
+      left: auto;
+    }
+    
+    body {
+      flex-direction: column;
+      padding: 20px;
+      height: auto;
+      min-height: 100vh;
+    }
   }
 </style>
 </head>
@@ -173,14 +274,16 @@
 </div>
 
 <div class="theme-selector">
-  <button class="theme-button" id="theme1">Blue</button>
-  <button class="theme-button" id="theme2">Green</button>
-  <button class="theme-button" id="theme3">Dark</button>
+  <button class="theme-button" id="theme1">Ocean</button>
+  <button class="theme-button" id="theme2">Forest</button>
+  <button class="theme-button" id="theme3">Night</button>
+  <button class="theme-button" id="theme4">Sunset</button>
+  <button class="theme-button" id="theme5">Dream</button>
 </div>
 
 <script>
 // Function to set the countdown text color and background color
-function setColors(textColor, bgColor) {
+function setColors(textColor, bgColor, isGradient = false) {
   document.getElementById("countdown-container").style.color = textColor;
   document.getElementById("countdown-title").style.color = textColor;
   
@@ -191,7 +294,12 @@ function setColors(textColor, bgColor) {
   });
   
   // Update body background
-  document.body.style.backgroundColor = bgColor;
+  if (isGradient) {
+    document.body.style.background = bgColor;
+  } else {
+    document.body.style.backgroundColor = bgColor;
+    document.body.style.backgroundImage = 'none';
+  }
   
   // Update labels color
   document.getElementById("textLabel").style.color = textColor;
@@ -200,16 +308,32 @@ function setColors(textColor, bgColor) {
   // Save to localStorage
   localStorage.setItem("textColor", textColor);
   localStorage.setItem("bgColor", bgColor);
+  localStorage.setItem("isGradient", isGradient);
 }
 
 // Function to update colors when the page loads
 function updateColors() {
   var savedTextColor = localStorage.getItem("textColor");
   var savedBgColor = localStorage.getItem("bgColor");
+  var isGradient = localStorage.getItem("isGradient") === "true";
+  
   if (savedTextColor && savedBgColor) {
     document.getElementById("textColor").value = savedTextColor;
-    document.getElementById("bgColor").value = savedBgColor;
-    setColors(savedTextColor, savedBgColor);
+    document.getElementById("bgColor").value = isGradient ? "#ffffff" : savedBgColor;
+    setColors(savedTextColor, savedBgColor, isGradient);
+  }
+}
+
+// Function to mark active theme
+function markActiveTheme(themeId) {
+  // Remove active class from all theme buttons
+  document.querySelectorAll('.theme-button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Add active class to selected theme
+  if (themeId) {
+    document.getElementById(themeId).classList.add('active');
   }
 }
 
@@ -254,20 +378,25 @@ document.getElementById("textColor").addEventListener("input", function() {
   var textColor = this.value;
   var bgColor = document.getElementById("bgColor").value;
   setColors(textColor, bgColor);
+  localStorage.removeItem("theme");
+  markActiveTheme(null);
 });
 
 document.getElementById("bgColor").addEventListener("input", function() {
   var textColor = document.getElementById("textColor").value;
   var bgColor = this.value;
   setColors(textColor, bgColor);
+  localStorage.removeItem("theme");
+  markActiveTheme(null);
 });
 
-// Theme presets with solid colors
+// Enhanced theme presets
 document.getElementById("theme1").addEventListener("click", function() {
   setColors("#ffffff", "#3498db");
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#3498db";
   localStorage.setItem("theme", "theme1");
+  markActiveTheme("theme1");
 });
 
 document.getElementById("theme2").addEventListener("click", function() {
@@ -275,6 +404,7 @@ document.getElementById("theme2").addEventListener("click", function() {
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#2ecc71";
   localStorage.setItem("theme", "theme2");
+  markActiveTheme("theme2");
 });
 
 document.getElementById("theme3").addEventListener("click", function() {
@@ -282,6 +412,24 @@ document.getElementById("theme3").addEventListener("click", function() {
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#2c3e50";
   localStorage.setItem("theme", "theme3");
+  markActiveTheme("theme3");
+});
+
+// New gradient themes
+document.getElementById("theme4").addEventListener("click", function() {
+  setColors("#ffffff", "linear-gradient(45deg, #ff9a9e, #fad0c4)", true);
+  document.getElementById("textColor").value = "#ffffff";
+  document.getElementById("bgColor").value = "#ff9a9e";
+  localStorage.setItem("theme", "theme4");
+  markActiveTheme("theme4");
+});
+
+document.getElementById("theme5").addEventListener("click", function() {
+  setColors("#ffffff", "linear-gradient(45deg, #a18cd1, #fbc2eb)", true);
+  document.getElementById("textColor").value = "#ffffff";
+  document.getElementById("bgColor").value = "#a18cd1";
+  localStorage.setItem("theme", "theme5");
+  markActiveTheme("theme5");
 });
 
 // Load saved theme if exists
