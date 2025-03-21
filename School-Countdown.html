@@ -421,7 +421,6 @@ Example:
 <style id="custom-styles"></style>
 
 <script>
-
 function setColors(textColor, bgColor, isGradient = false) {
   document.getElementById("countdown-container").style.color = textColor;
   document.getElementById("countdown-title").style.color = textColor;
@@ -459,7 +458,6 @@ function updateColors() {
 }
 
 function markActiveTheme(themeId) {
-
   document.querySelectorAll('.theme-button').forEach(btn => {
     btn.classList.remove('active');
   });
@@ -469,12 +467,76 @@ function markActiveTheme(themeId) {
   }
 }
 
+function getCurrentStyles() {
+  const container = document.getElementById('countdown-container');
+  const timeNumber = document.querySelector('.time-number');
+  const title = document.getElementById('countdown-title');
+  const timeLabel = document.querySelector('.time-label');
+  const countdown = document.getElementById('countdown');
+  const customStylesElement = document.getElementById('custom-styles');
+
+  let css = customStylesElement.textContent;
+
+  if (!css || css.trim() === '') {
+    css = `
+#countdown-container {
+  background-color: ${getComputedStyle(container).backgroundColor};
+  padding: ${getComputedStyle(container).padding};
+  border-radius: ${getComputedStyle(container).borderRadius};
+  box-shadow: ${getComputedStyle(container).boxShadow};
+  backdrop-filter: ${getComputedStyle(container).backdropFilter};
+}
+
+#countdown-title {
+  font-size: ${getComputedStyle(title).fontSize};
+  color: ${getComputedStyle(title).color};
+  margin-bottom: ${getComputedStyle(title).marginBottom};
+  text-transform: ${getComputedStyle(title).textTransform};
+  letter-spacing: ${getComputedStyle(title).letterSpacing};
+  text-shadow: ${getComputedStyle(title).textShadow};
+}
+
+#countdown {
+  font-size: ${getComputedStyle(countdown).fontSize};
+  text-align: ${getComputedStyle(countdown).textAlign};
+  font-weight: ${getComputedStyle(countdown).fontWeight};
+  display: ${getComputedStyle(countdown).display};
+  justify-content: ${getComputedStyle(countdown).justifyContent};
+  flex-wrap: ${getComputedStyle(countdown).flexWrap};
+}
+
+.time-number {
+  display: ${getComputedStyle(timeNumber).display};
+  background-color: ${getComputedStyle(timeNumber).backgroundColor};
+  color: ${getComputedStyle(timeNumber).color};
+  padding: ${getComputedStyle(timeNumber).padding};
+  border-radius: ${getComputedStyle(timeNumber).borderRadius};
+  min-width: ${getComputedStyle(timeNumber).minWidth};
+  margin-bottom: ${getComputedStyle(timeNumber).marginBottom};
+  box-shadow: ${getComputedStyle(timeNumber).boxShadow};
+}
+
+.time-label {
+  font-size: ${getComputedStyle(timeLabel).fontSize};
+  color: ${getComputedStyle(timeLabel).color};
+  display: ${getComputedStyle(timeLabel).display};
+  text-transform: ${getComputedStyle(timeLabel).textTransform};
+  letter-spacing: ${getComputedStyle(timeLabel).letterSpacing};
+}
+
+body {
+  background-color: ${getComputedStyle(document.body).backgroundColor};
+  background-image: ${getComputedStyle(document.body).backgroundImage};
+}`;
+  }
+
+  return css;
+}
+
 var countDownDate = new Date("May 22, 2025 00:00:00").getTime();
 
 var x = setInterval(function() {
-
   var now = new Date().getTime();
-
   var distance = countDownDate - now;
 
   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -563,6 +625,10 @@ const customStyles = document.getElementById('custom-styles');
 
 cssEditorToggle.addEventListener('click', function() {
   cssEditorPanel.classList.toggle('active');
+
+  if (cssEditorPanel.classList.contains('active')) {
+    cssEditorTextarea.value = getCurrentStyles();
+  }
 });
 
 cssApplyBtn.addEventListener('click', function() {
@@ -572,9 +638,33 @@ cssApplyBtn.addEventListener('click', function() {
 });
 
 cssResetBtn.addEventListener('click', function() {
-  cssEditorTextarea.value = '';
+
   customStyles.textContent = '';
   localStorage.removeItem('customCSS');
+
+  cssEditorTextarea.value = getCurrentStyles();
+});
+
+document.getElementById("textColor").addEventListener("change", function() {
+  if (cssEditorPanel.classList.contains('active')) {
+    cssEditorTextarea.value = getCurrentStyles();
+  }
+});
+
+document.getElementById("bgColor").addEventListener("change", function() {
+  if (cssEditorPanel.classList.contains('active')) {
+    cssEditorTextarea.value = getCurrentStyles();
+  }
+});
+
+document.querySelectorAll('.theme-button').forEach(button => {
+  button.addEventListener('click', function() {
+    if (cssEditorPanel.classList.contains('active')) {
+      setTimeout(() => {
+        cssEditorTextarea.value = getCurrentStyles();
+      }, 100); 
+    }
+  });
 });
 
 window.onload = function() {
