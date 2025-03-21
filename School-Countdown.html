@@ -30,6 +30,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
+    z-index: 10;
   }
 
   #countdown-title {
@@ -83,6 +84,7 @@
     border-radius: 15px;
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
   }
 
   .colorSelectorWrapper {
@@ -150,6 +152,7 @@
     border-radius: 15px;
     backdrop-filter: blur(5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
   }
 
   .theme-button {
@@ -202,38 +205,155 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-  
+
   .theme-button.active {
     background-color: rgba(255, 255, 255, 0.5);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+
+  .css-editor-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 10px 15px;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    z-index: 20;
+    border: none;
+    color: #333;
+  }
+
+  .css-editor-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+  }
+
+  .css-editor-panel {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 350px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .css-editor-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .css-editor-panel h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .css-editor-textarea {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  .css-editor-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .css-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+
+  .css-apply-btn {
+    background-color: #2ecc71;
+    color: white;
+  }
+
+  .css-apply-btn:hover {
+    background-color: #27ae60;
+  }
+
+  .css-reset-btn {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .css-reset-btn:hover {
+    background-color: #c0392b;
+  }
+
+  #custom-styles {
+    display: none;
   }
 
   @media (max-width: 768px) {
     #countdown-title {
       font-size: 5vw;
     }
-    
+
     .time-label {
       font-size: 3vw;
     }
-    
+
     .time-number {
       min-width: 60px;
     }
-    
+
     .colorSelectors, .theme-selector {
       position: relative;
       margin: 10px auto;
       bottom: auto;
       right: auto;
       left: auto;
+      width: 80%;
+      justify-content: center;
     }
-    
+
     body {
       flex-direction: column;
       padding: 20px;
       height: auto;
       min-height: 100vh;
+    }
+
+    .css-editor-panel {
+      width: 90%;
+      right: 5%;
+      left: 5%;
+      top: 70px;
+    }
+
+    .css-editor-toggle {
+      top: 20px;
+      right: 20px;
     }
   }
 </style>
@@ -262,6 +382,22 @@
   </div>
 </div>
 
+<!-- CSS Editor Button and Panel -->
+<button class="css-editor-toggle" id="css-editor-toggle">CSS Editor</button>
+<div class="css-editor-panel" id="css-editor-panel">
+  <h3>Custom CSS</h3>
+  <textarea class="css-editor-textarea" id="css-editor-textarea" placeholder="Enter your custom CSS here...
+Example:
+.time-number {
+  background-color: red;
+  border-radius: 20px;
+}"></textarea>
+  <div class="css-editor-buttons">
+    <button class="css-btn css-apply-btn" id="css-apply-btn">Apply CSS</button>
+    <button class="css-btn css-reset-btn" id="css-reset-btn">Reset</button>
+  </div>
+</div>
+
 <div class="colorSelectors">
   <div class="colorSelectorWrapper">
     <label for="textColor" class="colorLabels" id="textLabel">Text</label>
@@ -281,42 +417,40 @@
   <button class="theme-button" id="theme5">Dream</button>
 </div>
 
+<!-- Custom styles will be injected here -->
+<style id="custom-styles"></style>
+
 <script>
-// Function to set the countdown text color and background color
+
 function setColors(textColor, bgColor, isGradient = false) {
   document.getElementById("countdown-container").style.color = textColor;
   document.getElementById("countdown-title").style.color = textColor;
-  
-  // Update all time segments with the text color
+
   const timeNumbers = document.querySelectorAll('.time-number');
   timeNumbers.forEach(el => {
     el.style.color = textColor;
   });
-  
-  // Update body background
+
   if (isGradient) {
     document.body.style.background = bgColor;
   } else {
     document.body.style.backgroundColor = bgColor;
     document.body.style.backgroundImage = 'none';
   }
-  
-  // Update labels color
+
   document.getElementById("textLabel").style.color = textColor;
   document.getElementById("bgLabel").style.color = textColor;
-  
-  // Save to localStorage
+
   localStorage.setItem("textColor", textColor);
   localStorage.setItem("bgColor", bgColor);
   localStorage.setItem("isGradient", isGradient);
 }
 
-// Function to update colors when the page loads
 function updateColors() {
   var savedTextColor = localStorage.getItem("textColor");
   var savedBgColor = localStorage.getItem("bgColor");
   var isGradient = localStorage.getItem("isGradient") === "true";
-  
+
   if (savedTextColor && savedBgColor) {
     document.getElementById("textColor").value = savedTextColor;
     document.getElementById("bgColor").value = isGradient ? "#ffffff" : savedBgColor;
@@ -324,56 +458,46 @@ function updateColors() {
   }
 }
 
-// Function to mark active theme
 function markActiveTheme(themeId) {
-  // Remove active class from all theme buttons
+
   document.querySelectorAll('.theme-button').forEach(btn => {
     btn.classList.remove('active');
   });
-  
-  // Add active class to selected theme
+
   if (themeId) {
     document.getElementById(themeId).classList.add('active');
   }
 }
 
-// Set the date we're counting down to
 var countDownDate = new Date("May 22, 2025 00:00:00").getTime();
 
-// Update the countdown every 1 second
 var x = setInterval(function() {
-  // Get the current date and time
+
   var now = new Date().getTime();
-  
-  // Find the distance between now and the countdown date
+
   var distance = countDownDate - now;
-  
-  // Calculate days, hours, minutes, and seconds remaining
+
   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  
-  // Add leading zeros if necessary
+
   days = days < 10 ? "0" + days : days;
   hours = hours < 10 ? "0" + hours : hours;
   minutes = minutes < 10 ? "0" + minutes : minutes;
   seconds = seconds < 10 ? "0" + seconds : seconds;
-  
-  // Display each part in its own element
+
   document.getElementById("days").textContent = days;
   document.getElementById("hours").textContent = hours;
   document.getElementById("minutes").textContent = minutes;
   document.getElementById("seconds").textContent = seconds;
-  
-  // If the countdown is over, display a message
+
   if (distance < 0) {
     clearInterval(x);
     document.getElementById("countdown-container").innerHTML = "<div style='font-size: 5vw; text-align: center;'>School Is Out!</div>";
   }
 }, 1000);
 
-// Event listeners to update colors when the input changes
 document.getElementById("textColor").addEventListener("input", function() {
   var textColor = this.value;
   var bgColor = document.getElementById("bgColor").value;
@@ -390,7 +514,6 @@ document.getElementById("bgColor").addEventListener("input", function() {
   markActiveTheme(null);
 });
 
-// Enhanced theme presets
 document.getElementById("theme1").addEventListener("click", function() {
   setColors("#ffffff", "#3498db");
   document.getElementById("textColor").value = "#ffffff";
@@ -415,7 +538,6 @@ document.getElementById("theme3").addEventListener("click", function() {
   markActiveTheme("theme3");
 });
 
-// New gradient themes
 document.getElementById("theme4").addEventListener("click", function() {
   setColors("#ffffff", "linear-gradient(45deg, #ff9a9e, #fad0c4)", true);
   document.getElementById("textColor").value = "#ffffff";
@@ -432,15 +554,52 @@ document.getElementById("theme5").addEventListener("click", function() {
   markActiveTheme("theme5");
 });
 
-// Load saved theme if exists
+const cssEditorToggle = document.getElementById('css-editor-toggle');
+const cssEditorPanel = document.getElementById('css-editor-panel');
+const cssEditorTextarea = document.getElementById('css-editor-textarea');
+const cssApplyBtn = document.getElementById('css-apply-btn');
+const cssResetBtn = document.getElementById('css-reset-btn');
+const customStyles = document.getElementById('custom-styles');
+
+cssEditorToggle.addEventListener('click', function() {
+  cssEditorPanel.classList.toggle('active');
+});
+
+cssApplyBtn.addEventListener('click', function() {
+  const css = cssEditorTextarea.value;
+  customStyles.textContent = css;
+  localStorage.setItem('customCSS', css);
+});
+
+cssResetBtn.addEventListener('click', function() {
+  cssEditorTextarea.value = '';
+  customStyles.textContent = '';
+  localStorage.removeItem('customCSS');
+});
+
 window.onload = function() {
   updateColors();
-  
+
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme) {
     document.getElementById(savedTheme).click();
   }
+
+  const savedCSS = localStorage.getItem('customCSS');
+  if (savedCSS) {
+    cssEditorTextarea.value = savedCSS;
+    customStyles.textContent = savedCSS;
+  }
 };
+
+document.addEventListener('click', function(event) {
+  const isClickInsideEditor = cssEditorPanel.contains(event.target);
+  const isClickOnToggle = cssEditorToggle.contains(event.target);
+
+  if (!isClickInsideEditor && !isClickOnToggle && cssEditorPanel.classList.contains('active')) {
+    cssEditorPanel.classList.remove('active');
+  }
+});
 </script>
 
 </body>
