@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Color Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minecraft Color Code Generator</h1>
+    <p>Provide a URL fragment in the format <code>#hex1ihex2iname</code> to generate the Minecraft color-coded text.</p>
+    <pre id="output"></pre>
+
+    <script>
+        // Function to interpolate between two colors
+        function interpolateColor(color1, color2, factor) {
+            const result = color1.slice();
+            for (let i = 0; i < 3; i++) {
+                result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
+            }
+            return result;
+        }
+
+        // Function to convert a hex color to RGB
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex, 16);
+            return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+        }
+
+        // Function to convert RGB to hex
+        function rgbToHex(rgb) {
+            return rgb.map(x => {
+                const hex = x.toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+        }
+
+        // Function to generate Minecraft color codes
+        function generateMinecraftColorCodes(hex1, hex2, name) {
+            const color1 = hexToRgb(hex1);
+            const color2 = hexToRgb(hex2);
+            const length = name.length;
+            let result = '';
+
+            for (let i = 0; i < length; i++) {
+                const factor = i / (length - 1);
+                const interpolatedColor = interpolateColor(color1, color2, factor);
+                const hexColor = rgbToHex(interpolatedColor).toUpperCase();
+                result += `&x&${hexColor[0]}&${hexColor[1]}&${hexColor[2]}&${hexColor[3]}&${hexColor[4]}&${hexColor[5]}${name[i]}`;
+            }
+
+            return result;
+        }
+
+        // Function to parse the URL fragment and display the result
+        function parseFragment() {
+            const fragment = window.location.hash.substring(1); // Remove the '#' character
+            const parts = fragment.split('i');
+            if (parts.length !== 3) {
+                document.getElementById('output').textContent = 'Invalid fragment format. Expected format: #hex1ihex2iname';
+                return;
+            }
+
+            const [hex1, hex2, name] = parts;
+            if (!/^([0-9A-Fa-f]{6})$/.test(hex1) || !/^([0-9A-Fa-f]{6})$/.test(hex2)) {
+                document.getElementById('output').textContent = 'Invalid hex color codes. Ensure they are 6-digit hexadecimal numbers.';
+                return;
+            }
+
+            const minecraftCodes = generateMinecraftColorCodes(hex1, hex2, name);
+            const jsonOutput = JSON.stringify({ input: fragment, output: minecraftCodes }, null, 2);
+            document.getElementById('output').textContent = jsonOutput;
+        }
+
+        // Run the function on page load
+        window.onload = parseFragment;
+    </script>
+</body>
+</html>
