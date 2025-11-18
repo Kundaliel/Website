@@ -1,0 +1,1260 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link href="open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="edpy/css/styles.css">
+    <link rel="stylesheet" href="edpy/css/editor.css">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/jquery.loadingdotdotdot.js"></script>
+    <script src="js/js.cookie.js"></script>
+    <script src="js/edBrowserInfo.js"></script>
+    <script src="js/clipboard.min.js"></script>
+
+    <title>EdPy V3 | Python programming for the Edison V3 robot</title>
+    <meta name="description" content="Program the Edison V3 robot with EdPy V3, a MicroPython based  programming language for the Edison V3 robot. Python is a real world programming language used by professional programmers.">
+
+    <script src="js/edTrack.js"></script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'analytics_storage': 'denied'
+        });
+
+        gtag('js', new Date());
+        gtag('config', 'G-XY10MMQX4Q');
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY10MMQX4Q"></script>
+</head>
+
+<script>
+    const edVersion = '3';
+    const apiBaseURL = 'https://api.edisonrobotics.net/';
+    const updateBaseURL = 'https://api.edisonrobotics.net/firmware/';
+
+    const updateFirmwareVersion = 'v1.3.4';
+    // const updateFirmwareVersion = 'v1.3.3';
+    // const updateFirmwareVersion = 'v1.3.2';
+
+    const updateBootloaderVersion = 'v1.2.0';
+
+    // Leave empty for API default
+    const strCompiler = 'mpy-cross-v1.3.1-x64';
+</script>
+
+<!-- Browser Check -->
+<!-- <div class="modal draggable fade" id="modBrowserCheck" tabindex="-1" role="dialog" aria-labelledby="modBrowserCheckLabel" aria-hidden="true"> -->
+
+
+<div class="modal draggable fade" id="modBrowserCheck" tabindex="-1" aria-labelledby="modBrowserCheckLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
+    <div class="modal-dialog modal-dialog-centered modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Unsupported browser</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>You appear to be using: <strong><span class="exBrowserDetected"></span></strong></p>
+                <p>The Edison V3 is programmed directly from your web browser via USB. This requires that your web browser supports USB connections.</p>
+                <p>Unfortunately, <span class="exBrowserDetected"></span> does not currently support USB connections, so cannot program your Edison V3 robot.</p>
+                <p>We recommend using Google Chrome.</p>
+                <p><a href="https://www.google.com.au/chrome/" target="_blank">Get Chrome</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal - Diagnostics -->
+<div class="modal fade" id="modHelp" tabindex="-1" aria-labelledby="modHelpLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Diagnostics</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <h6>Connectivity issues</h6>
+                <p>To ensure that your program can be compiled and sent to the Edison robot, it is a good idea to check your connection with the EdPy compiler.</p>
+                <p><button type="button" id="btnHelpConnection" class="btn btn-primary btn-sm">Run the connection checker</button></p>
+                <p>&nbsp;</p>
+
+                <h6>Programming method</h6>
+                <p>This option enables you to swtich between USB and screen flash programming on this device.</p>
+                <p><button type="button" id="btnProgrammingMethod" class="btn btn-primary btn-sm">Change programming method</button></p>
+                <p>&nbsp;</p>
+
+                <h6>Firmware</h6>
+                <p>The firmware version in your Edison can be useful to know when talking to our tech support team.<br>Check that here:</p>
+                <p><button type="button" id="btnHelpStatus" class="btn btn-primary btn-sm">Get firmware version</button></p>
+                <p>&nbsp;</p>
+
+                <h6>Clear learned IR remote commands</h6>
+                <p>This option allows you to clear all learned IR remote control commands from an Edison V3 robot.</p>
+                <p>
+                    <button type="button" id="btnClearRemoteCodes" class="btn btn-primary btn-sm">Clear remote codes</button><span id="divClearRemoteCodesOutput" style="display:none;"></span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal - Diagnostics - Connection -->
+<div class="modal fade" id="modConnection" tabindex="-1" aria-labelledby="modConnectionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Connection</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div id="apiStatusHolder" class="card">
+                    <div class="card-body">
+                        <span id="apiStatusRefresh" style="float: right;">
+							<button type="button" class="btn btn-outline-secondary btn-sm"><span class="oi oi-reload"></span></button>
+                        </span>
+                        <span id="apiStatusOutput"></span>
+                    </div>
+                </div>
+                <p><strong>If the test above has the result "<span style="font-family: monospace;">NO SERVER FOUND</span>" then a firewall may be blocking access to the compiler.</strong></p>
+                <p>To rectify this, ask your network administrator to whitelist these addresses:</p>
+                <ul>
+                    <li>api.edisonrobotics.net</li>
+                    <li>wavs.edisonrobotics.net</li>
+                </ul>
+                <!-- <p>The network administrator also needs to unblock ports 80, 8080, 443 and 8443.</p> -->
+                <div class="help-footer">
+                    <a title="Back" href="#" class="aHelpBack">
+						<span class="icon ebicon-chevron-left"></span>Back to diagnostics
+					</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Status -->
+<div class="modal fade" id="modStatus" tabindex="-1" aria-labelledby="modStatusLabel" aria-hidden="true">
+    <div class="modal-dialog modal modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Firmware version</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <button id="btnStatusHubConnect" type="button" class="btn btn-primary">Connect Edison</button>
+                <div id="hubStatusHolder" class="card">
+                    <div class="card-body">
+
+                        <div id="hubStatusConnectionHolder">
+                            <span><strong>Status:</strong></span>
+                            <span id="hubStatusConnectionStatus" class="notConnected">not connected</span>
+                        </div>
+
+                        <div id="hubStatusFirmwareVersionHolder">
+                            <div><strong>Firmware version:</strong></div>
+                            <div id="hubStatusFirmwareVersion">...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-footer">
+                    <a title="Back" href="#" class="aHelpBack">
+					<span class="icon ebicon-chevron-left"></span>Back to diagnostics
+				</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Update firmware -->
+<div class="modal fade" id="modFirmwareUpdate" tabindex="-1" aria-labelledby="modFirmwareUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog modal modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update firmware</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>The latest Edison V3 firmware version is: <span id="fuLatestFirmware">...</span></strong></p>
+                <p>Use this pop-up to update the firmware in your Edison.</p>
+                <p><strong>To update Edison V3 firmware:</strong></p>
+                <p>Plug in your Edison and click the 'Update firmware' button below then follow the prompts.</p>
+                <div id="fuButtonsHolder" class=" d-flex w-100" role="group">
+                    <button id="btnFUHubConnect" type="button" class="btn btn-primary" disabled>Update firmware <span class="oi oi-chevron-right"></span></span></button>
+                    <button id="btnFUHubReconnect" type="button" class="btn btn-primary" disabled style="display:none;">Reconnect Edison <span class="oi oi-chevron-right"></span></button>
+                </div>
+                <div id="fuStatusHolder" class="card">
+                    <div class="card-body">
+                        <div style="display:none;">Status: <span id="fuStatusConnectionStatus" class="notConnected">not connected</span></div>
+                        <div style="display:none;" id="ZEBRA-hubStatusFirmwareVersionHolder">Firmware Version: <span id="fuStatusFirmwareVersion">...</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal - Output -->
+<div class="modal fade" id="modOutput" tabindex="-1" aria-labelledby="modOutputLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Compiler output</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <p><strong>Manage the compiler output type</strong></p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam velit risus, fringilla vitae porttitor ac, malesuada non justo. Donec in arcu sit amet turpis scelerisque vestibulum eget eget magna.</p>
+
+                <div id="pulseStatusHolder" class="card">
+                    <div class="card-body">
+                        <span id="pulseStatusOutput">/span>
+					</div>
+				</div>
+
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam velit risus, fringilla vitae porttitor ac, malesuada non justo. Donec in arcu sit amet turpis scelerisque vestibulum eget eget magna.</p>
+
+				<span id="btnChangePulseShort"  class="btn btn-primary btn-sm">Set to Short pulse</span>
+
+                        <span id="btnChangePulseLong" class="btn btn-primary btn-sm">Set to Long pulse</span>
+
+                        <p>&nbsp;</p>
+
+                        <p><strong>Long pulse compiler output</strong></p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam velit risus, fringilla vitae porttitor ac, malesuada non justo. Donec in arcu sit amet turpis scelerisque vestibulum eget eget magna.</p>
+
+                        <p><strong>Short pulse compiler output</strong></p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam velit risus, fringilla vitae porttitor ac, malesuada non justo. Donec in arcu sit amet turpis scelerisque vestibulum eget eget magna.</p>
+
+                        <div class="help-footer">
+                            <a title="Back" href="#" class="aHelpBack">
+						<span class="icon ebicon-chevron-left"></span>Back to diagnostics
+					</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Docs -->
+        <div class="modal fade" id="modDocs" tabindex="-1" aria-labelledby="modDocsLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="tempDocsTitle" class="modal-title">doc name...</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="tempDocsBody" class="modal-body">...</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Demos -->
+        <!-- <div class="modal fade" id="modDemos" tabindex="-1" aria-labelledby="modDemosLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Load Example</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="modDemosList"></div>
+			</div>
+		</div>
+	</div>
+</div> -->
+
+
+        <!-- Modal - Save -->
+        <div class="modal fade" id="modSave" tabindex="-1" aria-labelledby="modSaveLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Save to device</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="txtProgramName">Program name</label>
+                            <input type="text" class="form-control" id="txtProgramName" autocomplete="off" maxlength="255">
+                            <div id="divProgramNameMessageLocal" class="alert" role="alert" style="display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnSaveLocal" type="button" class="btn btn-primary">Save to device</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Load -->
+        <div class="modal fade" id="modLoad" tabindex="-1" aria-labelledby="modLoadLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Load from device</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col load-instructions">
+                                    Please select an EdPy save file.<br><span style="font-size: 85%;">All EdPy save files are file type <strong>.edpy</strong></span>.
+                                </div>
+                                <div class="col load-file-element">
+                                    <input type="file" id="modLoadFiles" name="files[]" accept=".edpy" />
+                                    <label for="modLoadFiles" />Select a file to upload...</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid load-file-feedback">
+                            <div class="row">
+                                <div class="col">
+                                    <div id="modLoadWarning"></div>
+                                    <div id="modLoadDetails"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnLoad" type="button" class="btn btn-primary" disabled>Load program</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Modal - About -->
+        <div class="modal fade" id="modAbout" tabindex="-1" aria-labelledby="modAboutLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">About EdPy</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>The EdPy app has been developed by Microbric.</strong></p>
+                        <p>
+                            Contributions and credits:<br> EdPy app and user interface developed by Sean Killian, Killian Web Development<br> EdPy programming language developed by Brian Danilko, Likeable Software and Ben Hayton, Microbric<br> Edison
+                            V3 firmware developed by Damien George, George Robotics (MicroPython code base)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Program - Wav -->
+        <div class="modal fade" id="modProgramWav" tabindex="-1" aria-labelledby="modProgramLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><span class="oi oi-media-play"></span> Program Edison</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Before clicking the 'Program Edison' button below:<br><br> 1. Connect Edison to your computer's headphone jack using the EdComm cable.<br> 2. Check that your computer's volume is at maximum.<br> 3. Press the round (record) button
+                        on Edison one time.
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnLoadingWav" type="button" class="btn btn-default" disabled>
+					<img src="edpy/images/loading.gif" alt="loading" style="height: 50px;" />
+				</button>
+                        <button id="btnPlayWav" style="display: none;" type="button" class="btn btn-default eb-play-wav">
+					Program Edison
+				</button>
+                    </div>
+                    <div id="spanErrorWav" class="text-center" style="display:none;">
+                        <p><strong>There seems to be a network issue accessing the compiler.</strong></p>
+                        <button type="button" class="btn btn-primary btn-xs spanTrouble">Click here to troubleshoot your connection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Program -->
+        <div class="modal fade" id="modProgram" tabindex="-1" aria-labelledby="modProgramLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><span class="oi oi-media-play"></span> Program</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="programStatusHolder" class="card">
+                            <div class="card-body">
+                                <div id="divProgrammingMessage"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Alert -->
+        <div class="modal fade" id="modAlert" tabindex="-1" aria-labelledby="modAlertLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="modAlertTitle" class="modal-title"></h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="modAlertBody" class="modal-body"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Loading -->
+        <div class="modal fade" id="modLoading" tabindex="-1" aria-labelledby="modLoadingLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-body" style="text-align: center;">
+                        Loading workspace...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- USB Controls -->
+
+        <div class="modal draggable fade" id="modUSB" tabindex="-1" aria-labelledby="modUSBLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 id="modAlertTitle" class="modal-title">USB Controls</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div id="usb controls">
+
+                            <div class="container usb-connect">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="button" value="Run USB" id="usbRun" class="btn btn-primary">
+                                        <span class="usb-status"><span id="usbStatus"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container usb-send">
+                                <div class="row">
+                                    <div class="col">
+                                        <span class="label">Data to USB</span>
+                                        <input type="number" id="SendUSBData" name="quantity" min="-30000" max="30000">
+                                        <input type="button" value="Send to USB" id="usbSend" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="container usb-response">
+                                <div class="row">
+                                    <div class="col">
+
+                                        <span class="label">Data from USB</span>
+                                        <div id="fromUSBdataHolder" class="card">
+                                            <div class="card-body">
+                                                <textarea id="fromUSBdata" readonly></textarea>
+                                                <div class="container usb-actions-buttons">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <input type="button" value="Clear" id="usbClear" class="btn btn-primary">
+                                                            <input type="button" value="Copy to clipboard" id="usbExport" class="btn btn-primary" data-clipboard-target="#fromUSBdata">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Firmware Error -->
+        <div class="modal draggable fade" id="modFirmwareError" tabindex="-1" role="dialog" aria-labelledby="modalFirmwareErrorLabel" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static">
+
+            <div class="modal-dialog modal-dialog-centered modal" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="divFirmwareErrorLabel" class="modal-title">Firmware error</h5>
+                    </div>
+                    <div class="modal-body">
+
+                        <p>
+                            <strong>
+                  <span id="divFirmwareErrorBody1">A corrupted firmware file has been detected in your Edison robot.</span>
+               </strong>
+                        </p>
+                        <p>
+                            <span id="divFirmwareErrorBody2">This may have occurred during a firmware update that was interrupted.</span><br>
+                            <span id="divFirmwareErrorBody3">Don't panic! This can be fixed by clicking the 'Fix firmware' button below.</span>
+                        </p>
+
+                        <div id="divFixFirmwareCancelConfirm" class="alert alert-warning" role="alert" style="display:none;">
+                            <strong><span id="divFirmwareErrorCancelBody1">Warning!</span></strong><br>
+                            <span id="divFirmwareErrorCancelBody2">Canceling this process means that your Edison robot can not be programmed.</span><br>
+                            <span id="divFirmwareErrorCancelBody3">It is recommended that you fix the firmware now by clicking the Fix firmware button.</span><br>
+                            <span id="divFirmwareErrorCancelBody4">If you choose to cancel you can fix the firmware at a later time.</span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnFixFirmwareCancelConfirm" type="button" class="btn btn-primary" style="display:none;">Confirm cancel</button> <button id="btnFixFirmwareCancel" type="button" class="btn btn-primary">Cancel</button> <button id="btnFixFirmware"
+                            type="button" class="btn btn-primary">Fix firmware</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal - Cookies -->
+        <div class="modal fade" id="modCookies" tabindex="-1" aria-labelledby="modCookiesLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cookies</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>We use Google Analytics to measure how visitors use this web app so we can improve it based on user needs. For instance, which options visitors use most often, and if they get error messages from the web app. These cookies don't
+                            collect information that identifies a visitor.</p>
+                        <p>We do not allow Google to use or share the data about how you use this site and all information these cookies collect is aggregated and therefore anonymous. It is only used to improve how the web app works. This cookie is stored
+                            for a period of one year.</p>
+                        <div class="d-flex align-items-center">
+                            <span class="me-3"><strong>Accept cookies</strong></span>
+                            <div class="btn-group" role="group" aria-label="Accept cookies toggle">
+                                <input type="radio" class="btn-check" name="acceptCookiesOptions" id="btnAcceptYes" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnAcceptYes">Yes</label>
+                                <input type="radio" class="btn-check" name="acceptCookiesOptions" id="btnAcceptNo" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="btnAcceptNo">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Programming Method -->
+        <div class="modal fade" id="modProgrammingMethod" tabindex="-1" aria-labelledby="modProgrammingMethodLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Programming method</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <p>Screen flash programming has been developed for Apple iPads. This is because Apple do not allow normal access to the iPad's data port. Therefore, screen flash programming is only fully supported for iPads. However, the screen flasher
+                            does work with some Android devices. The option below enables screen flash programming on this device. If this device is not an iPad then it is not guaranteed to work.</p>
+
+                        <div class="container">
+
+                            <div class="row align-items-center pb-3">
+
+                                <!-- Card column -->
+                                <div class="col-md-6 p-0">
+                                    <div id="programmingMethodHolder" class="card">
+                                        <div class="card-body">
+                                            <span id="spanProgrammingMethod"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Buttons column -->
+                                <div class="col-md-6 d-flex gap-2">
+                                    <button id="btnChangeUSBMethod" class="btn btn-primary btn-sm">Set to USB method</button>
+                                    <button id="btnChangeFlashMethod" class="btn btn-primary btn-sm">Set to FLASH method</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="accordion" id="accordionPMTips">
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+						Why is screen flashing not guaranteed to work with Android devices?
+					</button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionPMTips">
+                                    <div class="accordion-body">
+                                        Android devices are made by many different manufacturers and there are thousands of different models. This means there is also a lot of different screen technologies. It is not possible to test and customise screen flashing for all Android devices.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+						Are there settings that might help my Android device work with screen flashing?
+					</button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionPMTips">
+                                    <div class="accordion-body">
+                                        Yes, on the screen flash popup window there is a 'reliable/fast' setting that has four positions. Try each one of the four positions. Also, try adjusting the screen brightness. Test with 50%, 75%, 90% and 100% brightness.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+						What do I do if screen flashing does not work on my Android device?
+					</button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionPMTips">
+                                    <div class="accordion-body">
+                                        To program you will need to plug the Edison V3 cable into the Android device's data port via an adaptor cable. These are common and cheaply available from eBay, Amazon etc.
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <p>&nbsp;</p>
+
+                        <div class="help-footer">
+                            <a title="Back" href="#" class="aHelpBack">
+					<span class="icon ebicon-chevron-left"></span>Back to diagnostics
+				</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flasher -->
+        <!-- <div class="modal draggable fade" id="modFlasher" tabindex="-1" role="dialog" aria-labelledby="modFlasher" aria-hidden="true" data-keyboard="false" >
+   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">Flasher</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>         
+         <div class="modal-body">
+
+            <div class="container">
+               <div class="row">
+
+                  <div class="col-md-4" style="padding-right: 0; padding-left: 0;">
+
+                     <ol style="margin-bottom: 1em;">
+                        <li>Place Edison over image</li>
+                        <li>Press Edison's round button once</li>
+                        <li>Press 'Download program'</li>
+                     </ol>                  
+
+                     <div id="labelFlasherSpeed">
+                        <span class="reliable">Reliable</span>
+                        <span class="fast">Fast</span>
+                     </div>
+                     
+                     <input type="range" id="rngFlasherSpeed" min="1" max="4" step="1" value="1">
+                     <div id="divFlasherSpeedDesc">If the download does not work or is not fast enough, try adjusting the speed above. The lowest speed is usually the most reliable.</div>
+
+                     <input type="checkbox" id="colour-option" style="display: none;" >
+
+                     <div id="flashProgressBarHolder">  
+                        <div id="flashProgressBar"></div>                        
+                        <div id="output"></div>
+                     </div>
+
+                     <div class="clearfix">
+                        <button id="btnFlasherRun" type="button" class="btn btn-primary">Download program</button>
+                        <button id="btnFlasherStop" type="button" class="btn btn-primary">Cancel</button>
+                     </div>                     
+                     
+                     <div id="flashTips">
+                        <p><strong>Tips</strong><br>
+                        Adjust screen brightness between 80% to 90%.<br>
+                        Move away from direct and in-direct sunlight or bright lights.<br>
+                        Ensure you have updated Edison V3 to the latest firmware.</p>
+                     </div>
+                  
+                  </div>
+                  <div class="col-md-8">
+
+                     <div id="flasherHolder">
+                        <div id="flasherCanvasHolder">
+                           <canvas id="canvas"></canvas>
+                        </div>               
+                        <div id="flasherImageHolder">
+                           <img src="edpy/images/edison_mask.png">
+                        </div>
+                     </div>
+
+                  </div>
+               </div>
+            </div>
+
+         </div>
+
+      </div>
+   </div>
+</div> -->
+
+
+
+        <!-- Flasher -->
+        <div class="modal draggable fade" id="modFlasher" tabindex="-1" aria-labelledby="modFlasher" aria-hidden="true" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Flasher</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="container">
+                            <div class="row">
+
+                                <div class="col-md-4" style="padding-right: 0; padding-left: 0;">
+
+                                    <ol style="margin-bottom: 1em;">
+                                        <li>Place Edison over image</li>
+                                        <li>Press Edison's round button once</li>
+                                        <li>Press 'Download program'</li>
+                                    </ol>
+
+                                    <div id="labelFlasherSpeed">
+                                        <span class="reliable">Reliable</span>
+                                        <span class="fast">Fast</span>
+                                    </div>
+
+                                    <input type="range" id="rngFlasherSpeed" min="1" max="4" step="1" value="1">
+                                    <div id="divFlasherSpeedDesc">
+                                        If the download does not work or is not fast enough, try adjusting the speed above. The lowest speed is usually the most reliable.
+                                    </div>
+
+                                    <input type="checkbox" id="colour-option" style="display: none;">
+
+                                    <div id="flashProgressBarHolder">
+                                        <div id="flashProgressBar"></div>
+                                        <div id="output"></div>
+                                    </div>
+
+                                    <div class="clearfix">
+                                        <button id="btnFlasherRun" type="button" class="btn btn-primary">Download program</button>
+                                        <button id="btnFlasherStop" type="button" class="btn btn-primary">Cancel</button>
+                                    </div>
+
+                                    <div id="flashTips">
+                                        <p><strong>Tips</strong><br> Adjust screen brightness between 80% to 90%.<br> Move away from direct and in-direct sunlight or bright lights.<br> Ensure you have updated Edison V3 to the latest firmware.</p>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div id="flasherHolder">
+                                        <div id="flasherCanvasHolder">
+                                            <canvas id="canvas"></canvas>
+                                        </div>
+                                        <div id="flasherImageHolder">
+                                            <img src="edpy/images/edison_mask.png">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <body>
+
+            <div id="epContainer" class="container-fluid" style="display: none;">
+                <div class="row">
+                    <div id="epHeader" class="container-fluid">
+                        <div class="row">
+                            <header>
+                                <div class="container-fluid">
+                                    <div class="row align-items-center">
+                                        <div class="col" id="epHeaderLeft">
+                                            <ul class="nav nav-pills">
+                                                <li class="nav-item dropdown">
+                                                    <a class="nav-link dropdown-toggle" id="aMenu" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><span class="oi oi-menu"></span> Menu</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aNew">New</a>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aLoad">Load from device</a>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aSave">Save to device</a>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aPopFirmwareUpdate">Update firmware</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aHelp">Diagnostics</a>
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aCookies">Cookies</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" id="aAbout">About</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="#" id="aUSB" class="nav-link"><span class="oi oi-fork"></span> USB</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="#" id="aSaveAlt" class="nav-link"><span class="oi oi-pencil"></span> Save</a>
+                                                </li>
+
+                                                <li class="nav-item dropdown">
+                                                    <a class="nav-link dropdown-toggle" id="" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><span class="oi oi-cog"></span> Version 3</a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" href="../v1"> Switch to Edison V1</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="../v2"> Switch to Edison V2</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="../"> Which version do I have?</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                        <div class="col" id="epHeaderMiddle">
+                                            <span id="epFilename"></span><span id="epFilenameStatus">*</span>
+                                        </div>
+                                        <div class="col" id="epHeaderRight">
+                                            <ul class="nav nav-pills">
+
+
+                                                <li class="nav-item">
+
+                                                    <a href="#" id="aProgram" class="nav-link"><span class="oi oi-media-play"></span> Program</a>
+
+                                                    <a href="#" id="aProgramFlash" class="nav-link"><span class="oi oi-sun"></span> Program</a>
+
+                                                </li>
+
+
+
+                                                <li class="nav-item">
+                                                    <a href="#" id="aCheckCode" class="nav-link"><span class="oi oi-check"></span> Check Code</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </header>
+                        </div>
+                    </div>
+
+                    <div id="epBody" class="container-fluid">
+                        <div class="row">
+                            <div id="epBodyLeft" class="col-2">
+                                <div id="epPrograms" class="">
+                                    <div id="epProgramsTitle">Example programs</div>
+                                    <div id="epProgramsList"></div>
+                                    <div id="epProgramsLoader">Program uploader</div>
+                                    <div id="epFileDrop" data-bs-toggle="tooltip" title="Drop an .edpy file here to load">
+                                        DROP <strong>EDPY</strong> FILE HERE
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="epBodyMiddle" class="col-7">
+                                <div id="tabFilesHolder" class="container-fluid">
+                                    <div id="tabFiles" class="row align-items-center"></div>
+                                </div>
+                                <div id="epEditor"></div>
+                                <div id="epCompiler" class="">
+                                    <div id="epCompilerTitle">Compiler Output</div>
+                                    <div id="epCompilerOutput"></div>
+                                </div>
+                            </div>
+                            <div id="epBodyRight" class="col-3" style="">
+                                <div id="epDocs" class="">
+                                    <div id="epDocsDisplay">
+                                        <div id="epDocsDisplayTitle">
+                                            <span id="epDocsDisplayTitleText">Untitled</span> <button type="button" class="btn-close btn-close-white" aria-label="Close"></button>
+                                        </div>
+                                        <div id="epDocsDisplayText"></div>
+                                    </div>
+                                    <div id="epDocsTitle">Documentation</div>
+                                    <input id="epDocsSearch" type="text" class="form-control" aria-describedby="" placeholder="Search documentation">
+                                    <div id="epDocsResults"></div>
+                                </div>
+                                <div id="epLineHelp" class="">
+                                    <div id="epLineHelpTitle">Line Help</div>
+                                    <div id="epLineHelpHelp"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="ace/ace.js"></script>
+            <script src="ace/ext-language_tools.js"></script>
+
+            <!-- <script src="data/docs.js"></script> -->
+            <script src="https://www.edpyapp.com/docs/docs.js"></script>
+
+            <script src="data/demos.js"></script>
+            <script src="data/classes.js"></script>
+            <script src="data/functions.js"></script>
+
+            <script src="edpy/js/flasher.js"></script>
+            <script src="edpy/js/edpy.js"></script>
+            <script src="edpy/js/edpy-line-help.js"></script>
+            <script src="edpy/js/WebUSB.js"></script>
+            <script src="edpy/js/firmwareUpdateLogic.js"></script>
+
+        </body>
+        <style>
+            #divCookieConsent {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #333;
+                color: #fff;
+                padding: 16px;
+                font-family: sans-serif;
+                font-size: 14px;
+                z-index: 1000;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+                align-items: center;
+                transform: translateY(100%);
+                opacity: 0;
+                transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+            }
+
+            #divCookieConsent.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            #divCookieConsent button {
+                margin-left: 8px;
+                padding: 6px 12px;
+                font-size: 13px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            #btnAcceptCookies {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+            #btnDenyCookies {
+                background-color: #6c757d;
+                color: #fff;
+            }
+
+            #divCookieConsent button:hover {
+                opacity: 0.9;
+            }
+
+            @media (max-width: 600px) {
+                /* #divCookieConsent {
+      flex-direction: column;
+    } */
+                /* #divCookieConsent button {
+      margin: 8px 0 0 0;
+    } */
+            }
+        </style>
+
+        <div id="divCookieConsent" role="alert">
+            <span>
+    This web app uses cookies to measure how the app is used and to make improvements to its features.
+    By clicking "Accept", you consent to the use of cookies for this purpose.
+  </span>
+            <button id="btnAcceptCookies">Accept</button>
+            <button id="btnDenyCookies">Deny</button>
+        </div>
+
+
+
+        <script>
+            document.getElementById('btnAcceptCookies').addEventListener('click', () => {
+                doAcceptCookies();
+                hideCookieBanner();
+            });
+
+            document.getElementById('btnDenyCookies').addEventListener('click', () => {
+                doDenyCookies();
+                hideCookieBanner();
+            });
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+
+                const consentStatus = getConsentStatus();
+                console.log('current cookie consent:', consentStatus);
+
+                const consentBanner = document.getElementById('divCookieConsent');
+
+                if (consentStatus) {
+
+                    consentBanner.style.display = 'none';
+                    // hideCookieBanner();    
+
+                } else {
+
+                    setTimeout(() => {
+                        consentBanner.classList.add('show');
+                    }, 100); // slight delay for smooth animation
+
+                }
+
+
+
+
+
+                if (consentStatus === 'accepted') {
+                    // document.getElementById('btnAcceptYes').checked = true;
+
+                    const btnAcceptYes = document.getElementById('btnAcceptYes');
+                    if (btnAcceptYes) {
+                        btnAcceptYes.checked = true;
+                    }
+
+                } else {
+
+                    const btnAcceptNo = document.getElementById('btnAcceptNo');
+                    if (btnAcceptNo) {
+                        btnAcceptNo.checked = true;
+                    }
+
+                }
+
+
+
+                const radioCookies = document.querySelectorAll('input[name="acceptCookiesOptions"]');
+
+                radioCookies.forEach(radio => {
+                    radio.addEventListener('change', () => {
+
+                        // console.log('User selected:', radio.id);
+
+                        if (radio.id === 'btnAcceptYes') {
+                            doAcceptCookies();
+                            hideCookieBanner();
+                        } else if (radio.id === 'btnAcceptNo') {
+                            doDenyCookies();
+                            deleteAllCookies();
+                            hideCookieBanner();
+                        }
+                    });
+                });
+
+
+
+
+            });
+
+
+            function setConsentStatus(status, days = 365) {
+
+                const now = new Date();
+                const expiryDate = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+
+                const consentData = {
+                    value: status,
+                    expiry: expiryDate.toISOString()
+                };
+
+                localStorage.setItem('cookieConsent', JSON.stringify(consentData));
+
+            }
+
+            function getConsentStatus() {
+
+                const stored = localStorage.getItem('cookieConsent');
+                if (!stored) return null;
+
+                try {
+                    const {
+                        value,
+                        expiry
+                    } = JSON.parse(stored);
+                    const now = new Date();
+                    const expiryDate = new Date(expiry);
+
+                    if (now > expiryDate) {
+                        // Expired: remove and return null
+                        localStorage.removeItem('cookieConsent');
+                        return null;
+                    }
+
+                    return value === 'accepted' || value === 'denied' ? value : null;
+
+                } catch (e) {
+
+                    // Corrupted or invalid format
+                    localStorage.removeItem('cookieConsent');
+                    return null;
+
+                }
+            }
+
+            function deleteAllCookies() {
+
+                const cookies = document.cookie.split(";");
+                const domainParts = window.location.hostname.split(".");
+                const domainVariations = [];
+
+                for (let i = 0; i < domainParts.length - 1; i++) {
+                    const domain = "." + domainParts.slice(i).join(".");
+                    domainVariations.push(domain);
+                }
+
+                domainVariations.push(window.location.hostname);
+
+                cookies.forEach(cookie => {
+                    const eqPos = cookie.indexOf("=");
+                    const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+                    domainVariations.forEach(domain => {
+                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${domain};`;
+                    });
+                });
+
+            }
+
+
+
+            function doAcceptCookies() {
+
+                console.log('cookie consent: accepted');
+
+                setConsentStatus('accepted', 365);
+
+                gtag('consent', 'update', {
+                    'ad_storage': 'granted',
+                    'analytics_storage': 'granted'
+                });
+
+            }
+
+            function doDenyCookies() {
+
+                console.log('cookie consent: denied');
+
+                setConsentStatus('denied', 365);
+
+                gtag('consent', 'update', {
+                    'ad_storage': 'denied',
+                    'analytics_storage': 'denied'
+                });
+
+                deleteAllCookies();
+
+            }
+
+
+            function hideCookieBanner() {
+
+                const consentBanner = document.getElementById('divCookieConsent');
+                if (consentBanner) {
+
+                    consentBanner.classList.remove('show');
+                    setTimeout(() => {
+                        consentBanner.style.display = 'none';
+                    }, 400); // match transition duration
+
+                }
+
+
+            }
+        </script>
+
+</html>

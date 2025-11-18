@@ -1,0 +1,66 @@
+:root {
+    --col-editor-orange: rgb(255, 112, 0);
+    --col-editor-green: rgb(11, 134, 69);
+    --col-editor-black: rgb(0, 0, 0);
+    --col-editor-grey: rgb(166, 166, 166);
+}
+
+.ace_editor {
+    font-size: 16px !important;
+}
+
+.ace_edpy_class {
+    color: var(--col-editor-orange) !important;
+}
+
+.ace_comment {
+    color: var(--col-editor-grey) !important;
+}
+
+.ace_function,
+.ace_punctuation,
+.ace_numeric,
+.ace_constant.ace_numeric {
+    color: var(--col-editor-black) !important;
+}
+
+.ace_constant,
+.ace_keyword,
+.ace_operator {
+    color: var(--col-editor-green) !important;
+}
+
+.ace_tooltip {
+    font-size: 12px;
+    border: 0px solid rgba(0, 0, 0, 0.125) !important;
+    background-image: none !important;
+    padding: 10px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+    max-width: 400px !important;
+    white-space: normal;
+}
+
+.ace_tooltip span.btn {
+    margin-top: 10px;
+}
+
+.ace_tooltip hr {
+    margin: 10px 0 10px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.ace_tooltip:focus {
+    outline: none !important;
+}
+
+#epEditor .ace_line.highlighted-line {
+    background-color: #ffcc00;
+    /* Change this to the desired background color */
+}
+
+.error-line {
+    position: absolute;
+    background-color: rgba(255, 0, 0, 0.3);
+    /* Red background with some transparency */
+    z-index: 20;
+}
