@@ -2,360 +2,255 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="./Images/favicon.ico" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Countdown To School's End 2026</title>
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    position: relative;
-    transition: background 0.5s ease;
-    font-family: 'Arial', sans-serif;
-    overflow: hidden;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  #countdown-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    z-index: 10;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
 
+#countdown-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 800px;
+  width: 100%;
+}
+
+#countdown-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+#countdown {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.time-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-number {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #333;
+  background-color: #e8e8e8;
+  padding: 20px 30px;
+  border-radius: 8px;
+  min-width: 100px;
+  margin-bottom: 10px;
+}
+
+.time-label {
+  font-size: 1rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.css-editor-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.css-editor-toggle:hover {
+  background-color: #555;
+}
+
+.css-editor-panel {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  width: 400px;
+  max-width: calc(100vw - 40px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: none;
+  z-index: 999;
+}
+
+.css-editor-panel.active {
+  display: block;
+}
+
+.css-editor-panel h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.css-editor-textarea {
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.css-editor-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.css-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.css-apply-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.css-apply-btn:hover {
+  background-color: #45a049;
+}
+
+.css-reset-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.css-reset-btn:hover {
+  background-color: #da190b;
+}
+
+.colorSelectors {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.colorSelectorWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.colorLabels {
+  font-size: 12px;
+  color: #333;
+  font-weight: bold;
+}
+
+.colorSelector {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.theme-selector {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 300px;
+}
+
+.theme-button {
+  padding: 10px 15px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.theme-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.theme-button.active {
+  border-color: #4CAF50;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+@media (max-width: 768px) {
   #countdown-title {
-    font-size: 2vw;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.8rem;
   }
-
-  #countdown {
-    font-size: 5vw;
-    text-align: center;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .time-segment {
-    margin: 0 10px;
-    text-align: center;
-  }
-
+  
   .time-number {
-    display: block;
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 10px 15px;
-    border-radius: 10px;
+    font-size: 2rem;
+    padding: 15px 20px;
     min-width: 80px;
-    margin-bottom: 5px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-
-  .time-label {
-    font-size: 1vw;
-    display: block;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
+  
   .colorSelectors {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: row;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 15px;
-    border-radius: 15px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-  }
-
-  .colorSelectorWrapper {
-    position: relative;
-    margin-right: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .colorSelectorWrapper:last-child {
-    margin-right: 0;
-  }
-
-  .colorSelector {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    outline: none;
-    background: transparent;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
-    appearance: none;
-    -webkit-appearance: none;
-    overflow: hidden;
-  }
-
-  .colorSelector::-webkit-color-swatch-wrapper {
-    padding: 0;
-    border-radius: 50%;
-    overflow: hidden;
-  }
-
-  .colorSelector::-webkit-color-swatch {
-    border: none;
-    border-radius: 50%;
-  }
-
-  .colorSelector::-moz-color-swatch {
-    border: none;
-    border-radius: 50%;
-  }
-
-  .colorSelector:hover {
-    transform: scale(1.1);
-  }
-
-  .colorLabels {
-    margin-bottom: 8px;
-    color: #333;
-    font-size: 12px;
-    font-weight: bold;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
-  }
-
-  .theme-selector {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 15px;
-    border-radius: 15px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-  }
-
-  .theme-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin: 0 5px;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    transition: all 0.3s;
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #333;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .theme-button:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-    opacity: 0.4;
-  }
-
-  #theme1:before {
-    background-color: #3498db;
-  }
-
-  #theme2:before {
-    background-color: #2ecc71;
-  }
-
-  #theme3:before {
-    background-color: #2c3e50;
-  }
-
-  #theme4:before {
-    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-  }
-
-  #theme5:before {
-    background: linear-gradient(45deg, #a18cd1, #fbc2eb);
-  }
-
-  .theme-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .theme-button.active {
-    background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  }
-
-  .css-editor-toggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 10px 15px;
-    border-radius: 30px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s;
-    z-index: 20;
-    border: none;
-    color: #333;
-  }
-
-  .css-editor-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-2px);
-  }
-
-  .css-editor-panel {
-    position: absolute;
-    top: 70px;
-    right: 20px;
-    width: 350px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 15px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    transition: all 0.3s ease;
-    opacity: 0;
-    transform: translateY(-20px);
-    pointer-events: none;
-    z-index: 15;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .css-editor-panel.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: all;
-  }
-
-  .css-editor-panel h3 {
-    margin-top: 0;
-    color: #333;
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-
-  .css-editor-textarea {
-    width: 100%;
-    height: 200px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    left: 10px;
+    bottom: 10px;
+    gap: 10px;
     padding: 10px;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    resize: vertical;
-    margin-bottom: 10px;
-    box-sizing: border-box;
   }
-
-  .css-editor-buttons {
-    display: flex;
-    justify-content: space-between;
+  
+  .theme-selector {
+    right: 10px;
+    bottom: 10px;
+    max-width: 200px;
   }
-
-  .css-btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s;
+  
+  .theme-button {
+    padding: 8px 12px;
+    font-size: 12px;
   }
-
-  .css-apply-btn {
-    background-color: #2ecc71;
-    color: white;
-  }
-
-  .css-apply-btn:hover {
-    background-color: #27ae60;
-  }
-
-  .css-reset-btn {
-    background-color: #e74c3c;
-    color: white;
-  }
-
-  .css-reset-btn:hover {
-    background-color: #c0392b;
-  }
-
-  #custom-styles {
-    display: none;
-  }
-
-  @media (max-width: 768px) {
-    #countdown-title {
-      font-size: 5vw;
-    }
-
-    .time-label {
-      font-size: 3vw;
-    }
-
-    .time-number {
-      min-width: 60px;
-    }
-
-    .colorSelectors, .theme-selector {
-      position: relative;
-      margin: 10px auto;
-      bottom: auto;
-      right: auto;
-      left: auto;
-      width: 80%;
-      justify-content: center;
-    }
-
-    body {
-      flex-direction: column;
-      padding: 20px;
-      height: auto;
-      min-height: 100vh;
-    }
-
-    .css-editor-panel {
-      width: 90%;
-      right: 5%;
-      left: 5%;
-      top: 70px;
-    }
-
-    .css-editor-toggle {
-      top: 20px;
-      right: 20px;
-    }
-  }
+}
 </style>
 </head>
 <body>
@@ -382,7 +277,6 @@
   </div>
 </div>
 
-<!-- CSS Editor Button and Panel -->
 <button class="css-editor-toggle" id="css-editor-toggle">CSS Editor</button>
 <div class="css-editor-panel" id="css-editor-panel">
   <h3>Custom CSS</h3>
@@ -440,20 +334,28 @@ function setColors(textColor, bgColor, isGradient = false) {
   document.getElementById("textLabel").style.color = textColor;
   document.getElementById("bgLabel").style.color = textColor;
 
-  localStorage.setItem("textColor", textColor);
-  localStorage.setItem("bgColor", bgColor);
-  localStorage.setItem("isGradient", isGradient);
+  try {
+    localStorage.setItem("textColor", textColor);
+    localStorage.setItem("bgColor", bgColor);
+    localStorage.setItem("isGradient", isGradient);
+  } catch (e) {
+    console.log("localStorage not available");
+  }
 }
 
 function updateColors() {
-  var savedTextColor = localStorage.getItem("textColor");
-  var savedBgColor = localStorage.getItem("bgColor");
-  var isGradient = localStorage.getItem("isGradient") === "true";
+  try {
+    var savedTextColor = localStorage.getItem("textColor");
+    var savedBgColor = localStorage.getItem("bgColor");
+    var isGradient = localStorage.getItem("isGradient") === "true";
 
-  if (savedTextColor && savedBgColor) {
-    document.getElementById("textColor").value = savedTextColor;
-    document.getElementById("bgColor").value = isGradient ? "#ffffff" : savedBgColor;
-    setColors(savedTextColor, savedBgColor, isGradient);
+    if (savedTextColor && savedBgColor) {
+      document.getElementById("textColor").value = savedTextColor;
+      document.getElementById("bgColor").value = isGradient ? "#ffffff" : savedBgColor;
+      setColors(savedTextColor, savedBgColor, isGradient);
+    }
+  } catch (e) {
+    console.log("localStorage not available");
   }
 }
 
@@ -463,7 +365,10 @@ function markActiveTheme(themeId) {
   });
 
   if (themeId) {
-    document.getElementById(themeId).classList.add('active');
+    const themeBtn = document.getElementById(themeId);
+    if (themeBtn) {
+      themeBtn.classList.add('active');
+    }
   }
 }
 
@@ -484,49 +389,36 @@ function getCurrentStyles() {
   padding: ${getComputedStyle(container).padding};
   border-radius: ${getComputedStyle(container).borderRadius};
   box-shadow: ${getComputedStyle(container).boxShadow};
-  backdrop-filter: ${getComputedStyle(container).backdropFilter};
 }
 
 #countdown-title {
   font-size: ${getComputedStyle(title).fontSize};
   color: ${getComputedStyle(title).color};
   margin-bottom: ${getComputedStyle(title).marginBottom};
-  text-transform: ${getComputedStyle(title).textTransform};
-  letter-spacing: ${getComputedStyle(title).letterSpacing};
-  text-shadow: ${getComputedStyle(title).textShadow};
 }
 
 #countdown {
   font-size: ${getComputedStyle(countdown).fontSize};
-  text-align: ${getComputedStyle(countdown).textAlign};
-  font-weight: ${getComputedStyle(countdown).fontWeight};
   display: ${getComputedStyle(countdown).display};
   justify-content: ${getComputedStyle(countdown).justifyContent};
   flex-wrap: ${getComputedStyle(countdown).flexWrap};
 }
 
 .time-number {
-  display: ${getComputedStyle(timeNumber).display};
   background-color: ${getComputedStyle(timeNumber).backgroundColor};
   color: ${getComputedStyle(timeNumber).color};
   padding: ${getComputedStyle(timeNumber).padding};
   border-radius: ${getComputedStyle(timeNumber).borderRadius};
   min-width: ${getComputedStyle(timeNumber).minWidth};
-  margin-bottom: ${getComputedStyle(timeNumber).marginBottom};
-  box-shadow: ${getComputedStyle(timeNumber).boxShadow};
 }
 
 .time-label {
   font-size: ${getComputedStyle(timeLabel).fontSize};
   color: ${getComputedStyle(timeLabel).color};
-  display: ${getComputedStyle(timeLabel).display};
-  text-transform: ${getComputedStyle(timeLabel).textTransform};
-  letter-spacing: ${getComputedStyle(timeLabel).letterSpacing};
 }
 
 body {
   background-color: ${getComputedStyle(document.body).backgroundColor};
-  background-image: ${getComputedStyle(document.body).backgroundImage};
 }`;
   }
 
@@ -564,7 +456,9 @@ document.getElementById("textColor").addEventListener("input", function() {
   var textColor = this.value;
   var bgColor = document.getElementById("bgColor").value;
   setColors(textColor, bgColor);
-  localStorage.removeItem("theme");
+  try {
+    localStorage.removeItem("theme");
+  } catch (e) {}
   markActiveTheme(null);
 });
 
@@ -572,7 +466,9 @@ document.getElementById("bgColor").addEventListener("input", function() {
   var textColor = document.getElementById("textColor").value;
   var bgColor = this.value;
   setColors(textColor, bgColor);
-  localStorage.removeItem("theme");
+  try {
+    localStorage.removeItem("theme");
+  } catch (e) {}
   markActiveTheme(null);
 });
 
@@ -580,7 +476,9 @@ document.getElementById("theme1").addEventListener("click", function() {
   setColors("#ffffff", "#3498db");
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#3498db";
-  localStorage.setItem("theme", "theme1");
+  try {
+    localStorage.setItem("theme", "theme1");
+  } catch (e) {}
   markActiveTheme("theme1");
 });
 
@@ -588,7 +486,9 @@ document.getElementById("theme2").addEventListener("click", function() {
   setColors("#ffffff", "#2ecc71");
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#2ecc71";
-  localStorage.setItem("theme", "theme2");
+  try {
+    localStorage.setItem("theme", "theme2");
+  } catch (e) {}
   markActiveTheme("theme2");
 });
 
@@ -596,23 +496,29 @@ document.getElementById("theme3").addEventListener("click", function() {
   setColors("#ffffff", "#2c3e50");
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#2c3e50";
-  localStorage.setItem("theme", "theme3");
+  try {
+    localStorage.setItem("theme", "theme3");
+  } catch (e) {}
   markActiveTheme("theme3");
 });
 
 document.getElementById("theme4").addEventListener("click", function() {
-  setColors("#ffffff", "linear-gradient(45deg, #ff9a9e, #fad0c4)", true);
+  setColors("#ffffff", "#ff9a9e");
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#ff9a9e";
-  localStorage.setItem("theme", "theme4");
+  try {
+    localStorage.setItem("theme", "theme4");
+  } catch (e) {}
   markActiveTheme("theme4");
 });
 
 document.getElementById("theme5").addEventListener("click", function() {
-  setColors("#ffffff", "linear-gradient(45deg, #a18cd1, #fbc2eb)", true);
+  setColors("#ffffff", "#a18cd1");
   document.getElementById("textColor").value = "#ffffff";
   document.getElementById("bgColor").value = "#a18cd1";
-  localStorage.setItem("theme", "theme5");
+  try {
+    localStorage.setItem("theme", "theme5");
+  } catch (e) {}
   markActiveTheme("theme5");
 });
 
@@ -634,14 +540,16 @@ cssEditorToggle.addEventListener('click', function() {
 cssApplyBtn.addEventListener('click', function() {
   const css = cssEditorTextarea.value;
   customStyles.textContent = css;
-  localStorage.setItem('customCSS', css);
+  try {
+    localStorage.setItem('customCSS', css);
+  } catch (e) {}
 });
 
 cssResetBtn.addEventListener('click', function() {
-
   customStyles.textContent = '';
-  localStorage.removeItem('customCSS');
-
+  try {
+    localStorage.removeItem('customCSS');
+  } catch (e) {}
   cssEditorTextarea.value = getCurrentStyles();
 });
 
@@ -670,15 +578,22 @@ document.querySelectorAll('.theme-button').forEach(button => {
 window.onload = function() {
   updateColors();
 
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme) {
-    document.getElementById(savedTheme).click();
-  }
+  try {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      const themeBtn = document.getElementById(savedTheme);
+      if (themeBtn) {
+        themeBtn.click();
+      }
+    }
 
-  const savedCSS = localStorage.getItem('customCSS');
-  if (savedCSS) {
-    cssEditorTextarea.value = savedCSS;
-    customStyles.textContent = savedCSS;
+    const savedCSS = localStorage.getItem('customCSS');
+    if (savedCSS) {
+      cssEditorTextarea.value = savedCSS;
+      customStyles.textContent = savedCSS;
+    }
+  } catch (e) {
+    console.log("localStorage not available");
   }
 };
 
