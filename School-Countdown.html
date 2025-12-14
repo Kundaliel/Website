@@ -69,94 +69,6 @@ body {
   letter-spacing: 1px;
 }
 
-.css-editor-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: #333;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  z-index: 1000;
-}
-
-.css-editor-toggle:hover {
-  background-color: #555;
-}
-
-.css-editor-panel {
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 20px;
-  width: 400px;
-  max-width: calc(100vw - 40px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: none;
-  z-index: 999;
-}
-
-.css-editor-panel.active {
-  display: block;
-}
-
-.css-editor-panel h3 {
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 1.2rem;
-}
-
-.css-editor-textarea {
-  width: 100%;
-  height: 300px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 12px;
-  resize: vertical;
-  margin-bottom: 10px;
-}
-
-.css-editor-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.css-btn {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.css-apply-btn {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.css-apply-btn:hover {
-  background-color: #45a049;
-}
-
-.css-reset-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-.css-reset-btn:hover {
-  background-color: #da190b;
-}
-
 .colorSelectors {
   position: fixed;
   bottom: 20px;
@@ -190,38 +102,6 @@ body {
   cursor: pointer;
 }
 
-.theme-selector {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  max-width: 300px;
-}
-
-.theme-button {
-  padding: 10px 15px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  background-color: white;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: all 0.3s;
-}
-
-.theme-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.theme-button.active {
-  border-color: #4CAF50;
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
 @media (max-width: 768px) {
   #countdown-title {
     font-size: 1.8rem;
@@ -238,17 +118,6 @@ body {
     bottom: 10px;
     gap: 10px;
     padding: 10px;
-  }
-  
-  .theme-selector {
-    right: 10px;
-    bottom: 10px;
-    max-width: 200px;
-  }
-  
-  .theme-button {
-    padding: 8px 12px;
-    font-size: 12px;
   }
 }
 </style>
@@ -277,21 +146,6 @@ body {
   </div>
 </div>
 
-<button class="css-editor-toggle" id="css-editor-toggle">CSS Editor</button>
-<div class="css-editor-panel" id="css-editor-panel">
-  <h3>Custom CSS</h3>
-  <textarea class="css-editor-textarea" id="css-editor-textarea" placeholder="Enter your custom CSS here...
-Example:
-.time-number {
-  background-color: red;
-  border-radius: 20px;
-}"></textarea>
-  <div class="css-editor-buttons">
-    <button class="css-btn css-apply-btn" id="css-apply-btn">Apply CSS</button>
-    <button class="css-btn css-reset-btn" id="css-reset-btn">Reset</button>
-  </div>
-</div>
-
 <div class="colorSelectors">
   <div class="colorSelectorWrapper">
     <label for="textColor" class="colorLabels" id="textLabel">Text</label>
@@ -301,128 +155,35 @@ Example:
     <label for="bgColor" class="colorLabels" id="bgLabel">Background</label>
     <input type="color" class="colorSelector" id="bgColor" value="#f0f0f0">
   </div>
+  <div class="colorSelectorWrapper">
+    <label for="containerColor" class="colorLabels" id="containerLabel">Container</label>
+    <input type="color" class="colorSelector" id="containerColor" value="#ffffff">
+  </div>
+  <div class="colorSelectorWrapper">
+    <label for="numberColor" class="colorLabels" id="numberLabel">Numbers</label>
+    <input type="color" class="colorSelector" id="numberColor" value="#e8e8e8">
+  </div>
 </div>
-
-<div class="theme-selector">
-  <button class="theme-button" id="theme1">Ocean</button>
-  <button class="theme-button" id="theme2">Forest</button>
-  <button class="theme-button" id="theme3">Night</button>
-  <button class="theme-button" id="theme4">Sunset</button>
-  <button class="theme-button" id="theme5">Dream</button>
-</div>
-
-<!-- Custom styles will be injected here -->
-<style id="custom-styles"></style>
 
 <script>
-function setColors(textColor, bgColor, isGradient = false) {
+function setColors(textColor, bgColor, containerColor, numberBgColor) {
   document.getElementById("countdown-container").style.color = textColor;
   document.getElementById("countdown-title").style.color = textColor;
+  document.getElementById("countdown-container").style.backgroundColor = containerColor;
 
   const timeNumbers = document.querySelectorAll('.time-number');
   timeNumbers.forEach(el => {
     el.style.color = textColor;
+    el.style.backgroundColor = numberBgColor;
   });
 
-  if (isGradient) {
-    document.body.style.background = bgColor;
-  } else {
-    document.body.style.backgroundColor = bgColor;
-    document.body.style.backgroundImage = 'none';
-  }
+  document.body.style.backgroundColor = bgColor;
+  document.body.style.backgroundImage = 'none';
 
   document.getElementById("textLabel").style.color = textColor;
   document.getElementById("bgLabel").style.color = textColor;
-
-  try {
-    localStorage.setItem("textColor", textColor);
-    localStorage.setItem("bgColor", bgColor);
-    localStorage.setItem("isGradient", isGradient);
-  } catch (e) {
-    console.log("localStorage not available");
-  }
-}
-
-function updateColors() {
-  try {
-    var savedTextColor = localStorage.getItem("textColor");
-    var savedBgColor = localStorage.getItem("bgColor");
-    var isGradient = localStorage.getItem("isGradient") === "true";
-
-    if (savedTextColor && savedBgColor) {
-      document.getElementById("textColor").value = savedTextColor;
-      document.getElementById("bgColor").value = isGradient ? "#ffffff" : savedBgColor;
-      setColors(savedTextColor, savedBgColor, isGradient);
-    }
-  } catch (e) {
-    console.log("localStorage not available");
-  }
-}
-
-function markActiveTheme(themeId) {
-  document.querySelectorAll('.theme-button').forEach(btn => {
-    btn.classList.remove('active');
-  });
-
-  if (themeId) {
-    const themeBtn = document.getElementById(themeId);
-    if (themeBtn) {
-      themeBtn.classList.add('active');
-    }
-  }
-}
-
-function getCurrentStyles() {
-  const container = document.getElementById('countdown-container');
-  const timeNumber = document.querySelector('.time-number');
-  const title = document.getElementById('countdown-title');
-  const timeLabel = document.querySelector('.time-label');
-  const countdown = document.getElementById('countdown');
-  const customStylesElement = document.getElementById('custom-styles');
-
-  let css = customStylesElement.textContent;
-
-  if (!css || css.trim() === '') {
-    css = `
-#countdown-container {
-  background-color: ${getComputedStyle(container).backgroundColor};
-  padding: ${getComputedStyle(container).padding};
-  border-radius: ${getComputedStyle(container).borderRadius};
-  box-shadow: ${getComputedStyle(container).boxShadow};
-}
-
-#countdown-title {
-  font-size: ${getComputedStyle(title).fontSize};
-  color: ${getComputedStyle(title).color};
-  margin-bottom: ${getComputedStyle(title).marginBottom};
-}
-
-#countdown {
-  font-size: ${getComputedStyle(countdown).fontSize};
-  display: ${getComputedStyle(countdown).display};
-  justify-content: ${getComputedStyle(countdown).justifyContent};
-  flex-wrap: ${getComputedStyle(countdown).flexWrap};
-}
-
-.time-number {
-  background-color: ${getComputedStyle(timeNumber).backgroundColor};
-  color: ${getComputedStyle(timeNumber).color};
-  padding: ${getComputedStyle(timeNumber).padding};
-  border-radius: ${getComputedStyle(timeNumber).borderRadius};
-  min-width: ${getComputedStyle(timeNumber).minWidth};
-}
-
-.time-label {
-  font-size: ${getComputedStyle(timeLabel).fontSize};
-  color: ${getComputedStyle(timeLabel).color};
-}
-
-body {
-  background-color: ${getComputedStyle(document.body).backgroundColor};
-}`;
-  }
-
-  return css;
+  document.getElementById("containerLabel").style.color = textColor;
+  document.getElementById("numberLabel").style.color = textColor;
 }
 
 var countDownDate = new Date("May 21, 2026 00:00:00").getTime();
@@ -455,155 +216,33 @@ var x = setInterval(function() {
 document.getElementById("textColor").addEventListener("input", function() {
   var textColor = this.value;
   var bgColor = document.getElementById("bgColor").value;
-  setColors(textColor, bgColor);
-  try {
-    localStorage.removeItem("theme");
-  } catch (e) {}
-  markActiveTheme(null);
+  var containerColor = document.getElementById("containerColor").value;
+  var numberBgColor = document.getElementById("numberColor").value;
+  setColors(textColor, bgColor, containerColor, numberBgColor);
 });
 
 document.getElementById("bgColor").addEventListener("input", function() {
   var textColor = document.getElementById("textColor").value;
   var bgColor = this.value;
-  setColors(textColor, bgColor);
-  try {
-    localStorage.removeItem("theme");
-  } catch (e) {}
-  markActiveTheme(null);
+  var containerColor = document.getElementById("containerColor").value;
+  var numberBgColor = document.getElementById("numberColor").value;
+  setColors(textColor, bgColor, containerColor, numberBgColor);
 });
 
-document.getElementById("theme1").addEventListener("click", function() {
-  setColors("#000000", "#3498db");
-  document.getElementById("textColor").value = "#ffffff";
-  document.getElementById("bgColor").value = "#3498db";
-  try {
-    localStorage.setItem("theme", "theme1");
-  } catch (e) {}
-  markActiveTheme("theme1");
+document.getElementById("containerColor").addEventListener("input", function() {
+  var textColor = document.getElementById("textColor").value;
+  var bgColor = document.getElementById("bgColor").value;
+  var containerColor = this.value;
+  var numberBgColor = document.getElementById("numberColor").value;
+  setColors(textColor, bgColor, containerColor, numberBgColor);
 });
 
-document.getElementById("theme2").addEventListener("click", function() {
-  setColors("#000000", "#2ecc71");
-  document.getElementById("textColor").value = "#ffffff";
-  document.getElementById("bgColor").value = "#2ecc71";
-  try {
-    localStorage.setItem("theme", "theme2");
-  } catch (e) {}
-  markActiveTheme("theme2");
-});
-
-document.getElementById("theme3").addEventListener("click", function() {
-  setColors("#000000", "#2c3e50");
-  document.getElementById("textColor").value = "#ffffff";
-  document.getElementById("bgColor").value = "#2c3e50";
-  try {
-    localStorage.setItem("theme", "theme3");
-  } catch (e) {}
-  markActiveTheme("theme3");
-});
-
-document.getElementById("theme4").addEventListener("click", function() {
-  setColors("#000000", "#ff9a9e");
-  document.getElementById("textColor").value = "#ffffff";
-  document.getElementById("bgColor").value = "#ff9a9e";
-  try {
-    localStorage.setItem("theme", "theme4");
-  } catch (e) {}
-  markActiveTheme("theme4");
-});
-
-document.getElementById("theme5").addEventListener("click", function() {
-  setColors("#000000", "#a18cd1");
-  document.getElementById("textColor").value = "#ffffff";
-  document.getElementById("bgColor").value = "#a18cd1";
-  try {
-    localStorage.setItem("theme", "theme5");
-  } catch (e) {}
-  markActiveTheme("theme5");
-});
-
-const cssEditorToggle = document.getElementById('css-editor-toggle');
-const cssEditorPanel = document.getElementById('css-editor-panel');
-const cssEditorTextarea = document.getElementById('css-editor-textarea');
-const cssApplyBtn = document.getElementById('css-apply-btn');
-const cssResetBtn = document.getElementById('css-reset-btn');
-const customStyles = document.getElementById('custom-styles');
-
-cssEditorToggle.addEventListener('click', function() {
-  cssEditorPanel.classList.toggle('active');
-
-  if (cssEditorPanel.classList.contains('active')) {
-    cssEditorTextarea.value = getCurrentStyles();
-  }
-});
-
-cssApplyBtn.addEventListener('click', function() {
-  const css = cssEditorTextarea.value;
-  customStyles.textContent = css;
-  try {
-    localStorage.setItem('customCSS', css);
-  } catch (e) {}
-});
-
-cssResetBtn.addEventListener('click', function() {
-  customStyles.textContent = '';
-  try {
-    localStorage.removeItem('customCSS');
-  } catch (e) {}
-  cssEditorTextarea.value = getCurrentStyles();
-});
-
-document.getElementById("textColor").addEventListener("change", function() {
-  if (cssEditorPanel.classList.contains('active')) {
-    cssEditorTextarea.value = getCurrentStyles();
-  }
-});
-
-document.getElementById("bgColor").addEventListener("change", function() {
-  if (cssEditorPanel.classList.contains('active')) {
-    cssEditorTextarea.value = getCurrentStyles();
-  }
-});
-
-document.querySelectorAll('.theme-button').forEach(button => {
-  button.addEventListener('click', function() {
-    if (cssEditorPanel.classList.contains('active')) {
-      setTimeout(() => {
-        cssEditorTextarea.value = getCurrentStyles();
-      }, 100); 
-    }
-  });
-});
-
-window.onload = function() {
-  updateColors();
-
-  try {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      const themeBtn = document.getElementById(savedTheme);
-      if (themeBtn) {
-        themeBtn.click();
-      }
-    }
-
-    const savedCSS = localStorage.getItem('customCSS');
-    if (savedCSS) {
-      cssEditorTextarea.value = savedCSS;
-      customStyles.textContent = savedCSS;
-    }
-  } catch (e) {
-    console.log("localStorage not available");
-  }
-};
-
-document.addEventListener('click', function(event) {
-  const isClickInsideEditor = cssEditorPanel.contains(event.target);
-  const isClickOnToggle = cssEditorToggle.contains(event.target);
-
-  if (!isClickInsideEditor && !isClickOnToggle && cssEditorPanel.classList.contains('active')) {
-    cssEditorPanel.classList.remove('active');
-  }
+document.getElementById("numberColor").addEventListener("input", function() {
+  var textColor = document.getElementById("textColor").value;
+  var bgColor = document.getElementById("bgColor").value;
+  var containerColor = document.getElementById("containerColor").value;
+  var numberBgColor = this.value;
+  setColors(textColor, bgColor, containerColor, numberBgColor);
 });
 </script>
 
