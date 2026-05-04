@@ -6,495 +6,153 @@
     <meta name="description" content="Choose from our premium Minecraft server ranks: Designer, Architect, Engineer, and Creator">
     <title>Minecraft Server Ranks | 50x Creative</title>
     <style>
-        :root {
-            --designer-color: #3498db;
-            --architect-color: #2ecc71;
-            --engineer-color: #f39c12;
-            --creator-color: #e74c3c;
-            --bg-dark: #121212;
-            --bg-light: #1e1e1e;
-            --text-primary: #ffffff;
-            --text-secondary: #cccccc;
-            --accent: #f1c40f;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Poppins', Arial, sans-serif;
-            line-height: 1.6;
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB9ElEQVRYR+2XO27CQBCGZw1IlClSpEtJ5QfoBZwLcAWOwSE4BkfgClwg94Km5yGlS0GFDYrE+hnNemd3PLYJUZyiSLue3W/+eXkJ8c+G/LN+OADPQRBMfd8/FUXxmabpUheQOQCExDp5y7LsRheQGQCZnBACY0cI6bHzqNPJ5FgVXOsXHEQJQGUy6QGQu0xeCYCBQCHIOZY9z1ukafqp8lMJEAQB+r4DkAUAKYhoQ2bhuu5iNpt9VPmrBIiiaEQIuQ0pEIIQknS22+2tij8tgCrXzWazF0LInWEYJiGvkyS5rPNXCwCFCMP6XRUh51wGk6Zp+rzb7fa6+moBAFC2XC4XfjlYPM8bi2u1AF3RLICTOgljRVgJQOcMZwn0oYsHVIUPeUA1Ap0zlFuRAX4OvdY9y4EZD0xN1YHunCrNrgLQdcbQY1PwwH+UAWsgqp5OYKwq7s5yoBuB7hkW/d8b4LQARm9BHb95BI1asYpIXfumATqqHhDFh3UeqzM7A4BuMcJWdGQxkt3g2PC9xUhV/VgfNi1GKpUbANwbhvFq2/a9RLIse8zz/GY4HH5LJNvt9iqO47UJyEEB1HLAtqw6WzIA+Jb4k6lYRgAR9WLUcIDI9VEigH6JYiTjuDBZjNBn2zDKP6YdDcDUW536b8FPRVHjLt+BdzEAAAAASUVORK5CYII=');
-        }
-
         .container {
-            max-width: 1400px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .logo {
-            font-size: 4rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent);
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo::after {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 4px;
-            background-color: var(--accent);
-            bottom: -10px;
-            left: 10%;
-            border-radius: 2px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .ranks-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-        }
-
-        .rank-card:nth-child(1) { grid-column: span 3; }
-        .rank-card:nth-child(3) { grid-column: span 3; }
-        .rank-card:nth-child(5) { grid-column: span 3; }
-        .rank-card:nth-child(7) { grid-column: span 3; }
-
-        .upgrade-card:nth-child(2) { grid-column: span 3; }
-        .upgrade-card:nth-child(4) { grid-column: span 3; }
-        .upgrade-card:nth-child(6) { grid-column: span 3; }
-
-        .rank-card {
-            background-color: var(--bg-light);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-            position: relative;
-            z-index: 1;
-            border-top: 6px solid;
-        }
-
-        .rank-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        .rank-card.designer { border-color: var(--designer-color); }
-        .rank-card.architect { border-color: var(--architect-color); }
-        .rank-card.engineer { border-color: var(--engineer-color); }
-        .rank-card.creator { border-color: var(--creator-color); }
-
-        .rank-header {
-            padding: 25px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rank-name {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .designer .rank-name { color: var(--designer-color); }
-        .architect .rank-name { color: var(--architect-color); }
-        .engineer .rank-name { color: var(--engineer-color); }
-        .creator .rank-name { color: var(--creator-color); }
-
-        .price {
-            font-size: 2.6rem;
-            font-weight: 700;
-            margin: 15px 0;
-        }
-
-        .price-currency {
-            font-size: 1.4rem;
-            vertical-align: super;
-            font-weight: 500;
-        }
-
-        .perks {
-            padding: 0 25px 25px;
-        }
-
-        .perks-title {
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .perks-list {
-            list-style-type: none;
-            margin-bottom: 25px;
-        }
-
-        .perks-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            padding-left: 25px;
-        }
-
-        .perks-list li:last-child {
-            border-bottom: none;
-        }
-
-        .perks-list li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        .designer .perks-list li::before { color: var(--designer-color); }
-        .architect .perks-list li::before { color: var(--architect-color); }
-        .engineer .perks-list li::before { color: var(--engineer-color); }
-        .creator .perks-list li::before { color: var(--creator-color); }
-
-        .buy-button {
-            display: block;
-            width: 80%;
-            margin: 0 auto;
-            padding: 15px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .designer .buy-button { background-color: var(--designer-color); }
-        .architect .buy-button { background-color: var(--architect-color); }
-        .engineer .buy-button { background-color: var(--engineer-color); }
-        .creator .buy-button { background-color: var(--creator-color); }
-
-        .buy-button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            z-index: -1;
-        }
-
-        .buy-button:hover::after {
-            transform: translateX(0);
-        }
-
-        .buy-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .upgrade-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
-        .upgrade-content {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 25px 15px;
+        table {
             width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid;
+            padding: 8px 12px;
             text-align: center;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            vertical-align: middle;
         }
 
-        .upgrade-content:hover {
-            transform: scale(1.05);
-            background-color: rgba(255, 255, 255, 0.1);
+        td:first-child {
+            text-align: left;
+            white-space: nowrap;
         }
 
-        .upgrade-from {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+        .upgrades {
+            margin-top: 32px;
         }
 
-        .upgrade-to {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
-
-        .upgrade-arrow {
-            font-size: 2rem;
-            margin: 10px 0;
-            opacity: 0.8;
-        }
-
-        .upgrade-price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 15px 0;
-        }
-
-        .upgrade-button {
-            display: inline-block;
-            padding: 10px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .upgrade-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        footer {
+        .upgrades table td {
             text-align: center;
-            margin-top: 80px;
-            padding: 30px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
         }
-
-        .highlight-block {
-            position: relative;
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: inline-block;
-            z-index: 1;
-            font-weight: 600;
-        }
-
-        .highlight-block::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.2;
-            border-radius: 5px;
-        }
-
-        .designer-highlight::before { background-color: var(--designer-color); }
-        .architect-highlight::before { background-color: var(--architect-color); }
-        .engineer-highlight::before { background-color: var(--engineer-color); }
-        .creator-highlight::before { background-color: var(--creator-color); }
-
-        @media (max-width: 1280px) {
-            .ranks-grid {
-                grid-template-columns: repeat(8, 1fr);
-            }
-            .rank-card:nth-child(1) { grid-column: span 4; }
-            .rank-card:nth-child(3) { grid-column: span 4; }
-            .rank-card:nth-child(5) { grid-column: span 4; }
-            .rank-card:nth-child(7) { grid-column: span 4; }
-            .upgrade-card:nth-child(2) { grid-column: span 4; }
-            .upgrade-card:nth-child(4) { grid-column: span 4; }
-            .upgrade-card:nth-child(6) { grid-column: span 4; }
-        }
-
-        @media (max-width: 992px) {
-            .ranks-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-            .rank-card:nth-child(1) { grid-column: span 6; }
-            .rank-card:nth-child(3) { grid-column: span 6; }
-            .rank-card:nth-child(5) { grid-column: span 6; }
-            .rank-card:nth-child(7) { grid-column: span 6; }
-            .upgrade-card:nth-child(2) { grid-column: span 6; }
-            .upgrade-card:nth-child(4) { grid-column: span 6; }
-            .upgrade-card:nth-child(6) { grid-column: span 6; }
-        }
-
-        @media (max-width: 768px) {
-            .logo {
-                font-size: 3rem;
-            }
-        }
-
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1 class="logo">50x Creative</h1>
-            <p class="subtitle">Elevate your Minecraft experience with premium ranks that unlock exclusive features and perks</p>
+            <h1>50x Creative — Server Ranks</h1>
+            <p>Purchase a rank to unlock features on the server. All purchases support continued development.</p>
         </header>
 
-        <div class="ranks-grid">
-            <!-- DESIGNER RANK -->
-            <div class="rank-card designer">
-                <div class="rank-header">
-                    <h2 class="rank-name">Designer</h2>
-                    <div class="price"><span class="price-currency">€</span>2.99</div>
-                </div>
-                <div class="perks">
-                    <div class="perks-title">What you'll get</div>
-                    <ul class="perks-list">
-                        <li>Access to /effect</li>
-                        <li>Access to /chatcolor</li>
-                        <li>Access to /chatgradient</li>
-                        <li>Access to the donator world</li>
-                        <li>Access to all gamemodes</li>
-                        <li>Teleport to other players</li>
-                        <li>2 ender chest inventories</li>
-                        <li>Access to /yell (make donator announcements!)</li>
-                    </ul>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/5240531/single" class="buy-button" target="_blank" rel="noopener">Get Started</a>
-                </div>
-            </div>
+        <main>
+            <h2>Rank Comparison</h2>
 
-            <!-- UPGRADE: DESIGNER TO ARCHITECT -->
-            <div class="upgrade-card">
-                <div class="upgrade-content">
-                    <p class="upgrade-from designer-highlight">Designer</p>
-                    <p class="upgrade-arrow">↓</p>
-                    <p class="upgrade-to architect-highlight">Architect</p>
-                    <p class="upgrade-price">€1.49</p>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/upgrade_d_to_a/single" class="upgrade-button" style="background-color: var(--architect-color);" target="_blank" rel="noopener">Upgrade</a>
-                </div>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Designer<br>€2.99</th>
+                        <th>Architect<br>€5.99</th>
+                        <th>Engineer<br>€19.99</th>
+                        <th>Creator<br>€34.99</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/effect command</td>
+                        <td>✓</td><td>✓</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>/chatcolor &amp; /chatgradient</td>
+                        <td>✓</td><td>✓</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Donator world access</td>
+                        <td>✓</td><td>✓</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>All gamemodes</td>
+                        <td>✓</td><td>✓</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Teleport to players</td>
+                        <td>✓</td><td>✓</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>/yell announcements</td>
+                        <td>✓</td><td>✓</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Ender chest inventories</td>
+                        <td>2</td><td>2</td><td>4</td><td>7</td>
+                    </tr>
+                    <tr>
+                        <td>Plots in Plots world</td>
+                        <td>2</td><td>4</td><td>6</td><td>8</td>
+                    </tr>
+                    <tr>
+                        <td>Rank prefix changes</td>
+                        <td>—</td><td>1/month</td><td>2/month</td><td>Unlimited</td>
+                    </tr>
+                    <tr>
+                        <td>WorldEdit commands</td>
+                        <td>—</td><td>—</td><td>✓</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Custom NBT items</td>
+                        <td>—</td><td>—</td><td>—</td><td>✓</td>
+                    </tr>
+                    <tr>
+                        <td>Buy</td>
+                        <td><a href="https://50xcreative.tebex.io/checkout/packages/add/5240531/single">Buy Designer</a></td>
+                        <td><a href="https://50xcreative.tebex.io/checkout/packages/add/5240558/single">Buy Architect</a></td>
+                        <td><a href="https://50xcreative.tebex.io/checkout/packages/add/6294497/single">Buy Engineer</a></td>
+                        <td><a href="https://50xcreative.tebex.io/checkout/packages/add/6294468/single">Buy Creator</a></td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <!-- ARCHITECT RANK -->
-            <div class="rank-card architect">
-                <div class="rank-header">
-                    <h2 class="rank-name">Architect</h2>
-                    <div class="price"><span class="price-currency">€</span>5.99</div>
-                </div>
-                <div class="perks">
-                    <div class="perks-title">What you'll get</div>
-                    <ul class="perks-list">
-                        <li>All previous rank perks</li>
-                        <li>Ability to change rank prefix once per month</li>
-                        <li>Access to more special cosmetics</li>
-                        <li>Access to 4 plots in Plots</li>
-                    </ul>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/5240558/single" class="buy-button" target="_blank" rel="noopener">Get Started</a>
-                </div>
-            </div>
+            <div class="upgrades">
+                <h2>Rank Upgrades</h2>
+                <p>Already own a rank? Upgrade at a reduced price.</p>
 
-            <!-- UPGRADE: ARCHITECT TO ENGINEER -->
-            <div class="upgrade-card">
-                <div class="upgrade-content">
-                    <p class="upgrade-from architect-highlight">Architect</p>
-                    <p class="upgrade-arrow">↓</p>
-                    <p class="upgrade-to engineer-highlight">Engineer</p>
-                    <p class="upgrade-price">€15.99</p>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/upgrade_a_to_e/single" class="upgrade-button" style="background-color: var(--engineer-color);" target="_blank" rel="noopener">Upgrade</a>
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Price</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Designer</td>
+                            <td>Architect</td>
+                            <td>€1.49</td>
+                            <td><a href="https://50xcreative.tebex.io/checkout/packages/add/upgrade_d_to_a/single">Upgrade</a></td>
+                        </tr>
+                        <tr>
+                            <td>Architect</td>
+                            <td>Engineer</td>
+                            <td>€15.99</td>
+                            <td><a href="https://50xcreative.tebex.io/checkout/packages/add/upgrade_a_to_e/single">Upgrade</a></td>
+                        </tr>
+                        <tr>
+                            <td>Engineer</td>
+                            <td>Creator</td>
+                            <td>€15.99</td>
+                            <td><a href="https://50xcreative.tebex.io/checkout/packages/add/upgrade_e_to_c/single">Upgrade</a></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <!-- ENGINEER RANK -->
-            <div class="rank-card engineer">
-                <div class="rank-header">
-                    <h2 class="rank-name">Engineer</h2>
-                    <div class="price"><span class="price-currency">€</span>19.99</div>
-                </div>
-                <div class="perks">
-                    <div class="perks-title">What you'll get</div>
-                    <ul class="perks-list">
-                        <li>All previous rank perks</li>
-                        <li>Ability to change rank prefix twice per month</li>
-                        <li>Access to more special cosmetics</li>
-                        <li>Access to all WorldEdit commands</li>
-                        <li>Able to see other players' inventories</li>
-                        <li>Access to 6 plots in Plots</li>
-                    </ul>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/6294497/single" class="buy-button" target="_blank" rel="noopener">Get Started</a>
-                </div>
-            </div>
-
-            <!-- UPGRADE: ENGINEER TO CREATOR -->
-            <div class="upgrade-card">
-                <div class="upgrade-content">
-                    <p class="upgrade-from engineer-highlight">Engineer</p>
-                    <p class="upgrade-arrow">↓</p>
-                    <p class="upgrade-to creator-highlight">Creator</p>
-                    <p class="upgrade-price">€15.99</p>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/upgrade_e_to_c/single" class="upgrade-button" style="background-color: var(--creator-color);" target="_blank" rel="noopener">Upgrade</a>
-                </div>
-            </div>
-
-            <!-- CREATOR RANK -->
-            <div class="rank-card creator">
-                <div class="rank-header">
-                    <h2 class="rank-name">Creator</h2>
-                    <div class="price"><span class="price-currency">€</span>34.99</div>
-                </div>
-                <div class="perks">
-                    <div class="perks-title">What you'll get</div>
-                    <ul class="perks-list">
-                        <li>All previous rank perks</li>
-                        <li>Ability to change rank prefix at any time</li>
-                        <li>Access to all premium cosmetics</li>
-                        <li>Access to custom NBT items</li>
-                        <li>Able to see other players' ender chests</li>
-                        <li>Access to 10 plots in Plots</li>
-                    </ul>
-                    <a href="https://50xcreative.tebex.io/checkout/packages/add/6294468/single" class="buy-button" target="_blank" rel="noopener">Get Started</a>
-                </div>
-            </div>
-        </div>
+        </main>
 
         <footer>
-            <p>All purchases support the continued development of the 50x Creative server.</p>
-            <p style="margin-top: 10px;">© 2025 50x Creative Server. All rights reserved.</p>
+            <hr>
+            <p>© 2025 50x Creative Server. All rights reserved.</p>
         </footer>
     </div>
 </body>
