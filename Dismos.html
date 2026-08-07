@@ -13,15 +13,14 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
             overflow: hidden;
             height: 100vh;
         }
 
-        /* Top Bar */
+        /* Bottom Bar */
         .top {
             position: fixed;
-            top: 0;
+            bottom: 0;
             width: 100%;
             height: 45px;
             background: #302c2c;
@@ -29,46 +28,22 @@
             align-items: center;
             gap: 5px;
             padding: 0 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 1000;
+        }
+
+        .top {
+            color: white;
         }
 
         .top input,
         .top button,
         .top select {
-            height: 30px;
-            padding: 0 15px;
-            color: white;
-            background: transparent;
-            border: 1px solid gold;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .top input {
-            cursor: text;
-        }
-
-        .top input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .top button:hover,
-        .top select:hover {
-            border-color: orange;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .top button:active,
-        .top select:active {
-            transform: scale(0.95);
+            background: white;
+            color: black;
         }
 
         /* Calculator */
         #calculator {
-            margin-top: 45px;
             width: 100%;
             height: calc(100vh - 45px);
         }
@@ -80,13 +55,12 @@
         /* Save List */
         #saveList {
             position: fixed;
-            top: 45px;
+            top: 0;
+            bottom: 45px;
             width: 100%;
-            max-height: calc(100vh - 45px);
             background: #444;
             overflow-y: auto;
             display: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             z-index: 999;
         }
 
@@ -95,56 +69,26 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            border-bottom: 1px solid #555;
             color: white;
-            transition: background 0.2s;
-        }
-
-        .save-item:hover {
-            background: #505050;
         }
 
         .save-item input {
             flex: 1;
             margin-right: 10px;
             padding: 5px;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid transparent;
-            color: white;
-            font-size: 14px;
-        }
-
-        .save-item input:focus {
-            outline: none;
-            border-bottom-color: gold;
+            background: white;
+            color: black;
         }
 
         .save-item button {
             margin: 0 5px;
             padding: 5px 10px;
-            background: transparent;
-            border: 1px solid gold;
-            border-radius: 3px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .save-item button:hover {
-            border-color: orange;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .save-item button:active {
-            transform: scale(0.95);
         }
 
         .no-saves {
             padding: 20px;
             text-align: center;
-            color: #ccc;
-            font-style: italic;
+            color: white;
         }
 
         /* Notification */
@@ -153,38 +97,29 @@
             bottom: 20px;
             right: 20px;
             padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.8);
+            background: #333;
             color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 1100;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s;
+            display: none;
         }
 
         .notification.show {
-            opacity: 1;
-            transform: translateY(0);
+            display: block;
         }
 
         /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1200;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
         }
 
         .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
+            display: flex;
         }
 
         .modal-container {
@@ -192,8 +127,7 @@
             max-width: 900px;
             max-height: 80vh;
             background: #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            color: white;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -205,21 +139,9 @@
             align-items: center;
             padding: 15px 20px;
             background: #222;
-            color: white;
-            border-bottom: 1px solid #444;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
         }
 
         .modal-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
             padding: 5px;
         }
 
@@ -240,24 +162,10 @@
 
         .editor-button {
             padding: 5px 10px;
-            background: #333;
-            color: white;
-            border: 1px solid #666;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .editor-button:hover {
-            background: #444;
-            border-color: #888;
         }
 
         .modal-error {
-            color: #ff6b6b;
             padding: 10px 0;
-            font-size: 14px;
             display: none;
         }
 
@@ -267,11 +175,6 @@
             padding: 10px;
             background: #1e1e1e;
             color: #f8f8f8;
-            border: 1px solid #444;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 14px;
-            line-height: 1.5;
             resize: none;
             tab-size: 2;
         }
@@ -282,32 +185,10 @@
             gap: 10px;
             padding: 15px 20px;
             background: #222;
-            border-top: 1px solid #444;
         }
 
         .modal-button {
             padding: 8px 15px;
-            background: #222;
-            color: white;
-            border: 1px solid gold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .modal-button:hover {
-            border-color: orange;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-button.primary {
-            background: #2a5885;
-            border-color: #2a5885;
-        }
-
-        .modal-button.primary:hover {
-            background: #3a6fa5;
-            border-color: #3a6fa5;
         }
 
         /* Mobile */
@@ -320,8 +201,11 @@
             }
 
             #calculator {
-                margin-top: 55px;
                 height: calc(100vh - 55px);
+            }
+
+            #saveList {
+                bottom: 55px;
             }
 
             .save-item {
@@ -386,6 +270,26 @@
         let currentEditingSaveName = '';
         let originalJsonState = '';
 
+        // Default ticker config added to any new/loaded graph that doesn't
+        // already define one, so the ticker is always available to the user.
+        var DEFAULT_TICKER = {
+            handlerLatex: '',
+            minStepLatex: '0',
+            playing: false,
+            open: true
+        };
+
+        function withDefaultTicker(state) {
+            if (!state || !state.expressions) return state;
+            if (!state.expressions.ticker) {
+                state.expressions.ticker = Object.assign({}, DEFAULT_TICKER);
+            }
+            return state;
+        }
+
+        // Give the fresh, blank graph a ticker as soon as the page loads.
+        calculator.setState(withDefaultTicker(calculator.getState()));
+
         function showNotification(message) {
             const existingNotification = document.querySelector('.notification');
             if (existingNotification) {
@@ -440,7 +344,7 @@
                             var savedState = localStorage.getItem('desmosState_' + saveName);
                             if (savedState) {
                                 try {
-                                    calculator.setState(JSON.parse(savedState));
+                                    calculator.setState(withDefaultTicker(JSON.parse(savedState)));
                                     showNotification('Loaded "' + saveName + '"');
                                 } catch (error) {
                                     showNotification('Error loading save: ' + error.message);
@@ -664,7 +568,7 @@
                 var savedState = localStorage.getItem('desmosState_' + saveName);
                 if (savedState) {
                     try {
-                        calculator.setState(JSON.parse(savedState));
+                        calculator.setState(withDefaultTicker(JSON.parse(savedState)));
                         showNotification('Loaded "' + saveName + '"');
                     } catch (error) {
                         showNotification('Error loading save: ' + error.message);
@@ -719,7 +623,7 @@
                 reader.onload = function(e) {
                     try {
                         var state = JSON.parse(e.target.result);
-                        calculator.setState(state);
+                        calculator.setState(withDefaultTicker(state));
                         showNotification('Loaded state from file: ' + file.name);
 
                         var fileName = file.name.replace(/\.[^/.]+$/, "");
@@ -771,7 +675,7 @@
             try {
                 var autoSave = localStorage.getItem('desmosState_AutoSave');
                 if (autoSave && calculator.getState().expressions.list.length === 0) {
-                    calculator.setState(JSON.parse(autoSave));
+                    calculator.setState(withDefaultTicker(JSON.parse(autoSave)));
                     showNotification('Recovered from auto-save');
                 }
             } catch (error) {
